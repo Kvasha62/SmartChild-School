@@ -64,7 +64,7 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
-The following document was accepted by the owner and merged into `main` through PR #8. Its current revision records the decisions OQ-01—OQ-07 agreed by the owner on 2026-10-20; this documentation update is proposed in a separate PR:
+The following document was accepted by the owner and merged into `main` through PR #8. The current version also records the OQ-01—OQ-07 decisions agreed by the owner on 2026-10-20:
 
 - [MVP-001 user scenario and acceptance criteria](docs/mvp-001-user-scenario-acceptance.md)
 
