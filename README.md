@@ -24,9 +24,10 @@ No application code is implemented. Neither stack selection nor acceptance
 of the architecture proposal authorizes functional development, production
 deployment, paid services, or execution of user-supplied Python code. The
 prototype baseline versions — Python 3.13.x, Django 5.2.18, Wagtail 7.4.3 LTS,
-PostgreSQL 18.6 — were agreed in correspondence and are recorded in
-[docs/product-scope.md](docs/product-scope.md); their compatibility has not
-been verified and no dependencies are installed.
+PostgreSQL 18.6 — were agreed in correspondence and are proposed for recording
+in [docs/product-scope.md](docs/product-scope.md); that change is still awaiting
+the owner's decision and is not in force yet. Their compatibility has not been
+verified and no dependencies are installed.
 
 The decisions still open in [TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md)
 section L include dependency pinning and the compatibility check of that
