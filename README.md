@@ -7,22 +7,26 @@ the first MVP are recorded in [MVP-001].
 ## Project status
 
 [BOOTSTRAP-001] was accepted and merged into `main` through
-[PR #3][bootstrap-pr], with baseline commit
+[PR #3][bootstrap-pr], with merge commit
 `3f3422e549d0f390a5f2aa8fc37586c14c9cae7e`.
 
 Separately, the owner selected **Django + Wagtail + PostgreSQL** for further
 design; see the [owner's decision][stack-decision].
 
-[TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md) remains open in
-[PR #5][technical-pr] for independent review and the owner's decision on
-the final full commit SHA. Stack selection does not approve the complete
-architecture proposal.
+[TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md) was accepted by the
+owner and merged into `main` through [PR #5][technical-pr]. The reviewed
+head was `8c3413e858704e5d8d3e648473113a3cd1c5f178`; the merge commit is
+`224ad3e58a5ae24a4a3a57747a93f23127117fe9`. [Issue #4][MVP-001] remains
+open as the source of the approved MVP requirements and the product questions
+that are still unresolved.
 
-No application code is implemented. Neither stack selection nor approval
-of a design document authorizes functional development, production
+No application code is implemented. Neither stack selection nor acceptance
+of the architecture proposal authorizes functional development, production
 deployment, paid services, or execution of user-supplied Python code.
-Each next stage requires separate, explicit permission from the owner.
-An open PR or successful checks do not constitute approval of its contents.
+Versions, hosting, budget, content lists and other points listed in
+TECH-DESIGN-001 remain open. Each next stage requires separate, explicit
+permission from the owner. An open PR or successful checks do not constitute
+approval of its contents.
 
 ## Working principles
 
@@ -49,15 +53,15 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
-## Technical design proposals
+## Technical design
 
-- [TECH-DESIGN-001: proposed architecture](docs/technical/TECH-DESIGN-001.md)
+- [TECH-DESIGN-001: accepted architecture](docs/technical/TECH-DESIGN-001.md)
 
-The owner selected **Django + Wagtail + PostgreSQL** for further design;
-see the [owner's decision][stack-decision]. The architecture proposal remains
-under review. Stack selection does not authorize functional implementation,
-production deployment, paid services, or execution of user-supplied Python
-code.
+The owner selected **Django + Wagtail + PostgreSQL** for further design; see
+the [owner's decision][stack-decision]. TECH-DESIGN-001 was accepted and
+merged into `main` through [PR #5][technical-pr]. Acceptance does not
+authorize functional implementation, production deployment, paid services,
+or execution of user-supplied Python code.
 
 ## Coordination
 
