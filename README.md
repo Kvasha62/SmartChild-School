@@ -34,7 +34,7 @@ An open PR or successful checks do not constitute approval of its contents.
 - No secrets, access tokens, personal data, or real children's data may be
   committed or published in project discussions, issues, PRs, or reports.
 - Synthetic data must be used in tests and examples.
-- Product implementation begins only after the bootstrap process is approved.
+- Product implementation requires an explicit owner-approved task and scope.
 
 ## Documentation
 
