@@ -64,6 +64,10 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
+The following document is proposed for owner approval and is not yet part of the accepted bootstrap documentation:
+
+- [Proposed: MVP-001 user scenario and acceptance criteria](docs/mvp-001-user-scenario-acceptance.md)
+
 ## Technical design
 
 - [TECH-DESIGN-001: accepted architecture](docs/technical/TECH-DESIGN-001.md)
