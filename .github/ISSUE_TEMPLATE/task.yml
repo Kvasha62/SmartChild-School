@@ -1,21 +1,14 @@
 name: Задача
 description: Цель, границы, критерии готовности и проверки согласуемой задачи.
-title: "[TASK] "
 body:
   - type: markdown
     attributes:
       value: |
+        ID задачи назначает GitHub: это номер созданного Issue.
+        Укажите содержательный заголовок; именной алиас согласует владелец.
         Не публикуйте секреты и персональные данные, включая реальные
         данные детей, в тексте, логах или вложениях. Только синтетические
         примеры. Создание задачи не означает одобрение решения владельцем.
-  - type: input
-    id: task-id
-    attributes:
-      label: Задача / ID
-      description: Уникальный ID задачи; отразите его также в заголовке.
-      placeholder: Например, TASK-001
-    validations:
-      required: true
   - type: textarea
     id: goal
     attributes:
@@ -34,7 +27,9 @@ body:
     id: baseline-sha
     attributes:
       label: Исходный commit SHA
-      description: Полный 40-символьный SHA версии, на которой основана задача.
+      description: |
+        Полный 40-символьный SHA. Автор и ревьюер проверяют формат и
+        существование коммита по CONTRIBUTING.md; форма этого не проверяет.
     validations:
       required: true
   - type: textarea
@@ -44,11 +39,6 @@ body:
       description: Что входит в задачу, а что явно не входит?
     validations:
       required: true
-  - type: textarea
-    id: proposal
-    attributes:
-      label: Предлагаемое решение
-      description: Необязательная гипотеза; не выдавайте её за утверждённое решение.
   - type: textarea
     id: constraints
     attributes:
@@ -71,10 +61,12 @@ body:
     validations:
       required: true
   - type: textarea
-    id: review-questions
+    id: proposal-and-questions
     attributes:
-      label: Открытые вопросы и вопросы для ревью
-      description: Какое решение нужно от владельца, что остаётся неизвестным?
+      label: Предлагаемое решение и открытые вопросы
+      description: |
+        Необязательная гипотеза, вопросы для ревью и нужные решения
+        владельца. Не выдавайте предложение за утверждённое решение.
   - type: checkboxes
     id: safety
     attributes:
