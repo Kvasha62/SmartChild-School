@@ -42,6 +42,13 @@ written in Russian for the current coordination process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
+## Technical design proposals
+
+- [TECH-DESIGN-001: proposed architecture](docs/technical/TECH-DESIGN-001.md)
+
+Technical proposals require owner approval. They do not select the final
+technology stack or authorize application development or deployment.
+
 ## Coordination
 
 Use [Discussion #1] for coordination and links to decisions, Issues for
