@@ -46,8 +46,11 @@ written in Russian for the current coordination process.
 
 - [TECH-DESIGN-001: proposed architecture](docs/technical/TECH-DESIGN-001.md)
 
-Technical proposals require owner approval. They do not select the final
-technology stack or authorize application development or deployment.
+The owner selected **Django + Wagtail + PostgreSQL** for further design;
+see the [owner's decision][stack-decision]. The architecture proposal remains
+under review. Stack selection does not authorize functional implementation,
+production deployment, paid services, or execution of user-supplied Python
+code.
 
 ## Coordination
 
@@ -65,3 +68,4 @@ same rules. Use synthetic data only.
 [BOOTSTRAP-001]: https://github.com/Kvasha62/SmartChild-School/issues/2
 [Discussion #1]: https://github.com/Kvasha62/SmartChild-School/discussions/1
 [coordination protocol]: docs/coordination.md
+[stack-decision]: https://github.com/Kvasha62/SmartChild-School/pull/5#issuecomment-6288694089
