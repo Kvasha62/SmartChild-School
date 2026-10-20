@@ -1,0 +1,80 @@
+name: Задача
+description: Цель, границы, критерии готовности и проверки согласуемой задачи.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ID задачи назначает GitHub: это номер созданного Issue.
+        Укажите содержательный заголовок; именной алиас согласует владелец.
+        Не публикуйте секреты и персональные данные, включая реальные
+        данные детей, в тексте, логах или вложениях. Только синтетические
+        примеры. Создание задачи не означает одобрение решения владельцем.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Цель
+      description: Какой результат нужен и кому он полезен?
+    validations:
+      required: true
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Текущее состояние
+      description: Факты, ссылки и источник сообщения; гипотезы помечайте отдельно.
+    validations:
+      required: true
+  - type: input
+    id: baseline-sha
+    attributes:
+      label: Исходный commit SHA
+      description: |
+        Полный 40-символьный SHA. Автор и ревьюер проверяют формат и
+        существование коммита по CONTRIBUTING.md; форма этого не проверяет.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Затронутые файлы и границы
+      description: Что входит в задачу, а что явно не входит?
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Ограничения
+      description: Утверждённые требования, зависимости и нужные согласования.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии готовности
+      description: Проверяемые условия приёмки, желательно списком с чекбоксами.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: План проверок
+      description: Что и как проверить; это план, а не заявление о выполнении.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal-and-questions
+    attributes:
+      label: Предлагаемое решение и открытые вопросы
+      description: |
+        Необязательная гипотеза, вопросы для ревью и нужные решения
+        владельца. Не выдавайте предложение за утверждённое решение.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Безопасность и статус
+      options:
+        - label: Нет секретов и персональных данных, в том числе данных детей.
+          required: true
+        - label: Примеры синтетические; необходимые права на материалы есть.
+          required: true
+        - label: Неутверждённые решения помечены как предложения.
+          required: true
