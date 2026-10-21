@@ -26,8 +26,9 @@ deployment, paid services, or execution of user-supplied Python code. The
 prototype baseline versions — Python 3.13.x, Django 5.2.18, Wagtail 7.4.3 LTS,
 PostgreSQL 18.6 — were agreed in correspondence and are proposed for recording
 in [docs/product-scope.md](docs/product-scope.md); that change is still awaiting
-the owner's decision and is not in force yet. Their compatibility has not been
-verified and no dependencies are installed.
+the owner's separate confirmation of B-01 in the repository is still pending;
+this note does not treat B-01 as approved by the OQ confirmation. Their compatibility
+has not been verified and no dependencies are installed.
 
 The decisions still open in [TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md)
 section L include dependency pinning and the compatibility check of that
@@ -64,7 +65,7 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
-The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. The owner-approved OQ-01—OQ-07 decisions were recorded in `main` through [PR #9][oq-decisions-pr] (commit on `main` after squash-merge: `196c4f1de08822beb5d4cd1d04dea562557ee226`). This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
+The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. PR #9 subsequently updated AC-05—AC-07 and T-04, T-08, T-11—T-13 while recording OQ-01—OQ-07. The OQ decision text is present in `main` at squash-merge commit `196c4f1de08822beb5d4cd1d04dea562557ee226`; the later status wording was corrected in PR #11 (merge commit `3ebedd4784d887eb36b0b6634bcb71254a09594c`) and clarified in PR #12 (merge commit `280f9032c22833c002533559eb36cc7b1b8ac566`). This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
 
 - [MVP-001 user scenario and acceptance criteria](docs/mvp-001-user-scenario-acceptance.md)
 
