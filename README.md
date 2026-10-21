@@ -46,6 +46,7 @@ An open PR or successful checks do not constitute approval of its contents.
 - Changes are delivered through pull requests after repository initialization.
 - Every task has explicit acceptance criteria.
 - Reviews and owner decisions identify a specific full commit SHA.
+- Merging a PR confirms acceptance of repository changes; it does not by itself replace separate confirmation of product-decision content when such confirmation is required.
 - New commits require review of the updated revision before acceptance.
 - Product and architecture decisions require explicit owner approval.
 - No secrets, access tokens, personal data, or real children's data may be
@@ -66,7 +67,7 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
-The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. PR #9 subsequently updated AC-04—AC-07 and T-04, T-08, T-11—T-13 while recording OQ-01—OQ-07. The OQ decision text is present in `main` at squash-merge commit `196c4f1de08822beb5d4cd1d04dea562557ee226`; the later status wording was corrected in PR #11 (squash-merge commit `3ebedd4784d887eb36b0b6634bcb71254a09594c`), and PR #12 (squash-merge commit `280f9032c22833c002533559eb36cc7b1b8ac566`) clarified the references to PR #9 and the C-01 record. This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
+The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. PR #9 subsequently updated AC-04—AC-07 and T-04, T-08; added T-11—T-13; and recorded OQ-01—OQ-07. The OQ decision text is present in `main` at squash-merge commit `196c4f1de08822beb5d4cd1d04dea562557ee226`; the later status wording was corrected in PR #11 (squash-merge commit `3ebedd4784d887eb36b0b6634bcb71254a09594c`), and PR #12 (squash-merge commit `280f9032c22833c002533559eb36cc7b1b8ac566`) clarified the references to PR #9 and the C-01 record. This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
 
 - [MVP-001 user scenario and acceptance criteria](docs/mvp-001-user-scenario-acceptance.md)
 
