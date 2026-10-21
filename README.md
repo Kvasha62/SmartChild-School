@@ -64,7 +64,7 @@ process.
 - [Task form](.github/ISSUE_TEMPLATE/task.yml)
 - [Pull request template](.github/pull_request_template.md)
 
-The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. The owner-approved OQ-01—OQ-07 decisions were recorded in `main` through [PR #9][oq-decisions-pr] (merge commit `196c4f1de08822beb5d4cd1d04dea562557ee226`). This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
+The MVP-001 user scenario and acceptance criteria AC-01—AC-08 were accepted by the owner and merged into `main` through PR #8. The owner-approved OQ-01—OQ-07 decisions were recorded in `main` through [PR #9][oq-decisions-pr] (commit on `main` after squash-merge: `196c4f1de08822beb5d4cd1d04dea562557ee226`). This records the decisions; it does not mean the related functionality is implemented or technically verified. The starter-material lists and OGE/EGE subject scope remain to be approved, and technical checks T-01—T-13 have not been confirmed as executed:
 
 - [MVP-001 user scenario and acceptance criteria](docs/mvp-001-user-scenario-acceptance.md)
 
