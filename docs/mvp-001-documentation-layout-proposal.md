@@ -329,7 +329,7 @@ docs/mvp-001/
 
 - проверено актуальное состояние `main` тремя способами; контрольный SHA зафиксирован;
 - изучены структура `docs/`, правила организации документации, соглашения об именовании, документы MVP-001, требования к изменениям документации;
-- созданы только два файла: этот документ `docs/mvp-001-documentation-layout-proposal.md` и отчёт об устранении замечаний `docs/mvp-001-documentation-layout-proposal-review-response.md`.
+- созданы только этот документ `docs/mvp-001-documentation-layout-proposal.md`, отчёт об устранении замечаний `docs/mvp-001-documentation-layout-proposal-review-response.md` и отчёт о повторном исправлении `docs/mvp-001-documentation-layout-proposal-review-response-followup.md` — всего три файла; иных файлов в [PR #14][pr14] нет. Состав совпадает с разделом 6 [отчёта о повторном исправлении](mvp-001-documentation-layout-proposal-review-response-followup.md).
 
 **Не выполнено и не требовалось:**
 
