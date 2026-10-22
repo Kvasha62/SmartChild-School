@@ -80,8 +80,13 @@ python manage.py makemigrations --check --dry-run
 python manage.py migrate --noinput
 python manage.py migrate --check
 python manage.py test
+python manage.py createsuperuser
 python manage.py runserver
 ```
+
+Команда `createsuperuser` интерактивно создаёт локальную учётную запись
+администратора для входа в Wagtail CMS. Используйте отдельный локальный пароль;
+не переносите его в репозиторий и не используйте пароль от других сервисов.
 
 После запуска:
 - административная панель Wagtail: http://127.0.0.1:8000/cms/;
@@ -96,7 +101,7 @@ python manage.py runserver
 
 CI устанавливает закреплённый lock из `requirements.txt` и выполняет проверки
 на Python 3.13.17 и PostgreSQL 18.6: `pip check`, `manage.py check`,
-`makemigrations --check --dry-run), миграции, `manage.py test` и
+`makemigrations --check --dry-run`, миграции, `manage.py test` и
 `migrate --check`. Тесты используют синтетическую тестовую БД, без персональных
 данных.
 
