@@ -1,0 +1,11 @@
+{% extends "school/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  <article class="lesson">
+    <p class="eyebrow"><a href="{% pageurl page.get_parent %}">Все материалы</a> / {{ page.get_direction_display }}</p>
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="lesson-intro">{{ page.intro }}</p>{% endif %}
+    <div class="lesson-body">{{ page.body|richtext }}</div>
+  </article>
+{% endblock %}
