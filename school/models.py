@@ -25,7 +25,7 @@ class HomePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        lessons = LessonPage.objects.live().public().order_by("title")
+        lessons = LessonPage.objects.child_of(self).live().public().order_by("title")
         selected_direction = request.GET.get("direction", "").strip()
         valid_directions = {value for value, _label in DIRECTION_CHOICES}
 
