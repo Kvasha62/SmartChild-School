@@ -40,6 +40,29 @@ def create_homepage(apps, schema_editor):
     Site.objects.using(database).filter(pk=site.pk).update(root_page_id=home.pk)
 
 
+def delete_homepage(apps, schema_editor):
+    """Undo only the homepage created by this migration and detach the Site."""
+    from wagtail.models import Page
+
+    Site = apps.get_model("wagtailcore", "Site")
+    database = schema_editor.connection.alias
+
+    site = Site.objects.using(database).filter(is_default_site=True).first()
+    home = Page.objects.using(database).filter(slug="smartchild-school").first()
+
+    if home is None:
+        return
+
+    # The forward migration creates the homepage directly under the Wagtail
+    # tree root. Restore that parent before deleting the page, so Site never
+    # points to a page that is being removed.
+    parent_id = home.get_parent().pk
+    if site is not None and site.root_page_id == home.pk:
+        Site.objects.using(database).filter(pk=site.pk).update(root_page_id=parent_id)
+
+    home.delete()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("wagtailcore", "0097_baselogentry_uuid_action_timestamp_indexes"),
@@ -104,5 +127,5 @@ class Migration(migrations.Migration):
             options={"abstract": False},
             bases=("wagtailcore.page",),
         ),
-        migrations.RunPython(create_homepage, migrations.RunPython.noop),
+        migrations.RunPython(create_homepage, delete_homepage),
     ]
