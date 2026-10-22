@@ -1,0 +1,125 @@
+x-app-environment: &app-environment
+  DJANGO_SETTINGS_MODULE: config.production_settings
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in .env}
+  DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+  DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:?Set DJANGO_ALLOWED_HOSTS in .env}
+  DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
+  WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:?Set WAGTAILADMIN_BASE_URL in .env}
+  DJANGO_MEDIA_ROOT: /srv/media
+  DJANGO_TRUST_PROXY_SSL_HEADER: ${DJANGO_TRUST_PROXY_SSL_HEADER:-true}
+  DJANGO_SECURE_SSL_REDIRECT: ${DJANGO_SECURE_SSL_REDIRECT:-true}
+  DJANGO_SECURE_HSTS_SECONDS: ${DJANGO_SECURE_HSTS_SECONDS:-3600}
+  DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS: ${DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS:-false}
+  DJANGO_SECURE_HSTS_PRELOAD: ${DJANGO_SECURE_HSTS_PRELOAD:-false}
+  DJANGO_EMAIL_HOST: ${DJANGO_EMAIL_HOST:?Set DJANGO_EMAIL_HOST in .env}
+  DJANGO_EMAIL_PORT: ${DJANGO_EMAIL_PORT:-587}
+  DJANGO_EMAIL_USE_TLS: ${DJANGO_EMAIL_USE_TLS:-true}
+  DJANGO_EMAIL_USE_SSL: ${DJANGO_EMAIL_USE_SSL:-false}
+  DJANGO_EMAIL_HOST_USER: ${DJANGO_EMAIL_HOST_USER:?Set DJANGO_EMAIL_HOST_USER in .env}
+  DJANGO_EMAIL_HOST_PASSWORD: ${DJANGO_EMAIL_HOST_PASSWORD:?Set DJANGO_EMAIL_HOST_PASSWORD in .env}
+  DJANGO_EMAIL_TIMEOUT: ${DJANGO_EMAIL_TIMEOUT:-10}
+  DJANGO_DEFAULT_FROM_EMAIL: ${DJANGO_DEFAULT_FROM_EMAIL:?Set DJANGO_DEFAULT_FROM_EMAIL in .env}
+  DJANGO_SERVER_EMAIL: ${DJANGO_SERVER_EMAIL:-}
+  DJANGO_LOG_LEVEL: ${DJANGO_LOG_LEVEL:-INFO}
+  DB_HOST: db
+  DB_NAME: ${DB_NAME:?Set DB_NAME in .env}
+  DB_USER: ${DB_USER:?Set DB_USER in .env}
+  DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+  DB_PORT: "5432"
+  DB_CONN_MAX_AGE: ${DB_CONN_MAX_AGE:-60}
+  DB_SSLMODE: ${DB_SSLMODE:-}
+  HOME: /tmp
+  TMPDIR: /tmp
+
+services:
+  # Validate the application settings and bootstrap admin password before Postgres
+  # initializes a durable volume. Failed validation must not leave a half-initialized DB.
+  preflight:
+    build: .
+    restart: "no"
+    environment:
+      <<: *app-environment
+      DB_ADMIN_USER: ${DB_ADMIN_USER:?Set DB_ADMIN_USER in .env}
+      DB_ADMIN_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+    command:
+      - sh
+      - -ec
+      - |
+        if [ "$$DB_ADMIN_USER" = "$$DB_USER" ]; then
+          echo "DB_ADMIN_USER must differ from DB_USER." >&2
+          exit 1
+        fi
+        case "$$DB_ADMIN_PASSWORD" in
+          *CHANGE_ME*|*change-me*|*change_me*|*changeme*|local-development-only)
+            echo "DB_ADMIN_PASSWORD is a template/development value." >&2
+            exit 1
+            ;;
+        esac
+        python manage.py check --deploy --fail-level ERROR
+
+  db:
+    image: postgres:18.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:?Set DB_NAME in .env}
+      POSTGRES_USER: ${DB_ADMIN_USER:?Set DB_ADMIN_USER in .env}
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+      APP_DB_USER: ${DB_USER:?Set DB_USER in .env}
+      APP_DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./deploy/postgres/10-create-app-role.sh:/docker-entrypoint-initdb.d/10-create-app-role.sh:ro
+    depends_on:
+      preflight:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment: *app-environment
+    expose:
+      - "8000"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    volumes:
+      - media_data:/srv/media
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import os, urllib.request; host = os.environ['DJANGO_ALLOWED_HOSTS'].split(',')[0].strip(); req = urllib.request.Request('http://127.0.0.1:8000/health/ready/', headers={'Host': host}); urllib.request.urlopen(req, timeout=3).read()"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  proxy:
+    image: nginx:1.30.6-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - media_data:/var/www/media:ro
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  media_data:
