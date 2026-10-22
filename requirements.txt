@@ -1,0 +1,5 @@
+# Exact pins for direct runtime dependencies.
+# See docs/technical/TECH-001-local-development.md for the current lock status.
+Django==5.2.18
+wagtail==7.4.3
+psycopg[binary]==3.3.6

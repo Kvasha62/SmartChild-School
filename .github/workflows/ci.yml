@@ -1,0 +1,60 @@
+name: Django and Wagtail CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "tech-001/**"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.6-alpine
+        env:
+          POSTGRES_DB: smartchild_test
+          POSTGRES_USER: smartchild
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U smartchild -d smartchild_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-a-production-secret
+      DJANGO_DEBUG: "false"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      DB_NAME: smartchild_test
+      DB_USER: smartchild
+      DB_PASSWORD: ci-only-password
+      DB_HOST: 127.0.0.1
+      DB_PORT: "5432"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+      - name: Install pinned direct dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Check Django and Wagtail configuration
+        run: python manage.py check
+      - name: Check for uncommitted model migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Apply database migrations
+        run: python manage.py migrate --noinput
+      - name: Run automated tests
+        run: python manage.py test
+      - name: Confirm migration state is clean
+        run: python manage.py migrate --check
