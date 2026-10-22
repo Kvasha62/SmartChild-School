@@ -149,7 +149,7 @@ class PublicLearningFlowTests(TestCase):
 
         add_url = reverse(
             "wagtailadmin_pages:add",
-            args=[self.home.pk, "school", "lessonpage"],
+            args=["school", "lessonpage", self.home.pk],
         )
         response = self.client.get(add_url)
 
