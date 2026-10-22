@@ -14,9 +14,8 @@ DIRECTION_CHOICES = [
 
 
 def create_homepage(apps, schema_editor):
-    # Wagtail's treebeard methods (including add_child) are not present on
-    # historical models returned by apps.get_model(). Use the runtime Page
-    # models for tree operations, while keeping Site as a historical model.
+    # Wagtail's treebeard methods are not present on historical models.
+    # Use runtime page models for tree operations, but historical Site model.
     from school.models import HomePage
     from wagtail.models import Page
 
@@ -44,6 +43,9 @@ def create_homepage(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("wagtailcore", "0097_baselogentry_uuid_action_timestamp_indexes"),
+        # Creating a Wagtail Page triggers search-index hooks; ensure the
+        # indexentry table exists before the data migration inserts the home page.
+        ("wagtailsearch", "0010_add_text_fields"),
     ]
 
     operations = [
