@@ -54,7 +54,7 @@ services:
         - CMD
         - python
         - -c
-        - "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready/', headers={'Host':os.environ['PUBLIC_DOMAIN'],'X-Forwarded-Proto':'https'}); urllib.request.urlopen(r, timeout=4)"
+        - "import os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready/', headers={'Host':os.environ['PUBLIC_DOMAIN'],'X-Forwarded-Proto':'https'}); urllib.request.urlopen(r, timeout=4)"
       interval: 30s
       timeout: 5s
       retries: 3
