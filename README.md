@@ -20,26 +20,32 @@ head was `8c3413e858704e5d8d3e648473113a3cd1c5f178`; the squash-merge commit is
 open as the source of the approved MVP requirements and the product questions
 that are still unresolved.
 
-No application code is implemented. Neither stack selection nor acceptance
-of the architecture proposal authorizes functional development, production
-deployment, paid services, or execution of user-supplied Python code. The
-prototype baseline versions — Python 3.13.x, Django 5.2.18, Wagtail 7.4.3 LTS,
-PostgreSQL 18.6 — were agreed in correspondence and are already recorded in
-[docs/product-scope.md](docs/product-scope.md) as B-01, marked as agreed in
-correspondence and still requiring fixation in the repository. That record does
-not make them an approved technical baseline: the owner's separate confirmation
-of B-01 is still pending, and the OQ-01—OQ-07 decisions do not imply it. Their
-compatibility has not been verified and no dependencies are installed.
+The paragraphs above record the historical bootstrap/design state and do
+not describe every open review branch. As of 2026-10-22:
 
-The decisions still open in [TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md)
-section L include dependency pinning and the compatibility check of that
-baseline, starter content lists, safe Python execution architecture, Rutube
-conditions, hosting/region, budget and RPO/RTO, editor-access parameters,
-final SEO policy, search quality and remaining scope clarifications relative
-to Issue #4. The selected stack and the approved MVP requirements in
-[Issue #4][MVP-001] are not reopened by this list. Each next stage requires
-separate, explicit permission from the owner.
-An open PR or successful checks do not constitute approval of its contents.
+- [PR #45](https://github.com/Kvasha62/SmartChild-School/pull/45) contains the
+  first public Wagtail catalogue and lesson-publishing flow.
+- [Issue #48](https://github.com/Kvasha62/SmartChild-School/issues/48) tracks
+  production-readiness work, proposed in
+  [PR #49](https://github.com/Kvasha62/SmartChild-School/pull/49), stacked on
+  PR #45 for review.
+
+Both PRs are open and neither has been merged into `main` or deployed.
+The pinned Python/Django/Wagtail/PostgreSQL versions correspond to baseline
+B-01 in [docs/product-scope.md](docs/product-scope.md). Their appearance in a
+dependency lock or passing CI does not replace the still-pending separate
+formal confirmation of B-01, and does not approve a hosting provider, domain,
+region/jurisdiction, budget, SMTP service, backup retention, RPO/RTO or a
+production deployment.
+
+Open requirements in [TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md)
+and [Issue #4][MVP-001] still include starter-content lists, safe Python
+execution architecture, Rutube conditions and rights, hosting/region and
+operational parameters, editor-access details, SEO policy, search quality and
+other product-scope clarifications. The selected stack and approved MVP
+requirements are not reopened by this list. Work on implementation follows
+an owner-approved task and remains subject to review. An open PR or successful
+checks do not constitute approval of its contents.
 
 ## Working principles
 
