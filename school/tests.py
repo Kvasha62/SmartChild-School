@@ -1,5 +1,10 @@
+import importlib
+from types import SimpleNamespace
+
+from django.apps import apps as django_apps
+from django.db import connection
 from django.test import TestCase
-from wagtail.models import PageViewRestriction
+from wagtail.models import PageViewRestriction, Site
 
 from school.models import DIRECTION_CHOICES, HomePage, LessonPage
 
@@ -115,3 +120,19 @@ class PublicLearningFlowTests(TestCase):
         self.assertNotContains(catalogue, "Закрытый урок")
         detail = self.client.get(lesson.url)
         self.assertIn(detail.status_code, (302, 403))
+
+    def test_homepage_migration_can_be_reversed_and_reapplied(self):
+        migration = importlib.import_module("school.migrations.0001_initial")
+        site = Site.objects.get(is_default_site=True)
+        parent_id = self.home.get_parent().pk
+        schema_editor = SimpleNamespace(connection=connection)
+
+        migration.delete_homepage(django_apps, schema_editor)
+        self.assertFalse(HomePage.objects.filter(slug="smartchild-school").exists())
+        site.refresh_from_db()
+        self.assertEqual(site.root_page_id, parent_id)
+
+        migration.create_homepage(django_apps, schema_editor)
+        recreated_home = HomePage.objects.get(slug="smartchild-school")
+        site.refresh_from_db()
+        self.assertEqual(site.root_page_id, recreated_home.pk)
