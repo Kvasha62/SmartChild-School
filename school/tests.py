@@ -6,7 +6,7 @@ from school.models import HomePage, LessonPage
 class PublicLearningFlowTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.home = HomePage.objects.get(slug="home")
+        cls.home = HomePage.objects.get(slug="smartchild-school")
 
     def make_lesson(self, *, title, slug, direction, intro="", body=""):
         return self.home.add_child(
