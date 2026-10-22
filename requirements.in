@@ -1,0 +1,4 @@
+# Direct runtime dependencies. Keep requirements.txt in sync as the fully pinned lock.
+Django==5.2.18
+wagtail==7.4.3
+psycopg[binary]==3.3.6
