@@ -54,7 +54,7 @@ python -c 'import secrets; print(secrets.token_urlsafe(48))'
 
 Скопируйте выведенное случайное значение в `DJANGO_SECRET_KEY` в локальном
 файле `.env`. Не коммитьте `.env`: он исключён через `.gitignore`.
-Для локальной разработки в `.env` можно оставить `DJANGO_DEBUG=true`.
+Для локального запуска через `runserver` обязательно установите `DJANGO_DEBUG=true` в `.env`: при `DEBUG=false` Django не раздаёт статические файлы через встроенный сервер. В `DEBUG=true` этот каркас раздаёт статические файлы и медиа локально; это предназначено только для разработки, не для production.
 
 ## Запуск PostgreSQL
 
@@ -71,6 +71,11 @@ docker compose ps
 ## Установка и запуск Django/Wagtail
 
 ```bash
+# В каждой новой оболочке заново загрузите локальные переменные окружения.
+set -a
+. ./.env
+set +a
+
 python3.13 -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
