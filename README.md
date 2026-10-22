@@ -20,26 +20,28 @@ head was `8c3413e858704e5d8d3e648473113a3cd1c5f178`; the squash-merge commit is
 open as the source of the approved MVP requirements and the product questions
 that are still unresolved.
 
-A minimal Django + Wagtail + PostgreSQL application now exists. The local
-development scaffold is described in
-[TECH-001](docs/technical/TECH-001-local-development.md); the first public
-learning flow (Wagtail catalogue and lesson pages for the six approved
-directions, published content only, readable without an account) is proposed
-in [PR #45][learning-flow-pr] from `feature/first-public-learning-flow`.
-That PR is open and unmerged at the time of writing, so this code has not
-been accepted into `main` yet.
+The first public learning flow was merged into `main` through
+[PR #45][learning-flow-pr] (squash-merge commit
+`1b8c2dcec1ece794eabac8c66e679f89b24b0273`). It provides a Wagtail catalogue
+and lesson pages for the six approved directions; only published content is
+readable without an account.
 
-Production hardening is proposed on top of [PR #45][learning-flow-pr] in
-[PR #47][production-pr]: a strict `config.production_settings` module,
-SMTP/console email separation, a non-root read-only Gunicorn Docker image,
-WhiteNoise static assets, a PostgreSQL least-privilege role, private media
-routing, production CI checks, and a [deployment runbook](docs/deployment.md).
-This is deployment preparation only: no hosting, public domain/TLS ingress,
-SMTP provider, backup policy, monitoring, or staging environment has been
-selected or verified, and the site is not publicly deployed. Neither stack selection
-nor acceptance of the architecture proposal authorizes functional
-development beyond an explicitly approved task, production deployment, paid
-services, or execution of user-supplied Python code.
+Production hardening was merged into `main` through
+[PR #47][production-pr] (squash-merge commit
+`1420067db00ed9116737e06f6ad25250dedab7fb`). It adds strict
+`config.production_settings`, SMTP/console email separation, a non-root
+read-only Gunicorn Docker image, WhiteNoise static assets, a PostgreSQL
+least-privilege role, private media routing, production CI checks, and the
+[deployment runbook](docs/deployment.md).
+
+This is deployment preparation only. The site is not publicly deployed, and
+hosting/region, public domain and TLS ingress, SMTP provider, backup retention
+and recovery targets, monitoring, and a staging environment have not yet been
+selected and verified. Successful repository CI does not validate external
+infrastructure or a production restore. Neither stack selection nor acceptance
+of the architecture proposal authorizes unrelated functional development,
+production deployment, paid services, or execution of user-supplied Python
+code.
 
 The prototype baseline versions — Python 3.13.17, Django 5.2.18,
 Wagtail 7.4.3, PostgreSQL 18.6 — were agreed in correspondence and are
