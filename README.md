@@ -20,16 +20,37 @@ head was `8c3413e858704e5d8d3e648473113a3cd1c5f178`; the squash-merge commit is
 open as the source of the approved MVP requirements and the product questions
 that are still unresolved.
 
-No application code is implemented. Neither stack selection nor acceptance
-of the architecture proposal authorizes functional development, production
-deployment, paid services, or execution of user-supplied Python code. The
-prototype baseline versions — Python 3.13.x, Django 5.2.18, Wagtail 7.4.3 LTS,
-PostgreSQL 18.6 — were agreed in correspondence and are already recorded in
-[docs/product-scope.md](docs/product-scope.md) as B-01, marked as agreed in
-correspondence and still requiring fixation in the repository. That record does
-not make them an approved technical baseline: the owner's separate confirmation
-of B-01 is still pending, and the OQ-01—OQ-07 decisions do not imply it. Their
-compatibility has not been verified and no dependencies are installed.
+A minimal Django + Wagtail + PostgreSQL application now exists. The local
+development scaffold is described in
+[TECH-001](docs/technical/TECH-001-local-development.md); the first public
+learning flow (Wagtail catalogue and lesson pages for the six approved
+directions, published content only, readable without an account) is proposed
+in [PR #45][learning-flow-pr] from `feature/first-public-learning-flow`.
+That PR is open and unmerged at the time of writing, so this code has not
+been accepted into `main` yet.
+
+Production hardening is proposed on top of [PR #45][learning-flow-pr] in
+[PR #47][production-pr]: a strict `config.production_settings` module,
+SMTP/console email separation, a non-root read-only Gunicorn Docker image,
+WhiteNoise static assets, a PostgreSQL least-privilege role, private media
+routing, production CI checks, and a [deployment runbook](docs/deployment.md).
+This is deployment preparation only: no hosting, public domain/TLS ingress,
+SMTP provider, backup policy, monitoring, or staging environment has been
+selected or verified, and the site is not publicly deployed. Neither stack selection
+nor acceptance of the architecture proposal authorizes functional
+development beyond an explicitly approved task, production deployment, paid
+services, or execution of user-supplied Python code.
+
+The prototype baseline versions — Python 3.13.17, Django 5.2.18,
+Wagtail 7.4.3, PostgreSQL 18.6 — were agreed in correspondence and are
+recorded in [docs/product-scope.md](docs/product-scope.md) as B-01, marked
+as agreed in correspondence and still requiring fixation in the repository.
+That record does not make them an approved technical baseline: the owner's
+separate confirmation of B-01 is still pending, and the OQ-01—OQ-07
+decisions do not imply it. Within that caveat, their compatibility has
+been exercised successfully in CI (exact-version Python build, fully pinned
+`requirements.txt`, migrations and tests against PostgreSQL 18.6); see the
+pull request checks for the specific commit under review.
 
 The decisions still open in [TECH-DESIGN-001](docs/technical/TECH-DESIGN-001.md)
 section L include dependency pinning and the compatibility check of that
@@ -98,6 +119,8 @@ same rules. Use synthetic data only.
 [MVP-001]: https://github.com/Kvasha62/SmartChild-School/issues/4
 [bootstrap-pr]: https://github.com/Kvasha62/SmartChild-School/pull/3
 [technical-pr]: https://github.com/Kvasha62/SmartChild-School/pull/5
+[learning-flow-pr]: https://github.com/Kvasha62/SmartChild-School/pull/45
+[production-pr]: https://github.com/Kvasha62/SmartChild-School/pull/47
 [oq-decisions-pr]: https://github.com/Kvasha62/SmartChild-School/pull/9
 [Discussion #1]: https://github.com/Kvasha62/SmartChild-School/discussions/1
 [coordination protocol]: docs/coordination.md
