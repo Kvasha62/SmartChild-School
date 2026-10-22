@@ -23,12 +23,12 @@ def create_homepage(apps, schema_editor):
     if site is None:
         return
 
-    home = HomePage.objects.using(database).filter(slug="home").first()
+    home = HomePage.objects.using(database).filter(slug="smartchild-school").first()
     if home is None:
         root = Page.objects.using(database).get(depth=1)
         home = HomePage(
             title="SmartChild — блог-школа программирования",
-            slug="home",
+            slug="smartchild-school",
             live=True,
             show_in_menus=True,
         )
