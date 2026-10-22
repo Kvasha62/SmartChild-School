@@ -1,0 +1,17 @@
+# Keep secrets, VCS data, and local artifacts out of the image build context.
+.git
+.github
+.env
+.env.*
+!.env.example
+!.env.production.example
+__pycache__
+*.py[cod]
+.venv
+venv
+media
+staticfiles
+*.log
+db.sqlite3
+docs
+*.md

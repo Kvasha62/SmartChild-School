@@ -1,4 +1,10 @@
-"""Minimal Django + Wagtail settings for local development and CI."""
+"""Django + Wagtail settings for local development and CI.
+
+Production deployments must use ``config.production_settings`` instead; see
+``docs/technical/production-deployment-runbook.md``. This module keeps
+developer-friendly defaults (for example, console email) that are not safe
+or sufficient for production on their own.
+"""
 import os
 from pathlib import Path
 
@@ -110,10 +116,28 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = Path(os.environ.get("DJANGO_STATIC_ROOT", BASE_DIR / "staticfiles"))
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# Local development stores uploads under BASE_DIR/media. Production settings
+# require an explicit absolute DJANGO_MEDIA_ROOT backed by persistent storage.
+MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / "media"))
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Local development must not depend on a real SMTP server: mail is printed to
+# the console by default, which keeps Wagtail admin notifications usable
+# offline. Override with DJANGO_EMAIL_BACKEND only if you run a local mail
+# catcher. Django's test runner always replaces this with the in-memory
+# backend, so tests never send real mail. Production settings configure SMTP
+# explicitly and ignore this default.
+EMAIL_BACKEND = os.environ.get(
+    "DJANGO_EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend",
+)
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DJANGO_DEFAULT_FROM_EMAIL",
+    "webmaster@localhost",
+)
+SERVER_EMAIL = os.environ.get("DJANGO_SERVER_EMAIL", DEFAULT_FROM_EMAIL)
 
 WAGTAIL_SITE_NAME = "SmartChild"
 WAGTAILADMIN_BASE_URL = os.environ.get("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
