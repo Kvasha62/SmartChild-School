@@ -2,5 +2,5 @@
 Django==5.2.18
 wagtail==7.4.3
 psycopg[binary]==3.3.6
-gunicorn==26.2.0
+gunicorn==26.2.2
 whitenoise==6.12.0
