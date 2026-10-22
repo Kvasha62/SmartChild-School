@@ -2,8 +2,10 @@ import importlib
 from types import SimpleNamespace
 
 from django.apps import apps as django_apps
+from django.contrib.auth import get_user_model
 from django.db import connection
 from django.test import TestCase
+from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
 from school.models import DIRECTION_CHOICES, HomePage, LessonPage
@@ -136,3 +138,22 @@ class PublicLearningFlowTests(TestCase):
         recreated_home = HomePage.objects.get(slug="smartchild-school")
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
+
+    def test_wagtail_editor_can_open_lesson_creation_form(self):
+        user = get_user_model().objects.create_superuser(
+            username="editor-smoke-test",
+            email="editor@example.invalid",
+            password="test-only-password",
+        )
+        self.client.force_login(user)
+
+        add_url = reverse(
+            "wagtailadmin_pages:add",
+            args=[self.home.pk, "school", "lessonpage"],
+        )
+        response = self.client.get(add_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "direction")
+        self.assertContains(response, "intro")
+        self.assertContains(response, "body")
