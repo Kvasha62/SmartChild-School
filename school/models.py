@@ -53,6 +53,11 @@ class LessonPage(Page):
         blank=True,
         help_text="Краткое описание для каталога.",
     )
+    video_embed_url = models.URLField(
+        "Видео Rutube",
+        blank=True,
+        help_text="Вставь ссылку на плеер Rutube, например https://rutube.ru/play/embed/...",
+    )
     body = RichTextField(
         blank=True,
         help_text="Текст урока. Изображения можно вставлять через редактор Wagtail.",
@@ -64,5 +69,6 @@ class LessonPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("direction"),
         FieldPanel("intro"),
+        FieldPanel("video_embed_url"),
         FieldPanel("body"),
     ]
