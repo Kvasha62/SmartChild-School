@@ -70,3 +70,86 @@ jobs:
         run: python manage.py test
       - name: Confirm migration state is clean
         run: python manage.py migrate --check
+      # Production contract is checked with synthetic values only. No step
+      # sends real email or needs a production secret. The three expected
+      # warnings are W005/W021 (HSTS subdomains/preload off until the domain
+      # layout is approved) and W019 (X_FRAME_OPTIONS=SAMEORIGIN, required
+      # by Wagtail admin previews); all are documented in the runbook.
+      - name: Check production settings and collect static files
+        env:
+          DJANGO_SECRET_KEY: ci-only-synthetic-production-key-for-checks-0123456789
+          DJANGO_DEBUG: "false"
+          DJANGO_ALLOWED_HOSTS: school.example.invalid
+          WAGTAILADMIN_BASE_URL: https://school.example.invalid
+          DJANGO_MEDIA_ROOT: ${{ runner.temp }}/smartchild-media
+          DJANGO_EMAIL_HOST: smtp.example.invalid
+          DJANGO_EMAIL_HOST_USER: mailer@example.invalid
+          DJANGO_EMAIL_HOST_PASSWORD: ci-only-mail-password
+          DJANGO_DEFAULT_FROM_EMAIL: no-reply@example.invalid
+        run: |
+          python manage.py check --deploy --settings=config.production_settings
+          python manage.py collectstatic --noinput --settings=config.production_settings
+          test -f staticfiles/staticfiles.json
+
+  docker:
+    name: Production image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Build the production image
+        run: docker build -t smartchild:ci .
+      - name: Confirm the image does not run as root
+        run: |
+          test "$(docker run --rm --entrypoint id smartchild:ci -u)" != "0"
+      - name: Smoke-test the image with PostgreSQL
+        run: |
+          docker network create smartchild-ci
+          docker volume create smartchild-ci-media
+          docker run -d --name smartchild-ci-db --network smartchild-ci \
+            -e POSTGRES_DB=smartchild_ci -e POSTGRES_USER=smartchild \
+            -e POSTGRES_PASSWORD=ci-only-db-password \
+            postgres:18.6-alpine
+          for i in $(seq 1 30); do
+            docker exec smartchild-ci-db pg_isready -U smartchild -d smartchild_ci && break
+            sleep 2
+          done
+          cat > /tmp/smartchild-ci.env <<'EOF'
+          DJANGO_SECRET_KEY=ci-only-synthetic-production-key-for-docker-smoke-012345
+          DJANGO_DEBUG=false
+          DJANGO_ALLOWED_HOSTS=ci.example.invalid,127.0.0.1
+          WAGTAILADMIN_BASE_URL=https://ci.example.invalid
+          DJANGO_MEDIA_ROOT=/srv/media
+          DB_NAME=smartchild_ci
+          DB_USER=smartchild
+          DB_PASSWORD=ci-only-db-password
+          DB_HOST=smartchild-ci-db
+          DB_PORT=5432
+          DJANGO_EMAIL_HOST=smtp.example.invalid
+          DJANGO_DEFAULT_FROM_EMAIL=no-reply@example.invalid
+          DJANGO_TRUST_PROXY_HEADERS=true
+          EOF
+          # Migrations are a separate release step, never part of app start.
+          docker run --rm --network smartchild-ci --env-file /tmp/smartchild-ci.env \
+            -v smartchild-ci-media:/srv/media \
+            smartchild:ci python manage.py migrate --noinput
+          docker run -d --name smartchild-ci-web --network smartchild-ci \
+            --env-file /tmp/smartchild-ci.env \
+            -v smartchild-ci-media:/srv/media -p 127.0.0.1:18000:8000 \
+            smartchild:ci
+          # Simulate the TLS-terminating trusted proxy of a real deployment.
+          headers=(-H "Host: ci.example.invalid" -H "X-Forwarded-Proto: https")
+          for i in $(seq 1 30); do
+            curl -fsS "${headers[@]}" http://127.0.0.1:18000/health/live/ && break
+            sleep 2
+          done
+          curl -fsS "${headers[@]}" http://127.0.0.1:18000/health/ready/
+          curl -fsS "${headers[@]}" http://127.0.0.1:18000/ -o /tmp/home.html
+          static_path=$(grep -o '/static/[^"]*' /tmp/home.html | head -n1 || true)
+          if [ -z "$static_path" ]; then
+            curl -fsS "${headers[@]}" http://127.0.0.1:18000/cms/login/ -o /tmp/login.html
+            static_path=$(grep -o '/static/[^"]*' /tmp/login.html | head -n1)
+          fi
+          test -n "$static_path"
+          curl -fsS "${headers[@]}" "http://127.0.0.1:18000${static_path}" -o /dev/null
+          docker logs smartchild-ci-web
