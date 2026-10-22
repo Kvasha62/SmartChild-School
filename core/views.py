@@ -1,5 +1,9 @@
-from django.db import DatabaseError, connection
+import logging
+
+from django.db import Error, connection
 from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
 
 
 def live(request):
@@ -13,6 +17,7 @@ def ready(request):
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
             cursor.fetchone()
-    except DatabaseError:
+    except Error:
+        logger.warning("Readiness check failed", exc_info=True)
         return JsonResponse({"status": "unavailable"}, status=503)
     return JsonResponse({"status": "ok"})
