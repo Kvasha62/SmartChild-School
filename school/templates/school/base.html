@@ -1,0 +1,40 @@
+{% load static wagtailcore_tags %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.">
+  <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %} — SmartChild-School</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #172033; background: #f6f8fb; }
+    body { margin: 0; line-height: 1.6; }
+    .site-header, main, .site-footer { width: min(100% - 2rem, 58rem); margin-inline: auto; }
+    .site-header { padding-block: 1.25rem; border-bottom: 1px solid #dce3ec; }
+    .brand { color: inherit; font-weight: 750; text-decoration: none; }
+    main { min-height: 65vh; padding-block: 2rem 4rem; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3.25rem); }
+    .eyebrow { color: #52627a; font-size: .875rem; font-weight: 650; }
+    .directions { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: 2rem; }
+    .directions a { padding: .45rem .8rem; border: 1px solid #cbd5e1; border-radius: 999px; color: #172033; text-decoration: none; }
+    .directions a[aria-current="page"] { background: #172033; color: white; border-color: #172033; }
+    .lesson-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; padding: 0; list-style: none; }
+    .lesson-card { height: 100%; box-sizing: border-box; padding: 1.25rem; background: white; border: 1px solid #dce3ec; border-radius: .75rem; }
+    .lesson-card h3 { margin-block: .5rem; }
+    a { color: #174ea6; }
+    .lesson-intro { font-size: 1.15rem; color: #52627a; }
+    .lesson-body { overflow-wrap: anywhere; }
+    .lesson-body img { max-width: 100%; height: auto; }
+    .empty-state { padding: 1rem; border-left: 3px solid #cbd5e1; background: white; }
+    .site-footer { border-top: 1px solid #dce3ec; padding-block: 1rem 2rem; color: #52627a; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{% slugurl 'home' %}">SmartChild-School</a>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="site-footer">SmartChild-School · учебные материалы для самостоятельного изучения</footer>
+</body>
+</html>
