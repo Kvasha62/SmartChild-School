@@ -1,0 +1,41 @@
+{% extends "school/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  <section class="intro">
+    <p class="eyebrow">SmartChild-School</p>
+    <h1>{{ page.title }}</h1>
+    <p>Учебные материалы по программированию и подготовке к ОГЭ и ЕГЭ.</p>
+  </section>
+
+  <nav class="directions" aria-label="Направления обучения">
+    <a href="{% pageurl page %}"{% if not selected_direction %} aria-current="page"{% endif %}>Все материалы</a>
+    {% for value, label in directions %}
+      <a href="{% pageurl page %}?direction={{ value }}"{% if selected_direction == value %} aria-current="page"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  <section aria-labelledby="materials-heading">
+    <h2 id="materials-heading">
+      {% if selected_direction %}
+        Материалы: {% for value, label in directions %}{% if value == selected_direction %}{{ label }}{% endif %}{% endfor %}
+      {% else %}
+        Учебные материалы
+      {% endif %}
+    </h2>
+
+    {% if lessons %}
+      <ul class="lesson-list">
+        {% for lesson in lessons %}
+          <li class="lesson-card">
+            <p class="eyebrow">{{ lesson.get_direction_display }}</p>
+            <h3><a href="{% pageurl lesson %}">{{ lesson.title }}</a></h3>
+            {% if lesson.intro %}<p>{{ lesson.intro }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-state">В этом разделе пока нет опубликованных материалов.</p>
+    {% endif %}
+  </section>
+{% endblock %}
