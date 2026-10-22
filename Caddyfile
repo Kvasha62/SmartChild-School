@@ -1,0 +1,15 @@
+{$PUBLIC_DOMAIN} {
+    encode zstd gzip
+
+    @public_images path /media/images/*
+    handle @public_images {
+        uri strip_prefix /media
+        root * /srv
+        header X-Content-Type-Options nosniff
+        file_server
+    }
+
+    handle {
+        reverse_proxy web:8000
+    }
+}
