@@ -1,6 +1,7 @@
 from django.test import TestCase
+from wagtail.models import PageViewRestriction
 
-from school.models import HomePage, LessonPage
+from school.models import DIRECTION_CHOICES, HomePage, LessonPage
 
 
 class PublicLearningFlowTests(TestCase):
@@ -67,24 +68,24 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(detail, "Это синтетический учебный пример.")
         self.assertContains(detail, "Python")
 
-    def test_direction_filter_only_shows_matching_published_lessons(self):
-        python_lesson = self.make_lesson(
-            title="Python: переменные",
-            slug="python-peremennye",
-            direction="python",
-        )
-        scratch_lesson = self.make_lesson(
-            title="Scratch: первый проект",
-            slug="scratch-first-project",
-            direction="scratch",
-        )
-        self.publish(python_lesson)
-        self.publish(scratch_lesson)
+    def test_each_direction_filter_only_shows_matching_published_lessons(self):
+        lessons = {}
+        for direction, label in DIRECTION_CHOICES:
+            lesson = self.make_lesson(
+                title=f"Тестовый урок {label}",
+                slug=f"test-lesson-{direction}",
+                direction=direction,
+            )
+            lessons[direction] = self.publish(lesson)
 
-        response = self.client.get("/?direction=python")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Python: переменные")
-        self.assertNotContains(response, "Scratch: первый проект")
+        for direction, _label in DIRECTION_CHOICES:
+            with self.subTest(direction=direction):
+                response = self.client.get(f"/?direction={direction}")
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, lessons[direction].title)
+                for other_direction, other_lesson in lessons.items():
+                    if other_direction != direction:
+                        self.assertNotContains(response, other_lesson.title)
 
     def test_unknown_direction_filter_falls_back_to_all_published_materials(self):
         lesson = self.make_lesson(
@@ -97,3 +98,20 @@ class PublicLearningFlowTests(TestCase):
         response = self.client.get("/?direction=not-a-direction")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Опубликованный урок")
+
+    def test_restricted_lesson_is_not_listed_or_open_to_anonymous_visitors(self):
+        lesson = self.make_lesson(
+            title="Закрытый урок",
+            slug="closed-lesson",
+            direction="unity",
+        )
+        lesson = self.publish(lesson)
+        PageViewRestriction.objects.create(
+            page=lesson,
+            restriction_type=PageViewRestriction.LOGIN,
+        )
+
+        catalogue = self.client.get("/")
+        self.assertNotContains(catalogue, "Закрытый урок")
+        detail = self.client.get(lesson.url)
+        self.assertIn(detail.status_code, (302, 403))
