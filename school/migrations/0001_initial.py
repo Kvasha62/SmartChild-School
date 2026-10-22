@@ -48,7 +48,11 @@ def delete_homepage(apps, schema_editor):
     database = schema_editor.connection.alias
 
     site = Site.objects.using(database).filter(is_default_site=True).first()
-    home = Page.objects.using(database).filter(slug="smartchild-school").first()
+    home = Page.objects.using(database).filter(
+        slug="smartchild-school",
+        content_type__app_label="school",
+        content_type__model="homepage",
+    ).first()
 
     if home is None:
         return
