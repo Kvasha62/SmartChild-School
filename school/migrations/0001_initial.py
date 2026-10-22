@@ -14,8 +14,12 @@ DIRECTION_CHOICES = [
 
 
 def create_homepage(apps, schema_editor):
-    HomePage = apps.get_model("school", "HomePage")
-    Page = apps.get_model("wagtailcore", "Page")
+    # Wagtail's treebeard methods (including add_child) are not present on
+    # historical models returned by apps.get_model(). Use the runtime Page
+    # models for tree operations, while keeping Site as a historical model.
+    from school.models import HomePage
+    from wagtail.models import Page
+
     Site = apps.get_model("wagtailcore", "Site")
     database = schema_editor.connection.alias
 
