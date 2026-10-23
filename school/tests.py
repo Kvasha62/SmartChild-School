@@ -177,6 +177,91 @@ class PublicLearningFlowTests(TestCase):
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
 
+    def test_homepage_uses_fallback_meta_description_and_canonical(self):
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'name="description" content="Учебные материалы '
+            'SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ."',
+        )
+        self.assertContains(
+            response,
+            f'<link rel="canonical" href="{self.home.full_url}">',
+            html=False,
+        )
+        self.assertNotContains(response, "— SmartChild-School</title>")
+
+    def test_custom_meta_description_and_canonical_are_rendered(self):
+        self.home.search_description = "SEO-описание главной страницы."
+        self.home.save()
+
+        home_response = self.client.get("/")
+        self.assertContains(
+            home_response,
+            'name="description" content="SEO-описание главной страницы."',
+        )
+
+        lesson = self.make_lesson(
+            title="SEO test lesson",
+            slug="seo-test-lesson",
+            direction="python",
+            intro="Материал для проверки SEO.",
+        )
+        lesson.search_description = "Индивидуальное SEO-описание урока."
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'name="description" content="Индивидуальное SEO-описание урока."',
+        )
+        self.assertContains(
+            response,
+            f'<link rel="canonical" href="{lesson.full_url}">',
+            html=False,
+        )
+
+    def test_robots_txt_is_available_and_points_to_sitemap(self):
+        response = self.client.get(reverse("robots-txt"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response["Content-Type"].startswith("text/plain"))
+        self.assertContains(response, "User-agent: *")
+        self.assertContains(response, "Allow: /")
+        site = Site.objects.get(is_default_site=True)
+        port = "" if site.port == 80 else f":{site.port}"
+        self.assertContains(
+            response,
+            f"Sitemap: http://{site.hostname}{port}{reverse('sitemap')}",
+        )
+
+    def test_sitemap_contains_home_and_published_pages_not_drafts(self):
+        published = self.make_lesson(
+            title="Опубликованный SEO-урок",
+            slug="published-seo-lesson",
+            direction="python",
+        )
+        published = self.publish(published)
+
+        draft = self.make_lesson(
+            title="Черновик SEO-урока",
+            slug="draft-seo-lesson",
+            direction="python",
+        )
+
+        response = self.client.get(reverse("sitemap"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response["Content-Type"].startswith("application/xml"))
+
+        xml = response.content.decode("utf-8")
+        self.assertIn(f"<loc>{self.home.full_url}</loc>", xml)
+        self.assertIn(f"<loc>{published.full_url}</loc>", xml)
+        self.assertNotIn(draft.slug, xml)
+
     def test_wagtail_editor_can_open_lesson_creation_form(self):
         user = get_user_model().objects.create_superuser(
             username="editor-smoke-test",
