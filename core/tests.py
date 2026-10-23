@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from django.db import DatabaseError, InterfaceError, connection
 from django.db.migrations.executor import MigrationExecutor
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 
@@ -17,6 +17,17 @@ class HealthEndpointTests(TestCase):
             response = self.client.get(reverse("health-live"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ok"})
+
+    @override_settings(
+        SECURE_SSL_REDIRECT=True,
+        SECURE_REDIRECT_EXEMPT=[r"^health/live/$", r"^health/ready/$"],
+    )
+    def test_health_endpoints_are_exempt_from_https_redirect(self):
+        for endpoint in ("health-live", "health-ready"):
+            with self.subTest(endpoint=endpoint):
+                response = self.client.get(reverse(endpoint))
+                self.assertEqual(response.status_code, 200)
+
 
     def test_ready_endpoint_checks_database(self):
         response = self.client.get(reverse("health-ready"))
