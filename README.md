@@ -36,8 +36,9 @@ media routing, production CI checks, and a [deployment runbook](docs/deployment.
 This is deployment preparation only: no hosting, public domain/TLS ingress,
 SMTP provider, backup policy, monitoring, or staging environment has been
 selected or verified, and the site is not publicly deployed. Merging these
-changes does not authorize production deployment, paid services, or execution
-of user-supplied Python code.
+changes does not authorize functional development beyond an explicitly
+approved task, production deployment, paid services, or execution of
+user-supplied Python code.
 
 The prototype baseline versions — Python 3.13.17, Django 5.2.18,
 Wagtail 7.4.3, PostgreSQL 18.6 — were agreed in correspondence and are
