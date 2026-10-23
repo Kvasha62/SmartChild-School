@@ -22,24 +22,22 @@ that are still unresolved.
 
 A minimal Django + Wagtail + PostgreSQL application now exists. The local
 development scaffold is described in
-[TECH-001](docs/technical/TECH-001-local-development.md); the first public
+[TECH-001](docs/technical/TECH-001-local-development.md). The first public
 learning flow (Wagtail catalogue and lesson pages for the six approved
-directions, published content only, readable without an account) is proposed
-in [PR #45][learning-flow-pr] from `feature/first-public-learning-flow`.
-That PR is open and unmerged at the time of writing, so this code has not
-been accepted into `main` yet.
+directions, published content only, readable without an account) was accepted
+and merged into `main` through [PR #45][learning-flow-pr]
+(`feature/first-public-learning-flow`).
 
-Production hardening is proposed on top of [PR #45][learning-flow-pr] in
-[PR #47][production-pr]: a strict `config.production_settings` module,
-SMTP/console email separation, a non-root read-only Gunicorn Docker image,
-WhiteNoise static assets, a PostgreSQL least-privilege role, private media
-routing, production CI checks, and a [deployment runbook](docs/deployment.md).
+Production hardening was accepted and merged into `main` through
+[PR #47][production-pr]. It includes a strict `config.production_settings`
+module, SMTP/console email separation, a non-root read-only Gunicorn Docker
+image, WhiteNoise static assets, a PostgreSQL least-privilege role, private
+media routing, production CI checks, and a [deployment runbook](docs/deployment.md).
 This is deployment preparation only: no hosting, public domain/TLS ingress,
 SMTP provider, backup policy, monitoring, or staging environment has been
-selected or verified, and the site is not publicly deployed. Neither stack selection
-nor acceptance of the architecture proposal authorizes functional
-development beyond an explicitly approved task, production deployment, paid
-services, or execution of user-supplied Python code.
+selected or verified, and the site is not publicly deployed. Merging these
+changes does not authorize production deployment, paid services, or execution
+of user-supplied Python code.
 
 The prototype baseline versions — Python 3.13.17, Django 5.2.18,
 Wagtail 7.4.3, PostgreSQL 18.6 — were agreed in correspondence and are
