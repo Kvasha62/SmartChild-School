@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 from django.apps import apps as django_apps
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
@@ -16,7 +17,7 @@ class PublicLearningFlowTests(TestCase):
     def setUpTestData(cls):
         cls.home = HomePage.objects.get(slug="smartchild-school")
 
-    def make_lesson(self, *, title, slug, direction, intro="", body=""):
+    def make_lesson(self, *, title, slug, direction, intro="", body="", video_embed_url=""):
         return self.home.add_child(
             instance=LessonPage(
                 title=title,
@@ -24,6 +25,7 @@ class PublicLearningFlowTests(TestCase):
                 direction=direction,
                 intro=intro,
                 body=body,
+                video_embed_url=video_embed_url,
                 live=False,
             )
         )
@@ -74,6 +76,42 @@ class PublicLearningFlowTests(TestCase):
         self.assertEqual(detail.status_code, 200)
         self.assertContains(detail, "Это синтетический учебный пример.")
         self.assertContains(detail, "Python")
+        self.assertNotContains(detail, "<iframe")
+
+    def test_valid_rutube_embed_url_is_rendered_in_lesson(self):
+        embed_url = "https://rutube.ru/play/embed/abc123_XYZ-9/"
+        lesson = self.make_lesson(
+            title="Урок с видео",
+            slug="urok-s-video",
+            direction="python",
+            video_embed_url=embed_url,
+        )
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<iframe src="' + embed_url + '"')
+        self.assertContains(response, "allowfullscreen")
+
+    def test_rutube_embed_url_validator_accepts_only_expected_https_player_urls(self):
+        field = LessonPage._meta.get_field("video_embed_url")
+        valid_url = "https://rutube.ru/play/embed/abc123_XYZ-9/"
+        self.assertEqual(field.clean(valid_url, None), valid_url)
+        self.assertEqual(field.clean("", None), "")
+
+        invalid_urls = [
+            "http://rutube.ru/play/embed/abc123",
+            "https://example.com/play/embed/abc123",
+            "https://rutube.ru.evil.example/play/embed/abc123",
+            "https://rutube.ru/video/abc123",
+            "https://rutube.ru@evil.example/play/embed/abc123",
+            "https://rutube.ru:8443/play/embed/abc123",
+            "https://rutube.ru/play/embed/abc123#fragment",
+        ]
+        for url in invalid_urls:
+            with self.subTest(url=url):
+                with self.assertRaises(ValidationError):
+                    field.clean(url, None)
 
     def test_each_direction_filter_only_shows_matching_published_lessons(self):
         lessons = {}

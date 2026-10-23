@@ -103,7 +103,7 @@ jobs:
         run: python manage.py migrate --noinput
 
       - name: Run automated tests
-        run: python manage.py test
+        run: python manage.py test --settings=config.test_settings
 
       - name: Confirm migration state is clean
         run: python manage.py migrate --check
