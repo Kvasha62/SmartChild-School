@@ -1,0 +1,27 @@
+{% load wagtailcore_tags %}
+
+<div class="lesson-tabs" data-lesson-tabs>
+  <div class="lesson-tabs__buttons" role="tablist" aria-label="Разделы урока">
+    {% for tab in self.tabs %}
+      <button
+        type="button"
+        class="lesson-tabs__button"
+        role="tab"
+        data-tab-button="{{ forloop.counter0 }}"
+        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+        tabindex="{% if forloop.first %}0{% else %}-1{% endif %}">
+        {{ tab.title }}
+      </button>
+    {% endfor %}
+  </div>
+
+  {% for tab in self.tabs %}
+    <div
+      class="lesson-tabs__panel"
+      role="tabpanel"
+      data-tab-panel="{{ forloop.counter0 }}"
+      {% if not forloop.first %}hidden{% endif %}>
+      {% include_block tab.content %}
+    </div>
+  {% endfor %}
+</div>

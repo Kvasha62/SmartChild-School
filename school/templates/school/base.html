@@ -5,8 +5,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.">
-  <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %} — SmartChild-School</title>
+  <meta name="description"
+    content="{{ page.search_description|default:'Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.' }}">
+  <title>{{ page.seo_title|default:page.title }} — SmartChild-School</title>
   <style>
     :root {
       color-scheme: light;
@@ -180,6 +181,125 @@
       color: #52627a;
       font-size: .9rem;
     }
+
+    .lesson-stream {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.lesson-stream-block {
+  min-width: 0;
+}
+
+.lesson-stream-block > *:first-child {
+  margin-top: 0;
+}
+
+.lesson-stream-block > *:last-child {
+  margin-bottom: 0;
+}
+
+.lesson-body pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.lesson-accordion {
+  border: 1px solid #dce3ec;
+  border-radius: .75rem;
+  background: white;
+  overflow: hidden;
+}
+
+.lesson-accordion summary {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.lesson-accordion summary:focus-visible,
+.lesson-tabs__button:focus-visible {
+  outline: 3px solid #174ea6;
+  outline-offset: 3px;
+}
+
+.lesson-accordion__content {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.lesson-callout {
+  padding: 1rem 1.25rem;
+  border-left: 4px solid #64748b;
+  border-radius: .25rem;
+  background: white;
+}
+
+.lesson-callout > strong {
+  display: block;
+  margin-bottom: .35rem;
+}
+
+.lesson-callout--info {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.lesson-callout--important {
+  border-color: #7c3aed;
+  background: #f5f3ff;
+}
+
+.lesson-callout--warning {
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.lesson-tabs {
+  min-width: 0;
+  border: 1px solid #dce3ec;
+  border-radius: .75rem;
+  background: white;
+  overflow: hidden;
+}
+
+.lesson-tabs__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .75rem;
+  border-bottom: 1px solid #dce3ec;
+  background: #f6f8fb;
+}
+
+.lesson-tabs__button {
+  padding: .55rem .9rem;
+  border: 1px solid transparent;
+  border-radius: .5rem;
+  background: transparent;
+  color: #172033;
+  font: inherit;
+  cursor: pointer;
+}
+
+.lesson-tabs__button[aria-selected="true"] {
+  border-color: #cbd5e1;
+  background: white;
+  font-weight: 650;
+}
+
+.lesson-tabs__panel {
+  padding: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.lesson-tabs__panel[hidden] {
+  display: none;
+}
+
+.lesson-tabs__panel img {
+  max-width: 100%;
+  height: auto;
+}
   </style>
 </head>
 
@@ -189,6 +309,53 @@
   </header>
   <main>{% block content %}{% endblock %}</main>
   <footer class="site-footer">SmartChild-School · учебные материалы для самостоятельного изучения</footer>
+
+  <script>
+    document.querySelectorAll("[data-lesson-tabs]").forEach((group) => {
+      const buttons = Array.from(
+        group.querySelectorAll("[data-tab-button]")
+      );
+      const panels = Array.from(
+        group.querySelectorAll("[data-tab-panel]")
+      );
+
+      function activate(index, moveFocus = false) {
+        buttons.forEach((button, i) => {
+          const active = i === index;
+          button.setAttribute("aria-selected", String(active));
+          button.tabIndex = active ? 0 : -1;
+          panels[i].hidden = !active;
+        });
+
+        if (moveFocus) {
+          buttons[index].focus();
+        }
+      }
+
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => activate(index));
+
+        button.addEventListener("keydown", (event) => {
+          let next = index;
+
+          if (event.key === "ArrowRight") {
+            next = (index + 1) % buttons.length;
+          } else if (event.key === "ArrowLeft") {
+            next = (index - 1 + buttons.length) % buttons.length;
+          } else if (event.key === "Home") {
+            next = 0;
+          } else if (event.key === "End") {
+            next = buttons.length - 1;
+          } else {
+            return;
+          }
+
+          event.preventDefault();
+          activate(next, true);
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>

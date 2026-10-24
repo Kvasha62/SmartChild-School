@@ -1,0 +1,14 @@
+{% load wagtailcore_tags %}
+
+<aside class="lesson-callout lesson-callout--{{ self.kind }}">
+  {% if self.kind == "info" %}
+    <strong>Информация</strong>
+  {% elif self.kind == "important" %}
+    <strong>Важно</strong>
+  {% elif self.kind == "warning" %}
+    <strong>Предупреждение</strong>
+  {% endif %}
+  <div class="lesson-callout__content">
+    {% include_block self.content %}
+  </div>
+</aside>

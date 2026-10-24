@@ -15,7 +15,7 @@
   {% endif %}
 
   <div class="lesson-body">
-    {{ page.body|richtext }}
+    {% include_block page.body %}
   </div>
 
   {% if page.video_embed_url %}

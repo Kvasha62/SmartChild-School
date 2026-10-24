@@ -1,0 +1,8 @@
+{% load wagtailcore_tags %}
+
+<details class="lesson-accordion">
+  <summary>{{ self.title }}</summary>
+  <div class="lesson-accordion__content">
+    {% include_block self.content %}
+  </div>
+</details>

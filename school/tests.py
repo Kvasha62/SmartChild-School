@@ -17,14 +17,26 @@ class PublicLearningFlowTests(TestCase):
     def setUpTestData(cls):
         cls.home = HomePage.objects.get(slug="smartchild-school")
 
-    def make_lesson(self, *, title, slug, direction, intro="", body="", video_embed_url=""):
+    def make_lesson(
+        self,
+        *,
+        title,
+        slug,
+        direction,
+        intro="",
+        body=None,
+        video_embed_url="",
+    ):
+        if isinstance(body, str):
+            body = [("rich_text", body)] if body else []
+
         return self.home.add_child(
             instance=LessonPage(
                 title=title,
                 slug=slug,
                 direction=direction,
                 intro=intro,
-                body=body,
+                body=body or [],
                 video_embed_url=video_embed_url,
                 live=False,
             )
@@ -195,3 +207,75 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(response, "direction")
         self.assertContains(response, "intro")
         self.assertContains(response, "body")
+
+    def test_lesson_renders_all_rich_content_blocks(self):
+        lesson = self.make_lesson(
+            title="Урок со всеми блоками",
+            slug="lesson-all-content-blocks",
+            direction="python",
+            body=[
+                ("rich_text", "<p>Основной текст блока</p>"),
+                (
+                    "code",
+                    {
+                        "language": "python",
+                        "code": "print('hello')",
+                    },
+                ),
+                (
+                    "accordion",
+                    {
+                        "title": "Дополнительный раздел",
+                        "content": "<p>Содержимое аккордеона</p>",
+                    },
+                ),
+                (
+                    "tabs",
+                    {
+                        "tabs": [
+                            {
+                                "title": "Первая вкладка",
+                                "content": "<p>Содержимое первой вкладки</p>",
+                            },
+                            {
+                                "title": "Вторая вкладка",
+                                "content": "<p>Содержимое второй вкладки</p>",
+                            },
+                        ],
+                    },
+                ),
+                (
+                    "callout",
+                    {
+                        "kind": "important",
+                        "content": "<p>Важное сообщение</p>",
+                    },
+                ),
+            ],
+        )
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        for content in (
+            "Основной текст блока",
+            "print",
+            "hello",
+            "Дополнительный раздел",
+            "Содержимое аккордеона",
+            "Первая вкладка",
+            "Вторая вкладка",
+            "Содержимое первой вкладки",
+            "Содержимое второй вкладки",
+            "Важное сообщение",
+        ):
+            with self.subTest(content=content):
+                self.assertContains(response, content)
+
+        self.assertContains(response, "lesson-accordion")
+        self.assertContains(response, "lesson-tabs")
+        self.assertContains(response, "lesson-callout--important")
+        self.assertContains(response, 'role="tablist"')
+        self.assertContains(response, 'role="tabpanel"')
