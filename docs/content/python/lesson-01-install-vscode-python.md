@@ -168,7 +168,7 @@ print("Привет, мир!")
 
 В VS Code можно нажать кнопку запуска Python-файла (значок ▶, если он отображается над редактором). Также можно запустить программу из встроенного терминала через меню **Terminal → New Terminal**.
 
-Сначала открой папку `python-start` в VS Code через **File → Open Folder** (Файл → Открыть папку), затем выбери **Terminal → New Terminal**. Встроенный терминал обычно открывается в папке проекта. Проверь текущий путь: в Ubuntu/Linux и macOS выполни `pwd`; в PowerShell — `Get-Location`; в командной строке Windows (`cmd.exe`) — `cd`. В пути должна быть папка `python-start`. Если папка была создана в «Документах», перейди к ней командой `cd ~/Documents/python-start` в Linux/macOS, `cd "$HOME\Documents\python-start"` в PowerShell или `cd /d "%USERPROFILE%\Documents\python-start"` в `cmd.exe`. Если сохранил проект в другом месте, замени путь на свой.
+Сначала открой папку `python-start` в VS Code через **File → Open Folder** (Файл → Открыть папку), затем выбери **Terminal → New Terminal**. Встроенный терминал обычно открывается в папке проекта. Проверь текущий путь: в Ubuntu/Linux и macOS выполни `pwd`; в PowerShell — `Get-Location`; в командной строке Windows (`cmd.exe`) — `cd`. В пути должна быть папка `python-start`. Если папка была создана в «Документах», перейди к ней подходящей командой: в Linux — `cd ~/Documents/python-start` или `cd ~/Документы/python-start` (название зависит от настроек системы; проверь его командой `ls ~`), в macOS — `cd ~/Documents/python-start`, в PowerShell — `cd "$HOME\Documents\python-start"`, в `cmd.exe` — `cd /d "%USERPROFILE%\Documents\python-start"`. Если папка называется иначе или проект сохранён в другом месте, замени путь на фактический.
 
 **Windows:**
 
