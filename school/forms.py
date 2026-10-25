@@ -1,5 +1,5 @@
 from wagtail.admin.forms.pages import WagtailAdminPageForm
-from wagtail.admin.widgets import SlugInput
+from django.core.validators import MaxLengthValidator
 
 from school.slug_utils import transliterate_slug
 
@@ -7,7 +7,15 @@ from school.slug_utils import transliterate_slug
 class LessonPageAdminForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["slug"].widget = SlugInput(locale="ru-ru")
+        # Let server-side transliteration handle Russian consistently, regardless
+        # of Wagtail's client-side locale map. Truncate before model validation.
+        slug_field = self.fields.get("slug")
+        if slug_field is not None:
+            slug_field.validators = [
+                validator
+                for validator in slug_field.validators
+                if not isinstance(validator, MaxLengthValidator)
+            ]
 
     def clean_slug(self):
         slug = self.cleaned_data.get("slug", "")
