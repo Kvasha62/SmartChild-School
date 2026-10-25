@@ -5,7 +5,7 @@ from django.apps import apps as django_apps
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import connection
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
@@ -189,29 +189,30 @@ class PublicLearningFlowTests(TestCase):
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
 
-    @override_settings(WAGTAIL_ALLOW_UNICODE_SLUGS=False)
-    def test_russian_lesson_slug_is_transliterated(self):
+    def test_russian_lesson_title_generates_latin_slug_on_server(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
         form = form_class(
             data={
                 "title": "Условия и циклы",
-                "slug": "условия-и-циклы",
+                "slug": "",
                 "direction": "python",
                 "body-count": "0",
                 "body": "",
             }
         )
 
+        # The field intentionally has no Wagtail w-slug JS handler; server-side
+        # generation must not depend on Wagtail's client-side transliteration map.
+        self.assertNotIn("w-slug", form.fields["slug"].widget.attrs.get("class", ""))
         self.assertTrue(form.is_valid(), form.errors.as_text())
         self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
 
-    @override_settings(WAGTAIL_ALLOW_UNICODE_SLUGS=False)
     def test_lesson_slug_with_russian_title_and_data(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
         form = form_class(
             data={
                 "title": "Переменные и типы данных",
-                "slug": "переменные-и-типы-данных",
+                "slug": "",
                 "direction": "python",
                 "body-count": "0",
                 "body": "",
@@ -224,13 +225,13 @@ class PublicLearningFlowTests(TestCase):
             "peremennye-i-tipy-dannykh",
         )
 
-    def test_very_long_lesson_slug_is_truncated_before_validation(self):
+    def test_very_long_russian_title_generates_saveable_slug(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
-        long_slug = "shch" * 120
+        title = "Щ" * 240
         form = form_class(
             data={
-                "title": "Очень длинный заголовок",
-                "slug": long_slug,
+                "title": title,
+                "slug": "",
                 "direction": "python",
                 "body-count": "0",
                 "body": "",
@@ -238,8 +239,23 @@ class PublicLearningFlowTests(TestCase):
         )
 
         self.assertTrue(form.is_valid(), form.errors.as_text())
-        self.assertEqual(len(form.cleaned_data["slug"]), 255)
-        self.assertFalse(form.cleaned_data["slug"].endswith("-"))
+        generated_slug = form.cleaned_data["slug"]
+        self.assertEqual(len(generated_slug), 255)
+        self.assertFalse(generated_slug.endswith("-"))
+
+        lesson = LessonPage(
+            title=title,
+            slug=generated_slug,
+            direction="python",
+            live=False,
+        )
+        lesson.full_clean()
+        saved_lesson = self.home.add_child(instance=lesson)
+        saved_lesson.refresh_from_db()
+        self.assertEqual(saved_lesson.slug, generated_slug)
+        self.assertEqual(len(saved_lesson.slug), 255)
+        self.assertFalse(saved_lesson.slug.endswith("-"))
+        self.assertIn(saved_lesson.slug, saved_lesson.url_path)
 
     def test_custom_latin_lesson_slug_is_preserved(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
