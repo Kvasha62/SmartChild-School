@@ -189,6 +189,75 @@ class PublicLearningFlowTests(TestCase):
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
 
+    def test_russian_lesson_slug_is_transliterated(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "условия-и-циклы",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
+
+    def test_lesson_slug_with_russian_title_and_data(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Переменные и типы данных",
+                "slug": "переменные-и-типы-данных",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(
+            form.cleaned_data["slug"],
+            "peremennye-i-tipy-dannykh",
+        )
+
+    def test_custom_latin_lesson_slug_is_preserved(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "my-custom-lesson",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "my-custom-lesson")
+
+    def test_existing_lesson_slug_is_preserved_when_unchanged(self):
+        lesson = self.make_lesson(
+            title="Условия и циклы",
+            slug="usloviya-i-tsikly",
+            direction="python",
+        )
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            instance=lesson,
+            data={
+                "title": "Условия и циклы — обновлённый урок",
+                "slug": "usloviya-i-tsikly",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            },
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
+
     def test_wagtail_editor_can_open_lesson_creation_form(self):
         user = get_user_model().objects.create_superuser(
             username="editor-smoke-test",
