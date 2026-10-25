@@ -305,6 +305,54 @@ class PublicLearningFlowTests(TestCase):
         self.assertTrue(form.is_valid(), form.errors.as_text())
         self.assertEqual(form.cleaned_data["slug"], "my-custom-lesson")
 
+    def test_manual_ascii_slug_with_underscores_is_preserved(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "my_custom_slug",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "my_custom_slug")
+
+    def test_manual_cyrillic_slug_is_transliterated_before_validation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Урок",
+                "slug": "Урок 1.2",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "urok-1-2")
+
+    def test_overlong_manual_slug_is_rejected_without_truncation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Урок",
+                "slug": "a" * 300,
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertEqual(form.fields["slug"].widget.attrs["maxlength"], "255")
+        self.assertIn('maxlength="255"', str(form["slug"]))
+        self.assertFalse(form.is_valid())
+        self.assertIn("slug", form.errors)
+        self.assertNotIn("slug", form.cleaned_data)
+
     def test_existing_lesson_slug_is_preserved_when_unchanged(self):
         lesson = self.make_lesson(
             title="Условия и циклы",
