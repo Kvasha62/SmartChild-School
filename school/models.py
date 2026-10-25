@@ -6,6 +6,7 @@ from django.db import models
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from school.blocks import LessonBodyBlock
+from school.forms import LessonPageAdminForm
 from wagtail.models import Page
 
 
@@ -80,6 +81,8 @@ class HomePage(Page):
 
 class LessonPage(Page):
     """A public lesson managed and published through Wagtail."""
+
+    base_form_class = LessonPageAdminForm
 
     direction = models.CharField(max_length=20, choices=DIRECTION_CHOICES)
     intro = models.CharField(
