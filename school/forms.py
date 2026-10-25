@@ -26,7 +26,7 @@ class LessonPageAdminForm(WagtailAdminPageForm):
         slug = self.cleaned_data.get("slug", "")
 
         # Do not change an existing page URL when its slug was left untouched.
-        if self.instance.pk and slug == self.instance.slug:
+        if self.instance.pk and slug and slug == self.instance.slug:
             return slug
 
         # With the client-side w-slug handler disabled, an empty field means
@@ -34,4 +34,11 @@ class LessonPageAdminForm(WagtailAdminPageForm):
         if not slug:
             slug = self.cleaned_data.get("title", "")
 
-        return transliterate_slug(slug)
+        slug = transliterate_slug(slug)
+        if not slug:
+            raise forms.ValidationError(
+                "Не удалось сформировать slug из заголовка. "
+                "Введите slug вручную."
+            )
+
+        return slug

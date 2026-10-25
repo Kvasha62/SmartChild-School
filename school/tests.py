@@ -201,11 +201,44 @@ class PublicLearningFlowTests(TestCase):
             }
         )
 
-        # The field intentionally has no Wagtail w-slug JS handler; server-side
-        # generation must not depend on Wagtail's client-side transliteration map.
-        self.assertNotIn("w-slug", form.fields["slug"].widget.attrs.get("class", ""))
         self.assertTrue(form.is_valid(), form.errors.as_text())
         self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
+
+    def test_slug_field_has_no_client_side_slug_controller(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class()
+
+        self.assertNotIn("data-controller", form.fields["slug"].widget.attrs)
+        self.assertNotIn(
+            "data-w-slug-allow-unicode-value",
+            form.fields["slug"].widget.attrs,
+        )
+
+        rendered = str(form["slug"])
+        self.assertNotIn("data-controller", rendered)
+        self.assertNotIn("w-slug", rendered)
+
+    def test_untransliterable_title_is_rejected_by_slug_validation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+
+        for title in ["🎉", "Ъ", "ь", "!!!", "ъь"]:
+            with self.subTest(title=title):
+                form = form_class(
+                    data={
+                        "title": title,
+                        "slug": "",
+                        "direction": "python",
+                        "body-count": "0",
+                        "body": "",
+                    }
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn("slug", form.errors)
+                self.assertIn("Введите slug вручную", form.errors["slug"][0])
+
+        self.assertFalse(LessonPage.objects.filter(slug="").exists())
+        self.assertFalse(LessonPage.objects.filter(slug="ъь").exists())
 
     def test_lesson_slug_with_russian_title_and_data(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
