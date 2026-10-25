@@ -249,8 +249,8 @@ class PublicLearningFlowTests(TestCase):
             direction="python",
             live=False,
         )
-        lesson.full_clean()
         saved_lesson = self.home.add_child(instance=lesson)
+        saved_lesson.full_clean()
         saved_lesson.refresh_from_db()
         self.assertEqual(saved_lesson.slug, generated_slug)
         self.assertEqual(len(saved_lesson.slug), 255)
