@@ -1,5 +1,7 @@
+import re
+
 from django import forms
-from django.core.validators import MaxLengthValidator
+from django.core.validators import validate_slug
 from wagtail.admin.forms.pages import WagtailAdminPageForm
 
 from school.slug_utils import transliterate_slug
@@ -13,13 +15,17 @@ class LessonPageAdminForm(WagtailAdminPageForm):
         # submission when the editor has not supplied one.
         slug_field = self.fields.get("slug")
         if slug_field is not None:
-            slug_field.widget = forms.TextInput()
+            slug_field.widget = forms.TextInput(
+                attrs={"maxlength": str(slug_field.max_length or 255)}
+            )
             slug_field.required = False
-            # Normalize/truncate before model validation applies max_length.
+            # Normalize manually entered Cyrillic/punctuation before Wagtail's
+            # ASCII-only slug validator would reject it. Keep the max-length
+            # validator so overlong manual values are rejected, not truncated.
             slug_field.validators = [
                 validator
                 for validator in slug_field.validators
-                if not isinstance(validator, MaxLengthValidator)
+                if validator is not validate_slug
             ]
 
     def clean_slug(self):
@@ -29,11 +35,17 @@ class LessonPageAdminForm(WagtailAdminPageForm):
         if self.instance.pk and slug and slug == self.instance.slug:
             return slug
 
+        # Preserve valid manually supplied ASCII slugs exactly, including
+        # underscores and intentional capitalization.
+        if slug and slug.isascii() and re.fullmatch(r"[-a-zA-Z0-9_]+", slug):
+            return slug
+
         # With the client-side w-slug handler disabled, an empty field means
         # the editor accepted automatic generation from the page title.
         if not slug:
             slug = self.cleaned_data.get("title", "")
 
+        # Normalize manual Cyrillic or punctuation too (e.g. "Урок 1.2").
         slug = transliterate_slug(slug)
         if not slug:
             raise forms.ValidationError(
