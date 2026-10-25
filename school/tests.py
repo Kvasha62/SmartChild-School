@@ -5,7 +5,7 @@ from django.apps import apps as django_apps
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import connection
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
@@ -189,6 +189,7 @@ class PublicLearningFlowTests(TestCase):
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
 
+    @override_settings(WAGTAIL_ALLOW_UNICODE_SLUGS=False)
     def test_russian_lesson_slug_is_transliterated(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
         form = form_class(
@@ -204,6 +205,7 @@ class PublicLearningFlowTests(TestCase):
         self.assertTrue(form.is_valid(), form.errors.as_text())
         self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
 
+    @override_settings(WAGTAIL_ALLOW_UNICODE_SLUGS=False)
     def test_lesson_slug_with_russian_title_and_data(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
         form = form_class(
@@ -221,6 +223,23 @@ class PublicLearningFlowTests(TestCase):
             form.cleaned_data["slug"],
             "peremennye-i-tipy-dannykh",
         )
+
+    def test_very_long_lesson_slug_is_truncated_before_validation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        long_slug = "shch" * 120
+        form = form_class(
+            data={
+                "title": "Очень длинный заголовок",
+                "slug": long_slug,
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(len(form.cleaned_data["slug"]), 255)
+        self.assertFalse(form.cleaned_data["slug"].endswith("-"))
 
     def test_custom_latin_lesson_slug_is_preserved(self):
         form_class = LessonPage.get_edit_handler().get_form_class()
