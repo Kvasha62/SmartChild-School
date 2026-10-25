@@ -46,4 +46,5 @@ def transliterate_slug(value):
     value = unicodedata.normalize("NFKD", value)
     value = "".join(char for char in value if not unicodedata.combining(char))
     value = re.sub(r"[^a-z0-9]+", "-", value)
-    return value.strip("-")
+    # Keep generated slugs within Wagtail/Django’s 255-character slug limit.
+    return value.strip("-")[:255].rstrip("-")
