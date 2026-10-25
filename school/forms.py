@@ -1,7 +1,7 @@
 import re
 
 from django import forms
-from django.core.validators import validate_slug
+from django.core.validators import validate_slug, validate_unicode_slug
 from wagtail.admin.forms.pages import WagtailAdminPageForm
 
 from school.slug_utils import transliterate_slug
@@ -25,7 +25,7 @@ class LessonPageAdminForm(WagtailAdminPageForm):
             slug_field.validators = [
                 validator
                 for validator in slug_field.validators
-                if validator is not validate_slug
+                if validator not in (validate_slug, validate_unicode_slug)
             ]
 
     def clean_slug(self):
