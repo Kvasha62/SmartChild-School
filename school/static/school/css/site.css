@@ -403,3 +403,13 @@ a {
   }
 }
 
+.related-lessons {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #dce3ec;
+}
+
+.related-lessons h2 {
+  margin-top: 0;
+}
+

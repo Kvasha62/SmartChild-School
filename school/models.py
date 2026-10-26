@@ -297,6 +297,41 @@ class LessonPage(Page):
         super().clean()
         self.search_keywords = normalize_search_keywords(self.search_keywords)
 
+    def get_related_lessons(self):
+        """Return up to three public lessons sharing this lesson's topic or tags."""
+        limit = 3
+        parent = self.get_parent()
+        if parent is None:
+            return []
+
+        candidates = (
+            LessonPage.objects.child_of(parent)
+            .live()
+            .public()
+            .exclude(pk=self.pk)
+        )
+
+        # A shared primary topic is the strongest relation, so rank those first.
+        related = []
+        if self.topic_id:
+            related = list(
+                candidates.filter(topic_id=self.topic_id).order_by("title")[:limit]
+            )
+
+        if len(related) < limit:
+            tag_ids = list(self.tags.values_list("id", flat=True))
+            if tag_ids:
+                related_ids = [lesson.pk for lesson in related]
+                tag_matches = (
+                    candidates.filter(tags__pk__in=tag_ids)
+                    .exclude(pk__in=related_ids)
+                    .distinct()
+                    .order_by("title")
+                )
+                related.extend(tag_matches[: limit - len(related)])
+
+        return related
+
     parent_page_types = ["school.HomePage"]
     subpage_types = []
 
