@@ -240,6 +240,7 @@ class HomePage(Page):
                 "directions": DIRECTION_CHOICES,
                 "selected_direction": selected_direction,
                 "search_query": search_query,
+                "catalogue_noindex": "q" in request.GET or "direction" in request.GET,
             }
         )
         return context
