@@ -89,7 +89,9 @@ class PublicLearningFlowTests(TestCase):
         ]
         self.assertTrue(
             any(
-                link.path == expected.path and link.query == expected.query
+                link.netloc == expected.netloc
+                and link.path == expected.path
+                and link.query == expected.query
                 for link in actual
             ),
             f"Expected an internal link to {expected.path}?{expected.query}",
