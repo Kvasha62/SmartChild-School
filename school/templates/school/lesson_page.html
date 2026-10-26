@@ -26,4 +26,21 @@
   </div>
   {% endif %}
 </article>
+
+{% with related_lessons=page.get_related_lessons %}
+  {% if related_lessons %}
+  <section class="related-lessons" aria-labelledby="related-lessons-heading">
+    <h2 id="related-lessons-heading">Похожие материалы</h2>
+    <ul class="lesson-list">
+      {% for lesson in related_lessons %}
+      <li class="lesson-card">
+        <p class="eyebrow">{{ lesson.get_direction_display }}</p>
+        <h3><a href="{% pageurl lesson %}">{{ lesson.title }}</a></h3>
+        {% if lesson.intro %}<p>{{ lesson.intro }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+{% endwith %}
 {% endblock %}
