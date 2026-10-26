@@ -238,6 +238,114 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(detail, "Это синтетический учебный пример.")
         self.assertContains(detail, "Python")
         self.assertNotContains(detail, "<iframe")
+        self.assertNotContains(detail, "Похожие материалы")
+
+    def test_related_lessons_prioritize_shared_topic_then_tags(self):
+        topic = LessonTopic.objects.create(title="Основы связанных уроков")
+        current = self.make_lesson(
+            title="Текущий урок связей",
+            slug="related-current-lesson",
+            direction="python",
+            topic=topic,
+        )
+        current.tags.add("общая метка")
+        current = self.publish(current)
+
+        topic_and_tag = self.make_lesson(
+            title="A. Та же тема и тег",
+            slug="related-topic-and-tag",
+            direction="python",
+            topic=topic,
+        )
+        topic_and_tag.tags.add("общая метка")
+        topic_and_tag = self.publish(topic_and_tag)
+
+        topic_only = self.make_lesson(
+            title="B. Только та же тема",
+            slug="related-topic-only",
+            direction="python",
+            topic=topic,
+        )
+        topic_only = self.publish(topic_only)
+
+        tag_only = self.make_lesson(
+            title="C. Только общий тег",
+            slug="related-tag-only",
+            direction="python",
+        )
+        tag_only.tags.add("общая метка")
+        tag_only = self.publish(tag_only)
+
+        unrelated = self.make_lesson(
+            title="D. Нет тематической связи",
+            slug="related-unrelated",
+            direction="python",
+            body="<p>Общая метка</p>",
+        )
+        unrelated = self.publish(unrelated)
+
+        related = current.get_related_lessons()
+        self.assertEqual(
+            [lesson.pk for lesson in related],
+            [topic_and_tag.pk, topic_only.pk, tag_only.pk],
+        )
+        self.assertNotIn(current.pk, [lesson.pk for lesson in related])
+        self.assertNotIn(unrelated.pk, [lesson.pk for lesson in related])
+
+        response = self.client.get(current.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Похожие материалы")
+        self.assertContains(response, topic_and_tag.title)
+        self.assertContains(response, topic_only.title)
+        self.assertContains(response, tag_only.title)
+        self.assertNotContains(response, unrelated.title)
+
+    def test_related_lessons_exclude_drafts_and_restricted_pages(self):
+        current = self.make_lesson(
+            title="Урок для проверки границ доступа",
+            slug="related-access-current",
+            direction="python",
+        )
+        current.tags.add("общая метка доступа")
+        current = self.publish(current)
+
+        public_related = self.make_lesson(
+            title="Публичный связанный урок",
+            slug="related-access-public",
+            direction="python",
+        )
+        public_related.tags.add("общая метка доступа")
+        public_related = self.publish(public_related)
+
+        draft = self.make_lesson(
+            title="Черновик связанного урока",
+            slug="related-access-draft",
+            direction="python",
+        )
+        draft.tags.add("общая метка доступа")
+
+        restricted = self.make_lesson(
+            title="Закрытый связанный урок",
+            slug="related-access-restricted",
+            direction="python",
+        )
+        restricted.tags.add("общая метка доступа")
+        restricted = self.publish(restricted)
+        PageViewRestriction.objects.create(
+            page=restricted,
+            restriction_type=PageViewRestriction.LOGIN,
+        )
+
+        related = current.get_related_lessons()
+        self.assertEqual([lesson.pk for lesson in related], [public_related.pk])
+        self.assertNotIn(draft.pk, [lesson.pk for lesson in related])
+        self.assertNotIn(restricted.pk, [lesson.pk for lesson in related])
+
+        response = self.client.get(current.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, public_related.title)
+        self.assertNotContains(response, draft.title)
+        self.assertNotContains(response, restricted.title)
 
     def test_valid_rutube_embed_url_is_rendered_in_lesson(self):
         embed_url = "https://rutube.ru/play/embed/abc123_XYZ-9/"
