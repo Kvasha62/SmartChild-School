@@ -56,6 +56,37 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(response, "ОГЭ")
         self.assertContains(response, "ЕГЭ")
 
+    def test_public_templates_load_external_frontend_assets(self):
+        catalogue = self.client.get("/")
+        self.assertEqual(catalogue.status_code, 200)
+        self.assertContains(catalogue, '/static/school/css/site.css')
+        self.assertContains(catalogue, '/static/school/js/lesson-tabs.js')
+        self.assertNotContains(catalogue, "<style>")
+        self.assertNotContains(catalogue, "<script>")
+
+        lesson = self.make_lesson(
+            title="Урок для проверки frontend-ресурсов",
+            slug="frontend-assets-lesson",
+            direction="python",
+            body=[
+                (
+                    "tabs",
+                    {
+                        "tabs": [
+                            {"title": "Вкладка 1", "content": "<p>Текст 1</p>"},
+                            {"title": "Вкладка 2", "content": "<p>Текст 2</p>"},
+                        ],
+                    },
+                ),
+            ],
+        )
+        lesson = self.publish(lesson)
+        detail = self.client.get(lesson.url)
+        self.assertEqual(detail.status_code, 200)
+        self.assertContains(detail, '/static/school/css/site.css')
+        self.assertContains(detail, '/static/school/js/lesson-tabs.js')
+        self.assertContains(detail, "data-lesson-tabs")
+
     def test_draft_is_not_listed_or_publicly_accessible(self):
         draft = self.make_lesson(
             title="Черновик Python",
