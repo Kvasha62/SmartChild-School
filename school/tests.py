@@ -436,6 +436,21 @@ class PublicLearningFlowTests(TestCase):
                         "content": "<p>Важное сообщение</p>",
                     },
                 ),
+                (
+                    "tabs",
+                    {
+                        "tabs": [
+                            {
+                                "title": "Третья вкладка",
+                                "content": "<p>Содержимое третьей вкладки</p>",
+                            },
+                            {
+                                "title": "Четвёртая вкладка",
+                                "content": "<p>Содержимое четвёртой вкладки</p>",
+                            },
+                        ],
+                    },
+                ),
             ],
         )
         lesson = self.publish(lesson)
@@ -455,6 +470,10 @@ class PublicLearningFlowTests(TestCase):
             "Содержимое первой вкладки",
             "Содержимое второй вкладки",
             "Важное сообщение",
+            "Третья вкладка",
+            "Четвёртая вкладка",
+            "Содержимое третьей вкладки",
+            "Содержимое четвёртой вкладки",
         ):
             with self.subTest(content=content):
                 self.assertContains(response, content)
@@ -464,3 +483,35 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(response, "lesson-callout--important")
         self.assertContains(response, 'role="tablist"')
         self.assertContains(response, 'role="tabpanel"')
+        self.assertContains(
+            response,
+            f'id="lesson-tab-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-controls="lesson-tab-panel-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-panel-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-labelledby="lesson-tab-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-controls="lesson-tab-panel-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-panel-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-labelledby="lesson-tab-{lesson.pk}-6-0"',
+        )
