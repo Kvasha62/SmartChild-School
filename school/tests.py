@@ -294,7 +294,7 @@ class PublicLearningFlowTests(TestCase):
 
         response = self.client.get(lesson.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.get_meta_description(response), "A" * 167 + "...")
+        self.assertEqual(self.get_meta_description(response), "A" * 169 + "…")
 
     def test_homepage_keeps_generic_meta_description_fallback(self):
         response = self.client.get("/")
