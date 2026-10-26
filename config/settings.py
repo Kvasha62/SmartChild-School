@@ -130,7 +130,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        # Development uses unhashed URLs; production_settings enables the manifest backend.
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
     },
 }
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
