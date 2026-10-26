@@ -1,10 +1,10 @@
 import re
 from urllib.parse import urlsplit
 
-from django.core.exceptions import ValidationError
-from django.db import models
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
+from django.db import models, router
 from django.db.models.functions import Lower
-from modelcluster.contrib.taggit import ClusterTaggableManager
+from modelcluster.contrib.taggit import ClusterTaggableManager, _ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import ItemBase, TagBase
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
@@ -26,6 +26,68 @@ DIRECTION_CHOICES = [
     ("oge", "ОГЭ"),
     ("ege", "ЕГЭ"),
 ]
+
+
+
+class _LessonClusterTaggableManager(_ClusterTaggableManager):
+    """Resolve tag names case-insensitively only for the lesson tag pool."""
+
+    def _to_tag_model_instances(self, tags, tag_kwargs=None):
+        if tag_kwargs is None:
+            tag_kwargs = {}
+
+        database = router.db_for_write(self.through, instance=self.instance)
+        tag_model = self.through.tag_model()
+        manager = tag_model._default_manager.using(database)
+        result = []
+        seen = set()
+
+        for value in tags:
+            if isinstance(value, tag_model):
+                tag = value
+            elif isinstance(value, str):
+                name = " ".join(value.split())
+                if not name:
+                    continue
+
+                lookup = {"name__iexact": name, **tag_kwargs}
+                tag = manager.filter(**lookup).order_by("pk").first()
+                if tag is None:
+                    try:
+                        tag, _created = manager.get_or_create(
+                            **lookup,
+                            defaults={"name": name},
+                        )
+                    except MultipleObjectsReturned:
+                        tag = manager.filter(**lookup).order_by("pk").first()
+            else:
+                raise ValueError(
+                    f"Cannot add {value} ({type(value)}). "
+                    f"Expected {tag_model} or str."
+                )
+
+            identity = (
+                ("pk", tag.pk)
+                if tag.pk is not None
+                else ("name", tag.name.casefold())
+            )
+            if identity not in seen:
+                seen.add(identity)
+                result.append(tag)
+
+        return result
+
+
+class LessonClusterTaggableManager(ClusterTaggableManager):
+    """Cluster tag manager whose case-insensitive behavior is lesson-scoped."""
+
+    def __get__(self, instance, model):
+        return _LessonClusterTaggableManager(
+            through=self.through,
+            model=model,
+            instance=instance,
+            prefetch_cache_name=self.name,
+        )
 
 
 @register_snippet
@@ -214,7 +276,7 @@ class LessonPage(Page):
         "и сворачиваемых разделов."
         ),
     )
-    tags = ClusterTaggableManager(
+    tags = LessonClusterTaggableManager(
         through="school.LessonPageTag",
         blank=True,
         verbose_name="Теги",
