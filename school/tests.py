@@ -1,5 +1,7 @@
 import importlib
 from types import SimpleNamespace
+from urllib.parse import urlsplit
+from xml.etree import ElementTree
 
 from django.apps import apps as django_apps
 from django.contrib.auth import get_user_model
@@ -99,6 +101,46 @@ class PublicLearningFlowTests(TestCase):
         self.assertNotContains(catalogue, "Черновик Python")
         detail = self.client.get(draft.url)
         self.assertEqual(detail.status_code, 404)
+
+    def test_sitemap_lists_only_published_public_pages(self):
+        draft = self.make_lesson(
+            title="Черновик для sitemap",
+            slug="draft-sitemap-lesson",
+            direction="python",
+        )
+        published = self.make_lesson(
+            title="Опубликованный материал для sitemap",
+            slug="published-sitemap-lesson",
+            direction="python",
+        )
+        published = self.publish(published)
+
+        restricted = self.make_lesson(
+            title="Закрытый материал для sitemap",
+            slug="restricted-sitemap-lesson",
+            direction="python",
+        )
+        restricted = self.publish(restricted)
+        PageViewRestriction.objects.create(
+            page=restricted,
+            restriction_type=PageViewRestriction.LOGIN,
+        )
+
+        response = self.client.get(reverse("sitemap"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"].split(";")[0], "application/xml")
+
+        namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        root = ElementTree.fromstring(response.content)
+        locations = [
+            urlsplit(node.text).path
+            for node in root.findall(".//sm:loc", namespace)
+            if node.text
+        ]
+
+        self.assertIn(published.url, locations)
+        self.assertNotIn(draft.url, locations)
+        self.assertNotIn(restricted.url, locations)
 
     def test_published_lesson_appears_in_catalogue_and_opens_publicly(self):
         lesson = self.make_lesson(
