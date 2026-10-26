@@ -5,6 +5,7 @@ from django.core.validators import validate_slug, validate_unicode_slug
 from wagtail.admin.forms.pages import WagtailAdminPageForm
 
 from school.slug_utils import transliterate_slug
+from school.metadata import normalize_search_keywords
 
 
 class LessonPageAdminForm(WagtailAdminPageForm):
@@ -27,6 +28,9 @@ class LessonPageAdminForm(WagtailAdminPageForm):
                 for validator in slug_field.validators
                 if validator not in (validate_slug, validate_unicode_slug)
             ]
+
+    def clean_search_keywords(self):
+        return normalize_search_keywords(self.cleaned_data.get("search_keywords", ""))
 
     def clean_slug(self):
         slug = self.cleaned_data.get("slug", "")

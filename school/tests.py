@@ -11,7 +11,7 @@ from django.test import TestCase
 from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
-from school.models import DIRECTION_CHOICES, HomePage, LessonPage
+from school.models import DIRECTION_CHOICES, HomePage, LessonPage, LessonTopic
 
 
 class PublicLearningFlowTests(TestCase):
@@ -28,6 +28,8 @@ class PublicLearningFlowTests(TestCase):
         intro="",
         body=None,
         video_embed_url="",
+        topic=None,
+        search_keywords="",
     ):
         if isinstance(body, str):
             body = [("rich_text", body)] if body else []
@@ -40,6 +42,8 @@ class PublicLearningFlowTests(TestCase):
                 intro=intro,
                 body=body or [],
                 video_embed_url=video_embed_url,
+                topic=topic,
+                search_keywords=search_keywords,
                 live=False,
             )
         )
@@ -101,6 +105,73 @@ class PublicLearningFlowTests(TestCase):
         self.assertNotContains(catalogue, "Черновик Python")
         detail = self.client.get(draft.url)
         self.assertEqual(detail.status_code, 404)
+
+    def test_search_keyword_form_normalizes_and_deduplicates_lines(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Метаданные Python",
+                "slug": "metadata-python",
+                "direction": "python",
+                "search_keywords": (
+                    "  Переменные   в Python  \n"
+                    "переменные в python\n"
+                    " Создать\tпеременную Python "
+                ),
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(
+            form.cleaned_data["search_keywords"],
+            "Переменные в Python\nСоздать переменную Python",
+        )
+
+    def test_topic_tags_and_search_keywords_survive_revision_publish(self):
+        topic = LessonTopic.objects.create(
+            title="Основы Python",
+            description="Начальные понятия языка.",
+        )
+        self.assertEqual(topic.slug, "osnovy-python")
+
+        lesson = self.make_lesson(
+            title="Метаданные урока",
+            slug="lesson-metadata",
+            direction="python",
+            topic=topic,
+            search_keywords=(
+                "Переменные в Python\n"
+                "переменные в python\n"
+                "создать   переменную"
+            ),
+        )
+        lesson.full_clean()
+        self.assertEqual(
+            lesson.search_keywords,
+            "Переменные в Python\nсоздать переменную",
+        )
+
+        # Case variants should reuse the existing lesson tag.
+        lesson.tags.add("Переменные")
+        lesson.tags.add("переменные")
+        lesson.tags.add("Python")
+        self.assertEqual(lesson.tags.count(), 2)
+
+        self.publish(lesson)
+        published = LessonPage.objects.get(pk=lesson.pk).specific
+        self.assertEqual(published.topic_id, topic.pk)
+        self.assertEqual(
+            published.search_keywords,
+            "Переменные в Python\nсоздать переменную",
+        )
+        self.assertSetEqual(set(published.tags.names()), {"Переменные", "Python"})
+
+        public_page = self.client.get(published.url)
+        self.assertEqual(public_page.status_code, 200)
+        self.assertNotContains(public_page, "создать переменную")
+        self.assertNotContains(public_page, "Переменные")
 
     def test_sitemap_lists_only_published_public_pages(self):
         draft = self.make_lesson(
