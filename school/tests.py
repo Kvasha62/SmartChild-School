@@ -59,7 +59,7 @@ class PublicLearningFlowTests(TestCase):
     def get_meta_description(self, response):
         document = response.content.decode(response.charset or "utf-8")
         match = re.search(
-            r'<meta name="description"\\s+content="([^"]*)">',
+            r'<meta name="description"\s+content="([^"]*)">',
             document,
             re.DOTALL,
         )
