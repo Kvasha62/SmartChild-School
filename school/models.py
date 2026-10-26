@@ -3,6 +3,7 @@ from urllib.parse import urlsplit
 
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.db import models, router
+from django.db.models import Q
 from django.db.models.functions import Lower
 from modelcluster.contrib.taggit import ClusterTaggableManager, _ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -216,8 +217,17 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         lessons = LessonPage.objects.child_of(self).live().public().order_by("title")
+        search_query = request.GET.get("q", "").strip()[:200]
         selected_direction = request.GET.get("direction", "").strip()
         valid_directions = {value for value, _label in DIRECTION_CHOICES}
+
+        # Search the agreed public contract only; lesson body content is excluded.
+        if search_query:
+            lessons = lessons.filter(
+                Q(title__icontains=search_query)
+                | Q(intro__icontains=search_query)
+                | Q(search_keywords__icontains=search_query)
+            )
 
         if selected_direction in valid_directions:
             lessons = lessons.filter(direction=selected_direction)
@@ -229,6 +239,7 @@ class HomePage(Page):
                 "lessons": lessons,
                 "directions": DIRECTION_CHOICES,
                 "selected_direction": selected_direction,
+                "search_query": search_query,
             }
         )
         return context

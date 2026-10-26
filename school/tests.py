@@ -305,6 +305,116 @@ class PublicLearningFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Опубликованный урок")
 
+    def test_catalogue_search_matches_title_intro_and_keywords_but_not_body(self):
+        title_match = self.make_lesson(
+            title="Оператор распаковки аргументов",
+            slug="search-title-match",
+            direction="python",
+        )
+        intro_match = self.make_lesson(
+            title="Краткое описание материала",
+            slug="search-intro-match",
+            direction="python",
+            intro="Оператор распаковки аргументов",
+        )
+        keyword_match = self.make_lesson(
+            title="Другой учебный материал",
+            slug="search-keyword-match",
+            direction="python",
+            search_keywords="Оператор распаковки аргументов\nраспаковка параметров",
+        )
+        body_only_match = self.make_lesson(
+            title="Материал без совпадения в метаданных",
+            slug="search-body-only-match",
+            direction="python",
+            body="<p>Оператор распаковки аргументов</p>",
+        )
+
+        for lesson in (title_match, intro_match, keyword_match, body_only_match):
+            self.publish(lesson)
+
+        response = self.client.get("/", {"q": "оператор распаковки"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, title_match.title)
+        self.assertContains(response, intro_match.title)
+        self.assertContains(response, keyword_match.title)
+        self.assertNotContains(response, body_only_match.title)
+        self.assertContains(response, 'name="q"')
+        self.assertContains(response, 'value="оператор распаковки"')
+
+    def test_catalogue_search_combines_with_direction_filter(self):
+        python_lesson = self.make_lesson(
+            title="Поиск в Python",
+            slug="search-python-direction",
+            direction="python",
+            search_keywords="специальный запрос",
+        )
+        unity_lesson = self.make_lesson(
+            title="Поиск в Unity",
+            slug="search-unity-direction",
+            direction="unity",
+            search_keywords="специальный запрос",
+        )
+        self.publish(python_lesson)
+        self.publish(unity_lesson)
+
+        response = self.client.get(
+            "/",
+            {"q": "специальный запрос", "direction": "python"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, python_lesson.title)
+        self.assertNotContains(response, unity_lesson.title)
+        self.assertContains(response, 'name="direction" value="python"')
+        self.assertContains(response, "?direction=unity&amp;q=")
+
+    def test_blank_catalogue_search_keeps_all_published_materials(self):
+        first = self.make_lesson(
+            title="Первый доступный материал",
+            slug="blank-search-first",
+            direction="python",
+        )
+        second = self.make_lesson(
+            title="Второй доступный материал",
+            slug="blank-search-second",
+            direction="unity",
+        )
+        self.publish(first)
+        self.publish(second)
+
+        response = self.client.get("/", {"q": "   "})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, first.title)
+        self.assertContains(response, second.title)
+        self.assertEqual(response.context["search_query"], "")
+
+    def test_catalogue_search_never_lists_drafts_or_restricted_lessons(self):
+        draft = self.make_lesson(
+            title="Секретный запрос в черновике",
+            slug="search-draft-secret",
+            direction="python",
+        )
+        restricted = self.make_lesson(
+            title="Секретный запрос в закрытом уроке",
+            slug="search-restricted-secret",
+            direction="python",
+        )
+        self.publish(restricted)
+        PageViewRestriction.objects.create(
+            page=restricted,
+            restriction_type=PageViewRestriction.LOGIN,
+        )
+
+        response = self.client.get("/", {"q": "секретный запрос"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, draft.title)
+        self.assertNotContains(response, restricted.title)
+        self.assertContains(response, "ничего не найдено")
+
     def test_restricted_lesson_is_not_listed_or_open_to_anonymous_visitors(self):
         lesson = self.make_lesson(
             title="Закрытый урок",

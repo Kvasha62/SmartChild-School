@@ -9,15 +9,35 @@
   </section>
 
   <nav class="directions" aria-label="Направления обучения">
-    <a href="{% pageurl page %}"{% if not selected_direction %} aria-current="page"{% endif %}>Все материалы</a>
+    <a href="{% pageurl page %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}"{% if not selected_direction %} aria-current="page"{% endif %}>Все материалы</a>
     {% for value, label in directions %}
-      <a href="{% pageurl page %}?direction={{ value }}"{% if selected_direction == value %} aria-current="page"{% endif %}>{{ label }}</a>
+      <a href="{% pageurl page %}?direction={{ value }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}"{% if selected_direction == value %} aria-current="page"{% endif %}>{{ label }}</a>
     {% endfor %}
   </nav>
 
+  <form class="catalogue-search" method="get" action="{% pageurl page %}" role="search">
+    <label for="catalogue-search-input">Поиск по учебным материалам</label>
+    <div class="catalogue-search__controls">
+      <input
+        id="catalogue-search-input"
+        type="search"
+        name="q"
+        value="{{ search_query }}"
+        maxlength="200"
+        autocomplete="off"
+      >
+      <button type="submit">Найти</button>
+    </div>
+    {% if selected_direction %}
+      <input type="hidden" name="direction" value="{{ selected_direction }}">
+    {% endif %}
+  </form>
+
   <section aria-labelledby="materials-heading">
     <h2 id="materials-heading">
-      {% if selected_direction %}
+      {% if search_query %}
+        Результаты поиска: «{{ search_query }}»
+      {% elif selected_direction %}
         Материалы: {% for value, label in directions %}{% if value == selected_direction %}{{ label }}{% endif %}{% endfor %}
       {% else %}
         Учебные материалы
@@ -35,7 +55,13 @@
         {% endfor %}
       </ul>
     {% else %}
-      <p class="empty-state">В этом разделе пока нет опубликованных материалов.</p>
+      <p class="empty-state">
+        {% if search_query %}
+          По запросу «{{ search_query }}» ничего не найдено.
+        {% else %}
+          В этом разделе пока нет опубликованных материалов.
+        {% endif %}
+      </p>
     {% endif %}
   </section>
 {% endblock %}
