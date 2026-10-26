@@ -524,10 +524,15 @@ class PublicLearningFlowTests(TestCase):
             with self.subTest(query=query):
                 response = self.client.get("/", query)
                 self.assertEqual(response.status_code, 200)
-                self.assertContains(
-                    response,
-                    '<meta name="robots" content="noindex,follow">',
-                )
+                robots_meta = b'<meta name="robots" content="noindex,follow">'
+                self.assertContains(response, robots_meta.decode("ascii"))
+
+                html = response.content.lower()
+                head_start = html.find(b"<head")
+                head_end = html.find(b"</head>", head_start)
+                self.assertGreaterEqual(head_start, 0, "Response must contain a head element")
+                self.assertGreater(head_end, head_start, "Head element must be closed")
+                self.assertIn(robots_meta, html[head_start:head_end])
 
     def test_catalogue_search_never_lists_drafts_or_restricted_lessons(self):
         draft = self.make_lesson(
