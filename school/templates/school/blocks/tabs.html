@@ -4,10 +4,12 @@
   <div class="lesson-tabs__buttons" role="tablist" aria-label="Разделы урока">
     {% for tab in self.tabs %}
       <button
+        id="lesson-tab-{{ page.pk }}-{{ block_index }}-{{ forloop.counter0 }}"
         type="button"
         class="lesson-tabs__button"
         role="tab"
         data-tab-button="{{ forloop.counter0 }}"
+        aria-controls="lesson-tab-panel-{{ page.pk }}-{{ block_index }}-{{ forloop.counter0 }}"
         aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
         tabindex="{% if forloop.first %}0{% else %}-1{% endif %}">
         {{ tab.title }}
@@ -17,8 +19,10 @@
 
   {% for tab in self.tabs %}
     <div
+      id="lesson-tab-panel-{{ page.pk }}-{{ block_index }}-{{ forloop.counter0 }}"
       class="lesson-tabs__panel"
       role="tabpanel"
+      aria-labelledby="lesson-tab-{{ page.pk }}-{{ block_index }}-{{ forloop.counter0 }}"
       data-tab-panel="{{ forloop.counter0 }}"
       {% if not forloop.first %}hidden{% endif %}>
       {% include_block tab.content %}
