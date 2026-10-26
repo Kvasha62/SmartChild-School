@@ -138,6 +138,7 @@ STORAGES = {
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 WAGTAIL_SITE_NAME = "SmartChild"
 WAGTAILADMIN_BASE_URL = os.environ.get(
     "WAGTAILADMIN_BASE_URL", "http://localhost:8000"
