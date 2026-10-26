@@ -41,6 +41,10 @@ class SocialMetadataTests(TestCase):
         self.assertContains(response, '<meta name="twitter:card" content="summary">')
         self.assertContains(
             response,
+            '<meta name="description" content="Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.">',
+        )
+        self.assertContains(
+            response,
             '<meta property="og:description" content="Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.">',
         )
         self.assertNotContains(response, 'property="og:url"')
@@ -68,6 +72,10 @@ class SocialMetadataTests(TestCase):
         )
         self.assertContains(
             response,
+            '<meta name="description" content="Редакторское описание для социальных превью.">',
+        )
+        self.assertContains(
+            response,
             '<meta property="og:description" content="Редакторское описание для социальных превью.">',
         )
         self.assertContains(
@@ -86,6 +94,10 @@ class SocialMetadataTests(TestCase):
         response = self.client.get(lesson.url)
 
         self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            f'<meta name="description" content="{description}">',
+        )
         self.assertContains(
             response,
             f'<meta property="og:description" content="{description}">',
