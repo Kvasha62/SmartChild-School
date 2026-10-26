@@ -33,6 +33,11 @@
       padding-block: 2rem 4rem;
     }
 
+    /* Расширенная область только для страниц уроков */
+    main:has(.lesson-page) {
+      width: min(100% - 2rem, 78rem);
+    }
+
 
 
     h1,
