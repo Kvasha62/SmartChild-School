@@ -1,11 +1,16 @@
 import json
 from io import StringIO
+from urllib.parse import urlsplit
 
 from django.core.management import call_command
 from django.test import TestCase
 from wagtail.models import PageViewRestriction
 
 from school.models import HomePage, LessonPage
+
+
+def public_path(page):
+    return urlsplit(page.url or page.url_path).path or "/"
 
 
 class PublicSeoAuditCommandTests(TestCase):
@@ -54,14 +59,14 @@ class PublicSeoAuditCommandTests(TestCase):
         report = self.run_json_audit()
 
         self.assertIn(
-            lesson.url_path,
+            public_path(lesson),
             [page["path"] for page in report["pages"]],
         )
         self.assertIn(
             {
                 "code": "generic_meta_description_fallback",
                 "severity": "review",
-                "path": lesson.url_path,
+                "path": public_path(lesson),
                 "detail": (
                     "This lesson has neither an explicit Wagtail SEO description "
                     "nor an intro, so the site-wide generic meta description is used."
@@ -92,11 +97,11 @@ class PublicSeoAuditCommandTests(TestCase):
         lesson = self.publish(lesson)
 
         report = self.run_json_audit()
-        page_record = next(page for page in report["pages"] if page["path"] == lesson.url_path)
+        page_record = next(page for page in report["pages"] if page["path"] == public_path(lesson))
         findings = [
             finding
             for finding in report["findings"]
-            if finding["path"] == lesson.url_path
+            if finding["path"] == public_path(lesson)
         ]
 
         self.assertEqual(page_record["image_count"], 3)
@@ -135,9 +140,9 @@ class PublicSeoAuditCommandTests(TestCase):
         report = self.run_json_audit()
         paths = [page["path"] for page in report["pages"]]
 
-        self.assertIn(public.url_path, paths)
-        self.assertNotIn(draft.url_path, paths)
-        self.assertNotIn(restricted.url_path, paths)
+        self.assertIn(public_path(public), paths)
+        self.assertNotIn(public_path(draft), paths)
+        self.assertNotIn(public_path(restricted), paths)
 
     def test_reports_duplicate_explicit_titles_and_descriptions(self):
         description = "Одинаковое редакторское описание для проверки."
