@@ -1,5 +1,7 @@
 import importlib
 from types import SimpleNamespace
+
+from django.conf import settings
 from urllib.parse import urlsplit
 from xml.etree import ElementTree
 
@@ -130,6 +132,9 @@ class PublicLearningFlowTests(TestCase):
         )
 
     def test_topic_tags_and_search_keywords_survive_revision_publish(self):
+        # Case-insensitive lookup is scoped to LessonTag, not global Taggit pools.
+        self.assertFalse(getattr(settings, "TAGGIT_CASE_INSENSITIVE", False))
+
         topic = LessonTopic.objects.create(
             title="Основы Python",
             description="Начальные понятия языка.",
