@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% include "school/includes/description_meta.html" with metadata_attribute="name" metadata_value="description" %}
+  {% block extra_meta %}{% endblock %}
   {% include "school/includes/social_metadata.html" %}
   <title>{{ page.seo_title|default:page.title }} — SmartChild-School</title>
   <link rel="stylesheet" href="{% static 'school/css/site.css' %}">
