@@ -58,12 +58,20 @@ class PublicLearningFlowTests(TestCase):
 
     def get_meta_description(self, response):
         document = response.content.decode(response.charset or "utf-8")
+        head_match = re.search(
+            r"<head\b[^>]*>(.*?)</head>",
+            document,
+            re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(head_match, "The response must include a head element.")
         match = re.search(
             r'<meta name="description"\s+content="([^"]*)">',
-            document,
-            re.DOTALL,
+            head_match.group(1),
+            re.DOTALL | re.IGNORECASE,
         )
-        self.assertIsNotNone(match, "The response must include a meta description.")
+        self.assertIsNotNone(
+            match, "The head element must include a meta description."
+        )
         return unescape(match.group(1))
 
     def test_homepage_shows_all_six_directions_without_login(self):
