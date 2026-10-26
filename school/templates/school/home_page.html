@@ -1,6 +1,10 @@
 {% extends "school/base.html" %}
 {% load wagtailcore_tags %}
 
+{% block extra_meta %}
+  {% if catalogue_noindex %}<meta name="robots" content="noindex,follow">{% endif %}
+{% endblock %}
+
 {% block content %}
   <section class="intro">
     <p class="eyebrow">SmartChild-School</p>
