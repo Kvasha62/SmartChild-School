@@ -4,6 +4,7 @@ import json
 from collections import defaultdict
 from collections.abc import Iterable, Mapping
 from html.parser import HTMLParser
+from urllib.parse import urlsplit
 
 from django.core.management.base import BaseCommand
 from wagtail.models import Page
@@ -26,8 +27,6 @@ class _ImageMarkupParser(HTMLParser):
 
     def _record_image(self, tag, attrs):
         attributes = dict(attrs)
-        if tag == "embed" and attributes.get("embedtype") != "image":
-            return
         if tag not in {"embed", "img"}:
             return
         if tag == "embed" and attributes.get("embedtype") != "image":
@@ -39,6 +38,20 @@ class _ImageMarkupParser(HTMLParser):
                 "alt": attributes.get("alt") or "",
             }
         )
+
+
+def _public_path(page):
+    """Return a site-relative URL path without requiring a public domain."""
+    try:
+        public_url = page.url
+    except (AttributeError, LookupError, ValueError):
+        public_url = None
+
+    if public_url:
+        path = urlsplit(public_url).path
+        if path:
+            return path
+    return page.url_path or "/"
 
 
 def _iter_rich_text_sources(value, location):
@@ -86,7 +99,7 @@ def audit_pages(pages):
         )
 
     for page in pages:
-        path = page.url_path or "/"
+        path = _public_path(page)
         title = (getattr(page, "seo_title", "") or page.title or "").strip()
         explicit_description = (
             getattr(page, "search_description", "") or ""
