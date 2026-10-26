@@ -3,6 +3,7 @@
 import django.db.models.functions.text
 import django.db.models.deletion
 import modelcluster.fields
+import modelcluster.contrib.taggit
 from django.db import migrations, models
 
 
@@ -150,5 +151,14 @@ class Migration(migrations.Migration):
                     ),
                 ],
             },
+        ),
+        migrations.AddField(
+            model_name="lessonpage",
+            name="tags",
+            field=modelcluster.contrib.taggit.ClusterTaggableManager(
+                blank=True,
+                through="school.LessonPageTag",
+                verbose_name="Теги",
+            ),
         ),
     ]
