@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description"
     content="{{ page.search_description|default:'Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.' }}">
+  {% block extra_meta %}{% endblock %}
   <title>{{ page.seo_title|default:page.title }} — SmartChild-School</title>
   <link rel="stylesheet" href="{% static 'school/css/site.css' %}">
 </head>
