@@ -1,8 +1,9 @@
 import importlib
+from html.parser import HTMLParser
 from types import SimpleNamespace
 
 from django.conf import settings
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 from xml.etree import ElementTree
 
 from django.apps import apps as django_apps
@@ -14,6 +15,25 @@ from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
 from school.models import DIRECTION_CHOICES, HomePage, LessonPage, LessonTopic
+
+
+class _PublicPageHtmlParser(HTMLParser):
+    """Capture page-level headings and anchor targets from rendered public HTML."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.h1_count = 0
+        self.headings = []
+        self.links = []
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag in {"h1", "h2", "h3"}:
+            self.headings.append(tag)
+            if tag == "h1":
+                self.h1_count += 1
+        if tag == "a" and attributes.get("href"):
+            self.links.append(attributes["href"])
 
 
 class PublicLearningFlowTests(TestCase):
@@ -53,6 +73,33 @@ class PublicLearningFlowTests(TestCase):
     def publish(self, page):
         page.save_revision().publish()
         return page.specific
+
+    def parse_public_html(self, response):
+        parser = _PublicPageHtmlParser()
+        parser.feed(response.content.decode(response.charset or "utf-8"))
+        return parser
+
+    def assert_internal_links_resolve(self, response):
+        parser = self.parse_public_html(response)
+        request_url = response.wsgi_request.build_absolute_uri()
+        expected_host = response.wsgi_request.get_host()
+
+        for href in parser.links:
+            target = urlsplit(urljoin(request_url, href))
+            if target.scheme not in {"http", "https"}:
+                continue
+            if target.netloc and target.netloc != expected_host:
+                continue
+            if not target.path.startswith("/"):
+                continue
+
+            target_url = target.path
+            if target.query:
+                target_url = f"{target_url}?{target.query}"
+            with self.subTest(href=href):
+                linked_response = self.client.get(target_url, follow=False)
+                self.assertEqual(linked_response.status_code, 200)
+
 
     def test_homepage_shows_all_six_directions_without_login(self):
         response = self.client.get("/")
@@ -217,6 +264,47 @@ class PublicLearningFlowTests(TestCase):
         self.assertIn(published.url, locations)
         self.assertNotIn(draft.url, locations)
         self.assertNotIn(restricted.url, locations)
+
+    def test_catalogue_and_lesson_use_single_h1(self):
+        topic = LessonTopic.objects.create(title="Заголовки учебных материалов")
+        lesson = self.make_lesson(
+            title="Структура заголовков урока",
+            slug="heading-structure-check",
+            direction="python",
+            intro="Краткое вступление к уроку.",
+            body=(
+                "<h2>Основной раздел</h2>"
+                "<p>Текст раздела.</p>"
+                "<h3>Подраздел</h3>"
+                "<p>Дополнительный текст.</p>"
+            ),
+            topic=topic,
+        )
+        related = self.make_lesson(
+            title="Связанный материал для проверки ссылок",
+            slug="heading-structure-related",
+            direction="python",
+            intro="Краткое описание связанного урока.",
+            topic=topic,
+        )
+        lesson = self.publish(lesson)
+        related = self.publish(related)
+
+        catalogue = self.client.get("/")
+        self.assertEqual(catalogue.status_code, 200)
+        catalogue_html = self.parse_public_html(catalogue)
+        self.assertEqual(catalogue_html.h1_count, 1)
+        self.assertIn(lesson.url, catalogue_html.links)
+        self.assert_internal_links_resolve(catalogue)
+
+        detail = self.client.get(lesson.url)
+        self.assertEqual(detail.status_code, 200)
+        detail_html = self.parse_public_html(detail)
+        self.assertEqual(detail_html.h1_count, 1)
+        self.assertIn("h2", detail_html.headings)
+        self.assertIn("h3", detail_html.headings)
+        self.assertIn(related.url, detail_html.links)
+        self.assert_internal_links_resolve(detail)
 
     def test_published_lesson_appears_in_catalogue_and_opens_publicly(self):
         lesson = self.make_lesson(
