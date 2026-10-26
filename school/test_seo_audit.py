@@ -162,7 +162,7 @@ class PublicSeoAuditCommandTests(TestCase):
         report = self.run_json_audit()
         duplicate_findings = [
             finding for finding in report["findings"]
-            if finding["path"] in {first.url_path, second.url_path}
+            if finding["path"] in {public_path(first), public_path(second)}
         ]
 
         self.assertTrue(
