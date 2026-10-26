@@ -158,7 +158,7 @@ class Migration(migrations.Migration):
             field=modelcluster.contrib.taggit.ClusterTaggableManager(
                 blank=True,
                 through="school.LessonPageTag",
-                to="school.lessontag",
+                to="school.LessonTag",
                 verbose_name="Теги",
             ),
         ),
