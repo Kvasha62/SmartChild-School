@@ -35,6 +35,8 @@ VS Code, сам Python и расширение Python — три отдельн�
 
 ## 2. Установка Python и VS Code в Windows 10 и Windows 11
 
+**Совместимость:** Python install manager в формате MSIX требует Windows 10 версии 21H2 (сборка 19044) или новее. Если у тебя более старая версия Windows, проверь требования и доступные варианты установки в официальной документации Python.
+
 ### Шаг 1. Установи VS Code в Windows
 
 1. Открой [code.visualstudio.com](https://code.visualstudio.com/).
