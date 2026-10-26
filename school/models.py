@@ -319,7 +319,7 @@ class LessonPage(Page):
             )
 
         if len(related) < limit:
-            tag_ids = list(self.tags.values_list("pk", flat=True))
+            tag_ids = list(self.tags.values_list("id", flat=True))
             if tag_ids:
                 related_ids = [lesson.pk for lesson in related]
                 tag_matches = (
