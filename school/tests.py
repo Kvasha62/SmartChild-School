@@ -276,6 +276,14 @@ class PublicLearningFlowTests(TestCase):
         tag_only.tags.add("общая метка")
         tag_only = self.publish(tag_only)
 
+        extra_tag_only = self.make_lesson(
+            title="D. Сверх лимита по общему тегу",
+            slug="related-tag-over-limit",
+            direction="python",
+        )
+        extra_tag_only.tags.add("общая метка")
+        extra_tag_only = self.publish(extra_tag_only)
+
         unrelated = self.make_lesson(
             title="D. Нет тематической связи",
             slug="related-unrelated",
