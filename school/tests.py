@@ -1,4 +1,6 @@
 import importlib
+import re
+from html import unescape
 from html.parser import HTMLParser
 from types import SimpleNamespace
 
@@ -73,6 +75,24 @@ class PublicLearningFlowTests(TestCase):
     def publish(self, page):
         page.save_revision().publish()
         return page.specific
+
+    def get_meta_description(self, response):
+        document = response.content.decode(response.charset or "utf-8")
+        head_match = re.search(
+            r"<head\b[^>]*>(.*?)</head>",
+            document,
+            re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(head_match, "The response must include a head element.")
+        match = re.search(
+            r'<meta name="description"\s+content="([^"]*)">',
+            head_match.group(1),
+            re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(
+            match, "The head element must include a meta description."
+        )
+        return unescape(match.group(1))
 
     def parse_public_html(self, response):
         parser = _PublicPageHtmlParser()
@@ -345,6 +365,58 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(detail, "Python")
         self.assertNotContains(detail, "<iframe")
         self.assertNotContains(detail, "Похожие материалы")
+
+    def test_meta_description_falls_back_to_lesson_intro(self):
+        description = "Краткое описание именно этого урока о переменных Python."
+        lesson = self.make_lesson(
+            title="SEO fallback для урока",
+            slug="seo-description-fallback",
+            direction="python",
+            intro=description,
+        )
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.get_meta_description(response), description)
+
+    def test_explicit_wagtail_search_description_takes_precedence(self):
+        lesson = self.make_lesson(
+            title="Приоритет SEO-описания",
+            slug="seo-description-priority",
+            direction="python",
+            intro="Это описание карточки, а не SEO-описание.",
+        )
+        lesson.search_description = "Редакторское SEO-описание для поисковой выдачи."
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            self.get_meta_description(response),
+            "Редакторское SEO-описание для поисковой выдачи.",
+        )
+
+    def test_meta_description_truncates_long_intro_fallback(self):
+        lesson = self.make_lesson(
+            title="Длинное описание",
+            slug="seo-description-truncate",
+            direction="python",
+            intro="A" * 200,
+        )
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.get_meta_description(response), "A" * 169 + "…")
+
+    def test_homepage_keeps_generic_meta_description_fallback(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            self.get_meta_description(response),
+            "Учебные материалы SmartChild-School по программированию и подготовке к ОГЭ и ЕГЭ.",
+        )
 
     def test_related_lessons_prioritize_shared_topic_then_tags(self):
         topic = LessonTopic.objects.create(title="Основы связанных уроков")
