@@ -79,6 +79,22 @@ class PublicLearningFlowTests(TestCase):
         parser.feed(response.content.decode(response.charset or "utf-8"))
         return parser
 
+    def assert_link_target_present(self, response, target_url):
+        parser = self.parse_public_html(response)
+        base_url = response.wsgi_request.build_absolute_uri()
+        expected = urlsplit(urljoin(base_url, target_url))
+        actual = [
+            urlsplit(urljoin(base_url, href))
+            for href in parser.links
+        ]
+        self.assertTrue(
+            any(
+                link.path == expected.path and link.query == expected.query
+                for link in actual
+            ),
+            f"Expected an internal link to {expected.path}?{expected.query}",
+        )
+
     def assert_internal_links_resolve(self, response):
         parser = self.parse_public_html(response)
         request_url = response.wsgi_request.build_absolute_uri()
@@ -294,7 +310,7 @@ class PublicLearningFlowTests(TestCase):
         self.assertEqual(catalogue.status_code, 200)
         catalogue_html = self.parse_public_html(catalogue)
         self.assertEqual(catalogue_html.h1_count, 1)
-        self.assertIn(lesson.url, catalogue_html.links)
+        self.assert_link_target_present(catalogue, lesson.url)
         self.assert_internal_links_resolve(catalogue)
 
         detail = self.client.get(lesson.url)
@@ -303,7 +319,7 @@ class PublicLearningFlowTests(TestCase):
         self.assertEqual(detail_html.h1_count, 1)
         self.assertIn("h2", detail_html.headings)
         self.assertIn("h3", detail_html.headings)
-        self.assertIn(related.url, detail_html.links)
+        self.assert_link_target_present(detail, related.url)
         self.assert_internal_links_resolve(detail)
 
     def test_published_lesson_appears_in_catalogue_and_opens_publicly(self):
