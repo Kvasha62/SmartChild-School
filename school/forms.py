@@ -4,8 +4,8 @@ from django import forms
 from django.core.validators import validate_slug, validate_unicode_slug
 from wagtail.admin.forms.pages import WagtailAdminPageForm
 
-from school.slug_utils import transliterate_slug
 from school.metadata import normalize_search_keywords
+from school.slug_utils import transliterate_slug
 
 
 class LessonPageAdminForm(WagtailAdminPageForm):

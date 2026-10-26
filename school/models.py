@@ -28,7 +28,6 @@ DIRECTION_CHOICES = [
 ]
 
 
-
 @register_snippet
 class LessonTopic(models.Model):
     """Controlled topic taxonomy for lessons; topics are not public pages."""
@@ -95,6 +94,12 @@ class LessonTag(TagBase):
     class Meta:
         verbose_name = "тег урока"
         verbose_name_plural = "теги уроков"
+        constraints = [
+            models.UniqueConstraint(
+                Lower("name"),
+                name="school_lesson_tag_name_ci_uniq",
+            ),
+        ]
 
     def save(self, *args, **kwargs):
         self.name = " ".join((self.name or "").split())

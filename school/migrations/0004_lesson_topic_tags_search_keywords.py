@@ -79,6 +79,12 @@ class Migration(migrations.Migration):
             options={
                 "verbose_name": "тег урока",
                 "verbose_name_plural": "теги уроков",
+                "constraints": [
+                    models.UniqueConstraint(
+                        django.db.models.functions.text.Lower("name"),
+                        name="school_lesson_tag_name_ci_uniq",
+                    ),
+                ],
             },
         ),
         migrations.AddField(
