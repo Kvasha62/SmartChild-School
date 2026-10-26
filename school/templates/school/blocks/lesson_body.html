@@ -1,0 +1,9 @@
+{% load wagtailcore_tags %}
+
+<div class="lesson-stream">
+  {% for block in value %}
+    <section class="lesson-stream-block lesson-stream-block--{{ block.block_type }}">
+      {% include_block block with block_index=forloop.counter %}
+    </section>
+  {% endfor %}
+</div>

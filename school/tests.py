@@ -17,14 +17,26 @@ class PublicLearningFlowTests(TestCase):
     def setUpTestData(cls):
         cls.home = HomePage.objects.get(slug="smartchild-school")
 
-    def make_lesson(self, *, title, slug, direction, intro="", body="", video_embed_url=""):
+    def make_lesson(
+        self,
+        *,
+        title,
+        slug,
+        direction,
+        intro="",
+        body=None,
+        video_embed_url="",
+    ):
+        if isinstance(body, str):
+            body = [("rich_text", body)] if body else []
+
         return self.home.add_child(
             instance=LessonPage(
                 title=title,
                 slug=slug,
                 direction=direction,
                 intro=intro,
-                body=body,
+                body=body or [],
                 video_embed_url=video_embed_url,
                 live=False,
             )
@@ -177,6 +189,191 @@ class PublicLearningFlowTests(TestCase):
         site.refresh_from_db()
         self.assertEqual(site.root_page_id, recreated_home.pk)
 
+    def test_russian_lesson_title_generates_latin_slug_on_server(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
+
+    def test_slug_field_has_no_client_side_slug_controller(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class()
+
+        self.assertNotIn("data-controller", form.fields["slug"].widget.attrs)
+        self.assertNotIn(
+            "data-w-slug-allow-unicode-value",
+            form.fields["slug"].widget.attrs,
+        )
+
+        rendered = str(form["slug"])
+        self.assertNotIn("data-controller", rendered)
+        self.assertNotIn("w-slug", rendered)
+
+    def test_untransliterable_title_is_rejected_by_slug_validation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+
+        for title in ["🎉", "Ъ", "ь", "!!!", "ъь"]:
+            with self.subTest(title=title):
+                form = form_class(
+                    data={
+                        "title": title,
+                        "slug": "",
+                        "direction": "python",
+                        "body-count": "0",
+                        "body": "",
+                    }
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn("slug", form.errors)
+                self.assertIn("Введите slug вручную", form.errors["slug"][0])
+
+        self.assertFalse(LessonPage.objects.filter(slug="").exists())
+        self.assertFalse(LessonPage.objects.filter(slug="ъь").exists())
+
+    def test_lesson_slug_with_russian_title_and_data(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Переменные и типы данных",
+                "slug": "",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(
+            form.cleaned_data["slug"],
+            "peremennye-i-tipy-dannykh",
+        )
+
+    def test_very_long_russian_title_generates_saveable_slug(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        title = "Щ" * 240
+        form = form_class(
+            data={
+                "title": title,
+                "slug": "",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        generated_slug = form.cleaned_data["slug"]
+        self.assertEqual(len(generated_slug), 255)
+        self.assertFalse(generated_slug.endswith("-"))
+
+        lesson = LessonPage(
+            title=title,
+            slug=generated_slug,
+            direction="python",
+            live=False,
+        )
+        saved_lesson = self.home.add_child(instance=lesson)
+        saved_lesson.full_clean()
+        saved_lesson.refresh_from_db()
+        self.assertEqual(saved_lesson.slug, generated_slug)
+        self.assertEqual(len(saved_lesson.slug), 255)
+        self.assertFalse(saved_lesson.slug.endswith("-"))
+        self.assertIn(saved_lesson.slug, saved_lesson.url_path)
+
+    def test_custom_latin_lesson_slug_is_preserved(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "my-custom-lesson",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "my-custom-lesson")
+
+    def test_manual_ascii_slug_with_underscores_is_preserved(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Условия и циклы",
+                "slug": "my_custom_slug",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "my_custom_slug")
+
+    def test_manual_cyrillic_slug_is_transliterated_before_validation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Урок",
+                "slug": "Урок 1.2",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "urok-1-2")
+
+    def test_overlong_manual_slug_is_rejected_without_truncation(self):
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            data={
+                "title": "Урок",
+                "slug": "a" * 300,
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            }
+        )
+
+        self.assertEqual(form.fields["slug"].widget.attrs["maxlength"], "255")
+        self.assertIn('maxlength="255"', str(form["slug"]))
+        self.assertFalse(form.is_valid())
+        self.assertIn("slug", form.errors)
+        self.assertNotIn("slug", form.cleaned_data)
+
+    def test_existing_lesson_slug_is_preserved_when_unchanged(self):
+        lesson = self.make_lesson(
+            title="Условия и циклы",
+            slug="usloviya-i-tsikly",
+            direction="python",
+        )
+        form_class = LessonPage.get_edit_handler().get_form_class()
+        form = form_class(
+            instance=lesson,
+            data={
+                "title": "Условия и циклы — обновлённый урок",
+                "slug": "usloviya-i-tsikly",
+                "direction": "python",
+                "body-count": "0",
+                "body": "",
+            },
+        )
+
+        self.assertTrue(form.is_valid(), form.errors.as_text())
+        self.assertEqual(form.cleaned_data["slug"], "usloviya-i-tsikly")
+
     def test_wagtail_editor_can_open_lesson_creation_form(self):
         user = get_user_model().objects.create_superuser(
             username="editor-smoke-test",
@@ -195,3 +392,126 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(response, "direction")
         self.assertContains(response, "intro")
         self.assertContains(response, "body")
+
+    def test_lesson_renders_all_rich_content_blocks(self):
+        lesson = self.make_lesson(
+            title="Урок со всеми блоками",
+            slug="lesson-all-content-blocks",
+            direction="python",
+            body=[
+                ("rich_text", "<p>Основной текст блока</p>"),
+                (
+                    "code",
+                    {
+                        "language": "python",
+                        "code": "print('hello')",
+                    },
+                ),
+                (
+                    "accordion",
+                    {
+                        "title": "Дополнительный раздел",
+                        "content": "<p>Содержимое аккордеона</p>",
+                    },
+                ),
+                (
+                    "tabs",
+                    {
+                        "tabs": [
+                            {
+                                "title": "Первая вкладка",
+                                "content": "<p>Содержимое первой вкладки</p>",
+                            },
+                            {
+                                "title": "Вторая вкладка",
+                                "content": "<p>Содержимое второй вкладки</p>",
+                            },
+                        ],
+                    },
+                ),
+                (
+                    "callout",
+                    {
+                        "kind": "important",
+                        "content": "<p>Важное сообщение</p>",
+                    },
+                ),
+                (
+                    "tabs",
+                    {
+                        "tabs": [
+                            {
+                                "title": "Третья вкладка",
+                                "content": "<p>Содержимое третьей вкладки</p>",
+                            },
+                            {
+                                "title": "Четвёртая вкладка",
+                                "content": "<p>Содержимое четвёртой вкладки</p>",
+                            },
+                        ],
+                    },
+                ),
+            ],
+        )
+        lesson = self.publish(lesson)
+
+        response = self.client.get(lesson.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        for content in (
+            "Основной текст блока",
+            "print",
+            "hello",
+            "Дополнительный раздел",
+            "Содержимое аккордеона",
+            "Первая вкладка",
+            "Вторая вкладка",
+            "Содержимое первой вкладки",
+            "Содержимое второй вкладки",
+            "Важное сообщение",
+            "Третья вкладка",
+            "Четвёртая вкладка",
+            "Содержимое третьей вкладки",
+            "Содержимое четвёртой вкладки",
+        ):
+            with self.subTest(content=content):
+                self.assertContains(response, content)
+
+        self.assertContains(response, "lesson-accordion")
+        self.assertContains(response, "lesson-tabs")
+        self.assertContains(response, "lesson-callout--important")
+        self.assertContains(response, 'role="tablist"')
+        self.assertContains(response, 'role="tabpanel"')
+        self.assertContains(
+            response,
+            f'id="lesson-tab-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-controls="lesson-tab-panel-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-panel-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-labelledby="lesson-tab-{lesson.pk}-4-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-controls="lesson-tab-panel-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'id="lesson-tab-panel-{lesson.pk}-6-0"',
+        )
+        self.assertContains(
+            response,
+            f'aria-labelledby="lesson-tab-{lesson.pk}-6-0"',
+        )

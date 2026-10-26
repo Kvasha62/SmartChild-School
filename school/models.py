@@ -4,7 +4,9 @@ from urllib.parse import urlsplit
 from django.core.exceptions import ValidationError
 from django.db import models
 from wagtail.admin.panels import FieldPanel
-from wagtail.fields import RichTextField
+from wagtail.fields import StreamField
+from school.blocks import LessonBodyBlock
+from school.forms import LessonPageAdminForm
 from wagtail.models import Page
 
 
@@ -80,6 +82,8 @@ class HomePage(Page):
 class LessonPage(Page):
     """A public lesson managed and published through Wagtail."""
 
+    base_form_class = LessonPageAdminForm
+
     direction = models.CharField(max_length=20, choices=DIRECTION_CHOICES)
     intro = models.CharField(
         max_length=300,
@@ -92,9 +96,14 @@ class LessonPage(Page):
         validators=[validate_rutube_embed_url],
         help_text="Вставь ссылку на плеер Rutube, например https://rutube.ru/play/embed/...",
     )
-    body = RichTextField(
+    body = StreamField(
+        LessonBodyBlock(),
         blank=True,
-        help_text="Текст урока. Изображения можно вставлять через редактор Wagtail.",
+        use_json_field=True,
+        help_text=(
+        "Собери урок из текста, кода, вкладок, заметок "
+        "и сворачиваемых разделов."
+        ),
     )
 
     parent_page_types = ["school.HomePage"]
