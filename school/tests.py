@@ -5,13 +5,21 @@ from django.apps import apps as django_apps
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import connection
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from wagtail.models import PageViewRestriction, Site
 
 from school.models import DIRECTION_CHOICES, HomePage, LessonPage
 
 
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+        },
+    }
+)
 class PublicLearningFlowTests(TestCase):
     @classmethod
     def setUpTestData(cls):
