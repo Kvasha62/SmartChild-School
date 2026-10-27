@@ -65,7 +65,7 @@
 | Изменения | 4 файла добавлено, 415 строк, 0 удалений: `school/management/__init__.py`, `school/management/commands/__init__.py`, `school/management/commands/audit_public_seo.py`, `school/test_seo_audit.py` |
 | Mergeable | `true` (GitHub API) |
 | CI на голове PR #72 | run #40460954939, conclusion `success` (проверено 2026-10-27 12:17 UTC через GitHub API) |
-| CI на голове PR #78 | run #40494262997, conclusion `success` на HEAD `6de414bf75f2c62c528f4cea96501d2b9ce41e4c` (проверено 2026-10-27 12:17 UTC через GitHub API) |
+| CI на голове PR #78 | run #40502798895, conclusion `success` на точном HEAD `eb4208e5a4981ee78aa4975b6fcb061624a229ef` (повторно проверено 2026-10-27 через GitHub API) |
 
 ### Что делает команда (по коду на голове PR #72)
 
