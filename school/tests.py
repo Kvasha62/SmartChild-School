@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
+from wagtail.contrib.redirects.models import Redirect
 from wagtail.models import PageViewRestriction, Site
 
 from school.models import DIRECTION_CHOICES, HomePage, LessonPage, LessonTopic
@@ -179,6 +180,39 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(detail, '/static/school/css/site.css')
         self.assertContains(detail, '/static/school/js/lesson-tabs.js')
         self.assertContains(detail, "data-lesson-tabs")
+
+    def test_unknown_public_url_returns_404(self):
+        response = self.client.get("/not-a-real-public-page-for-seo-audit/")
+        self.assertEqual(response.status_code, 404)
+
+    def test_wagtail_permanent_redirect_for_missing_old_url(self):
+        Redirect.add_redirect(
+            old_path="/legacy-public-route-for-seo-audit/",
+            redirect_to=self.home,
+            is_permanent=True,
+            site=self.home.get_site(),
+        )
+
+        response = self.client.get(
+            "/legacy-public-route-for-seo-audit/",
+            follow=False,
+        )
+
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.headers["Location"], self.home.url)
+
+    def test_existing_public_url_is_not_replaced_by_redirect(self):
+        Redirect.add_redirect(
+            old_path="/",
+            redirect_to="/not-a-real-public-page-for-seo-audit/",
+            is_permanent=True,
+            site=self.home.get_site(),
+        )
+
+        response = self.client.get("/", follow=False)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request["PATH_INFO"], "/")
 
     def test_draft_is_not_listed_or_publicly_accessible(self):
         draft = self.make_lesson(
