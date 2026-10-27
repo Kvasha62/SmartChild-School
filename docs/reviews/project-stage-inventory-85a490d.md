@@ -18,7 +18,7 @@
 | Дата/время проверки | 2026-10-27 14:30 UTC (время сбора данных Arena) |
 | Способ проверки | `git fetch origin` + `git rev-parse origin/main`; подтверждено через GitHub API (`/repos/Kvasha62/SmartChild-School/pulls/78`, поле `base.sha`) |
 | Рабочая ветка отчёта | `issue-79-project-stage-inventory` от `85a490d` |
-| PR с инвентаризацией | [#80 — текущий отчёт Issue #79](https://github.com/Kvasha62/SmartChild-School/pull/80) (база `85a490d`, Draft, открыт; HEAD `b0100604b96a68600dab3fb5d0ec95b168f60eec`, CI check-run `122256673115` — success) |
+| PR с инвентаризацией | [#80 — текущий отчёт Issue #79](https://github.com/Kvasha62/SmartChild-School/pull/80) (база `85a490d`, Draft, открыт; HEAD `925f6a1805b6d7674ffde8fd831c5fa7f2b3bf0e`, CI check-run `122260842753` — success) |
 | Связанный исходный аудит | [#78 — отчёт SEO/frontend по Issue #62](https://github.com/Kvasha62/SmartChild-School/pull/78), отдельный PR; не является PR данного отчёта |
 
 ## 2. Методология и ограничения проверки
@@ -176,7 +176,7 @@
 
 Поэтапный, последовательный план с явными точками решения владельца:
 
-**Шаг 1 (завершён Arena):** Инвентарный отчёт подготовлен как отдельный Draft PR #80 с единственным файлом `docs/reviews/project-stage-inventory-85a490d.md`, привязанный к `main` `85a490d` (HEAD `b0100604b96a68600dab3fb5d0ec95b168f60eec`, CI check-run `122256673115` — success). Отчёт ожидает итогового независимого ревью HEAD PR #80 и решения владельца.
+**Шаг 1 (завершён Arena):** Инвентарный отчёт подготовлен как отдельный Draft PR #80 с единственным файлом `docs/reviews/project-stage-inventory-85a490d.md`, привязанный к `main` `85a490d` (HEAD `925f6a1805b6d7674ffde8fd831c5fa7f2b3bf0e`, CI check-run `122260842753` — success). Отчёт ожидает итогового независимого ревью HEAD PR #80 и решения владельца.
 
 **Шаг 2:** Владелец рассматривает отчёт #79 и его выводы; принимает решение по классификации и приоритетам. (Требуется решение владельца.)
 
@@ -227,10 +227,10 @@
 | Рекомендации имеют объяснение, не маскируют решение владельца | Да | Все решения владельца помечены как требуемые, не утверждаются от имени владельца |
 | Документ не меняет исходные требования и статусы | Да | Только новый отчёт; `main`, PR, Issues не изменены |
 | Создан отдельный PR, содержащий только этот отчёт; PR в Draft | Да | PR #80 открыт как Draft; содержит только `docs/reviews/project-stage-inventory-85a490d.md` |
-| CI на текущем HEAD отчёта | Да | HEAD `b0100604b96a68600dab3fb5d0ec95b168f60eec`, CI check-run `122256673115` — success (проверено 2026-10-27) |
+| CI на текущем HEAD отчёта | Да | HEAD `925f6a1805b6d7674ffde8fd831c5fa7f2b3bf0e`, CI check-run `122260842753` — success (проверено 2026-10-27) |
 
 ---
 
 **Итоговый файл отчёта:** `docs/reviews/project-stage-inventory-85a490d.md`  
-**HEAD текущей версии отчёта:** `b0100604b96a68600dab3fb5d0ec95b168f60eec` (CI check-run `122256673115` — success, проверено 2026-10-27)  
+**HEAD текущей версии отчёта:** `925f6a1805b6d7674ffde8fd831c5fa7f2b3bf0e` (CI check-run `122260842753` — success, проверено 2026-10-27)  
 **Связанный PR:** отдельный Draft PR из ветки `issue-79-project-stage-inventory` в `main` `85a490d`, содержащий только этот файл.
