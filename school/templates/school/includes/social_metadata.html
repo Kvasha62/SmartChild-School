@@ -1,0 +1,7 @@
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SmartChild-School">
+<meta property="og:title" content="{{ page.seo_title|default:page.title }} — SmartChild-School">
+{% include "school/includes/description_meta.html" with metadata_attribute="property" metadata_value="og:description" %}
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ page.seo_title|default:page.title }} — SmartChild-School">
+{% include "school/includes/description_meta.html" with metadata_attribute="name" metadata_value="twitter:description" %}
