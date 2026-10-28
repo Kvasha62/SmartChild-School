@@ -124,7 +124,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Evidence:**
 
-1. **Framework behavior (Wagtail 7.4.3):** `wagtail/models/draft_state.py`, line 9: `live = models.BooleanField(verbose_name=_("live"), default=True, editable=False)` — the `live` field defaults to `True`. `wagtail/query.py`, line 315-322: `.live()` filters by `Q(live=True)` — it includes pages where `live=True`. `wagtail/query.py`, line 408-413: `.public()` excludes pages with view restrictions (via `private_q()`) — it does **not** explicitly exclude the structural root. No code in `PageQuerySet.live()` or `PageQuerySet.public()` excludes the root page by `depth > 1` or `path != '0001'`. The initial Wagtail data migration creates the structural root with `title="Root"`, `slug="root"`, `path="0001"`, `depth=1`, and does not set `live=False`. Therefore, the claim that the structural root is necessarily excluded by `.live()` is incorrect.
+1. **Framework behavior (Wagtail 7.4.3):** `wagtail/models/draft_state.py`, line 9: `live = models.BooleanField(verbose_name=_("live"), default=True, editable=False)` — the `live` field defaults to `True`. `wagtail/query.py`, line 315-322: `.live()` filters by `Q(live=True)` — it includes pages where `live=True`. `wagtail/query.py`, line 408-413: `.public()` excludes pages with view restrictions (via `private_q()`) — it does **not** explicitly exclude the structural root. No code in `PageQuerySet.live()` or `PageQuerySet.public()` excludes the root page by `depth > 1` or `path != '0001'`. The structural root row is created by Wagtail's initial data migration `wagtail/migrations/0002_initial_data.py` (`initial_data` function): `Page.objects.create(title="Root", slug="root", content_type=page_content_type, path="0001", depth=1, numchild=1, url_path="/")` — it does not set `live=False`, so the root inherits the `default=True` from the model field. (Note: in installations using squashed migrations, this creation logic is folded into `wagtail/migrations/0001_squashed_0016_change_page_url_path_to_text_field.py`.) Therefore, the claim that the structural root is necessarily excluded by `.live()` is incorrect.
 
 2. **Code reference:** `school/management/commands/audit_public_seo.py` uses:
    ```python
@@ -171,6 +171,7 @@ This report is an independent, read-only assessment of four Sourcery findings ag
 
 **Sources consulted:**
 - Wagtail 7.4.3 source: `wagtail/query.py` (`PageQuerySet.live`, `PageQuerySet.public`, `PageQuerySet.private_q`, `SpecificQuerySetMixin.specific`, `SpecificIterable.__iter__`)
+- Wagtail 7.4.3 source: `wagtail/migrations/0002_initial_data.py` (`initial_data` — creates structural root page)
 - Wagtail 7.4.3 source: `wagtail/models/draft_state.py` (`DraftStateMixin.live` default)
 - Wagtail 7.4.3 source: `wagtail/models/specific.py` (`SpecificMixin.get_specific`, `SpecificMixin.specific`)
 - PR #72 code: `school/management/commands/audit_public_seo.py`, `school/test_seo_audit.py`
