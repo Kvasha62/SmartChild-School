@@ -20,7 +20,7 @@ This is an **assessment-only** review. No production code was changed, no test c
 
 PR #72 HEAD `1bffaa9098460691670930ce2e5c4fbad57d39d1` was verified as the PR head at the start of this assessment via the GitHub API (open, draft=false, mergeable=true, CI success test run `40566766092`). If this SHA is no longer the current PR #72 head when this report is read, the assessment still applies to the specified SHA `1bffaa9` as a dated snapshot; the commit that introduces this report creates a new HEAD on a separate branch and does not make the previous snapshot incorrect retroactively.
 
-**Tests were not executed locally.** The sandbox does not have Django/Wagtail installed and is configured for PostgreSQL (`config/settings.py` lines 96-111), which is not available in this environment. All findings below are based on static code review of PR #72 HEAD `1bffaa9` and verified Wagtail 7.4.3 / Django 5.2.18 framework behavior from source code fetched from `wagtail/wagtail@v7.4.3`.
+**Tests were not executed locally.** The sandbox does not have Django/Wagtail installed and is configured for PostgreSQL (`config/settings.py` lines 96-111), which is not available in this environment. All findings below are based on static code review of PR #72 HEAD `1bffaa9` and source inspection of Wagtail 7.4.3 / Django 5.2.18 behavior. The corrected assessment revises the original verdicts for Findings 2 and 4.
 
 **Corrections since the first version of this report:** The initial version incorrectly stated that `PageQuerySet.specific()` executes as a single SQL query with joins, and that Wagtail's structural root page is created with `live=False`. Both claims were unverified and are corrected in this version. See Findings 2 and 4 below.
 
@@ -47,20 +47,17 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Evidence:**
 
-1. **Framework behavior (Wagtail 7.4.3, verified from source):**
-   - `wagtail/query.py`, line 408-413: `PageQuerySet.public()` calls `self.exclude(self.private_q())`.
-   - `wagtail/query.py`, line 398-406: `private_q()` iterates all `PageViewRestriction` objects and builds a Q of `descendant_of_q(restriction.page, inclusive=True)` for each — meaning it excludes pages that are descendants **or equal** to any page with a view restriction.
-   - `wagtail/query.py`, line 345-346: `page_q` / `descendant_of_q` checks the full tree path, so descendants of restricted pages are excluded.
+1. **Framework behavior (Wagtail 7.4.3):** In this version, `PageViewRestriction` does not define an `apply_to_subpages` field. `wagtail/query.py`, line 408-413: `PageQuerySet.public()` calls `self.exclude(self.private_q())`. `wagtail/query.py`, line 398-406: `private_q()` iterates all `PageViewRestriction` objects and builds a Q of `descendant_of_q(restriction.page, inclusive=True)` for each — meaning it excludes pages that are descendants **or equal** to any page with a view restriction. `wagtail/query.py`, line 345-346: `descendant_of_q` checks the full tree path. Thus the specific API detail in the Sourcery wording (`apply_to_subpages`) does not match Wagtail 7.4.3, but the underlying concern about descendants is handled by this version's queryset behavior.
 
-2. **Code reference:** `school/management/commands/audit_public_seo.py`, lines ~103-108:
+2. **Code reference:** `school/management/commands/audit_public_seo.py` uses:
    ```python
    pages = Page.objects.live().public().specific().order_by("path")
    ```
-   The `.public()` call applies Wagtail's public-visibility filtering, which excludes descendants of ancestor view restrictions.
+   Wagtail 7.4.3's `PageQuerySet.public()` delegates to `private_q()`, which excludes each restriction page and its descendants.
 
-3. **Test reference:** `school/test_seo_audit.py` includes a test ("drafts/restricted excluded") that verifies restricted/draft pages are excluded from the audit output.
+3. **Test limitation:** `school/test_seo_audit.py::test_excludes_drafts_and_login_restricted_pages` tests a restricted page itself, but does not test a descendant of a restricted ancestor. The framework source supports the conclusion, while a descendant regression test would make the intended behavior explicit.
 
-**Conclusion:** Wagtail's `.public()` queryset already excludes descendants of ancestor view restrictions. No code change is required for this finding.
+**Conclusion:** The underlying finding is **NOT CONFIRMED for Wagtail 7.4.3**. The report's original explanation was inaccurate about `apply_to_subpages`; it should not claim that this field exists in the assessed version. No code change is required for this finding.
 
 ---
 
@@ -68,26 +65,23 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Sourcery claim:** Under PostgreSQL READ COMMITTED, the queryset snapshot may diverge from a later per-page `specific()` fetch, so a page could be audited as public even though it became private/restricted between the queryset evaluation and the specific-page fetch.
 
-**Verdict: CONFIRMED in principle**
+**Verdict: CONFIRMED (race window exists; impact depends on concurrent edits)**
 
 **Evidence:**
 
-1. **Framework behavior (Wagtail 7.4.3, verified from source):**
-   - `wagtail/query.py`, `SpecificQuerySetMixin.specific()` (lines in `SpecificQuerySetMixin`): `.specific()` on a queryset does **not** execute a single SQL query. It sets `_iterable_class = SpecificIterable` on the queryset clone — a lazy change that takes effect when the queryset is evaluated.
-   - `wagtail/query.py`, `SpecificIterable.__iter__()`: When the queryset is iterated, it:
-     a. First runs `qs.values("pk", "content_type", ...)` — executing the base queryset **including `.live().public()` filters** (Snapshot 1).
-     b. Groups results by content type, then runs `model.objects.filter(pk__in=pks)` **per content type** — separate queries to fetch specific page instances (Snapshot 2).
-   - These are **separate queries under separate READ COMMITTED snapshots**. Between snapshot 1 and snapshot 2, a page could be unpublished or have a view restriction added.
+1. **Framework behavior (Wagtail 7.4.3):** `PageQuerySet.specific()` does not fetch all specific page instances in the same SQL statement as the original page queryset. `SpecificIterable` first evaluates a values queryset to collect page primary keys and content types, then issues separate `model.objects.filter(pk__in=pks)` queries to fetch specific instances. Different concrete page types can cause additional queries. `wagtail/query.py`, `SpecificQuerySetMixin.specific()`: `.specific()` on a queryset sets `_iterable_class = SpecificIterable` on the queryset clone — a lazy change that takes effect when the queryset is evaluated. `wagtail/query.py`, `SpecificIterable.__iter__()`: when the queryset is iterated, it first runs `qs.values("pk", "content_type", ...)` — executing the base queryset **including `.live().public()` filters** (Snapshot 1), then groups results by content type and runs `model.objects.filter(pk__in=pks)` **per content type** — separate queries to fetch specific page instances (Snapshot 2).
 
-2. **Code reference:** `school/management/commands/audit_public_seo.py`, lines ~103-108:
+2. **Code reference:** `school/management/commands/audit_public_seo.py` uses:
    ```python
    pages = Page.objects.live().public().specific().order_by("path")
    ```
-   `.specific()` is chained on the queryset, but when iterated by `Command.handle()`, it triggers the multi-query pattern described above. The initial `.live().public()` filter and the subsequent specific-instance fetches can observe different database states under READ COMMITTED.
+   The initial query applies `.live().public()`. The later specific-instance fetches are by primary key and do not reapply those filters.
 
-3. **Database behavior:** PostgreSQL READ COMMITTED provides statement-level snapshot consistency. Each statement sees a snapshot taken at statement start. Since `.specific()` causes multiple statements (base query + per-content-type specific queries), they can observe different snapshots.
+3. **Concurrency consequence:** Under PostgreSQL READ COMMITTED, each statement gets its own snapshot. If a page is unpublished or a view restriction is added after the initial eligible-page query but before the specific-instance query, the later fetch can still return that page by primary key and the audit can include it. This is a possible race, not proof that it occurs in ordinary runs.
 
-**Conclusion:** The Sourcery claim is confirmed in principle. Under READ COMMITTED, a page that is live+public at the time of the base queryset evaluation could become non-public/restricted by the time its specific instance is fetched. The command would then audit a page that is no longer publicly accessible.
+4. **Scope and remediation:** The command is read-only and an audit is not necessarily a transactionally frozen site-wide snapshot. The report should document that results reflect a best-effort scan and may race with concurrent publishing/access changes. If a strict consistent snapshot is required, evaluate an explicit transaction/isolation strategy compatible with the project's supported database backends; do not assume `select_for_update()` alone solves all cases or introduce PostgreSQL-only behavior without an explicit portability decision.
+
+**Conclusion:** The Sourcery concern is **confirmed in principle**. The original report's claim that `.specific()` is one SQL query was incorrect. Whether this race warrants a code change is a product/operational decision; at minimum, the assessment must not dismiss the finding on single-query grounds.
 
 **Smallest safe remediation:** Document the best-effort concurrency contract in the command's help/docstring (the audit is a best-effort read-only scan, not a transactionally frozen snapshot). Do **not** add PostgreSQL-specific `select_for_update()` or repeatable-read transactions — such changes would not be portable and are disproportionate without an explicit requirement for snapshot consistency.
 
@@ -103,7 +97,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Evidence:**
 
-1. **Code reference:** `school/management/commands/audit_public_seo.py`, around line 218 (inside `Command.handle()` / `audit_pages()`):
+1. **Code reference:** `school/management/commands/audit_public_seo.py`, around lines 218 (inside `Command.handle()` / `audit_pages()`):
    ```python
    title = (getattr(page, "seo_title", "") or page.title or "").strip()
    description = (getattr(page, "search_description", "") or "").strip()
@@ -126,29 +120,23 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Sourcery claim:** `Page.objects.live().public().specific()` may include Wagtail's structural root page (depth=1, path='0001'), which is not a real public page.
 
-**Verdict: NEEDS MORE EVIDENCE**
+**Verdict: CONFIRMED (root exclusion is not guaranteed by these filters)**
 
 **Evidence:**
 
-1. **Framework behavior (Wagtail 7.4.3, verified from source):**
-   - `wagtail/models/draft_state.py`, line 9: `live = models.BooleanField(verbose_name=_("live"), default=True, editable=False)` — the `live` field defaults to `True`.
-   - `wagtail/query.py`, line 315-322: `.live()` filters by `Q(live=True)` — it includes pages where `live=True`.
-   - `wagtail/query.py`, line 408-413: `.public()` excludes pages with view restrictions (via `private_q()`) — it does **not** explicitly exclude the structural root.
-   - No code in `PageQuerySet.live()` or `PageQuerySet.public()` excludes the root page by `depth > 1` or `path != '0001'`.
+1. **Framework behavior (Wagtail 7.4.3):** `wagtail/models/draft_state.py`, line 9: `live = models.BooleanField(verbose_name=_("live"), default=True, editable=False)` — the `live` field defaults to `True`. `wagtail/query.py`, line 315-322: `.live()` filters by `Q(live=True)` — it includes pages where `live=True`. `wagtail/query.py`, line 408-413: `.public()` excludes pages with view restrictions (via `private_q()`) — it does **not** explicitly exclude the structural root. No code in `PageQuerySet.live()` or `PageQuerySet.public()` excludes the root page by `depth > 1` or `path != '0001'`. The initial Wagtail data migration creates the structural root with `title="Root"`, `slug="root"`, `path="0001"`, `depth=1`, and does not set `live=False`. Therefore, the claim that the structural root is necessarily excluded by `.live()` is incorrect.
 
-2. **Unverified:** Whether Wagtail's migration that creates the structural root page explicitly sets `live=False` on it. If the root page is created with `live=False`, `.live()` excludes it and Finding 4 is not an issue. If the root page is created with `live=True` (the default), `.live().public()` would include it unless a view restriction exists on it.
-
-3. **Code reference:** `school/management/commands/audit_public_seo.py`, lines ~103-108:
+2. **Code reference:** `school/management/commands/audit_public_seo.py` uses:
    ```python
    pages = Page.objects.live().public().specific().order_by("path")
    ```
-   There is no explicit `depth__gt=1` or equivalent filter to exclude the structural root.
+   No explicit `depth__gt=1`, `path__gt="0001"`, or root-page exclusion is applied.
 
-4. **Tests not run:** The sandbox does not have Django/Wagtail installed or a PostgreSQL test database available, so the actual behavior of the root page under `Page.objects.live().public()` on this project's migrated database could not be verified.
+3. **Audit consequence:** If the root row is returned by the queryset in this installation, `audit_pages()` will count it as a page; `_public_path()` can fall back to its `url_path` of `"/"`. This is a structural record, not a routable content page. A targeted test against the project's actual migrated database should verify the exact queryset result, but the report's original assertion that `.live().public()` necessarily excludes the root is unsupported.
 
-**Conclusion:** This finding could not be confirmed or denied from static code review alone. The `live` field defaults to `True`, and neither `.live()` nor `.public()` explicitly excludes the structural root. Whether the root page is actually excluded depends on how Wagtail's migration sets its `live` field, which was not verified. **This finding needs more evidence.**
+**Conclusion:** The Sourcery concern is **confirmed as a missing explicit exclusion / plausible false-positive in the inventory**. The narrowest remediation is to explicitly exclude the structural root (for example, `depth__gt=1`) and add a regression test asserting that the root is not included.
 
-**Smallest safe remediation (if confirmed):** Add `.filter(depth__gt=1)` to the queryset to explicitly exclude the structural root, independent of `.live()` behavior.
+**Smallest safe remediation (if confirmed on migrated DB):** Add `.filter(depth__gt=1)` to the queryset to explicitly exclude the structural root, independent of `.live()` behavior.
 
 **Regression-test proposal:** Add a test to `school/test_seo_audit.py` that creates a page tree and verifies the structural root (depth=1) is not included in `pages` and does not inflate `pages_audited`. Requires a test database.
 
@@ -159,20 +147,21 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 | # | Finding | Verdict | Action required |
 |---|---------|---------|-----------------|
 | 1 | Restricted descendants appear public | NOT CONFIRMED | None — Wagtail `.public()` already excludes descendants of ancestor view restrictions |
-| 2 | READ COMMITTED snapshot divergence | CONFIRMED in principle | Document best-effort concurrency contract; do not add PostgreSQL-specific locking |
-| 3 | Whitespace-only SEO metadata | PARTIALLY CONFIRMED | Optional — minor inconsistency; optional regression test only |
-| 4 | Structural root counted as public | NEEDS MORE EVIDENCE | Cannot confirm from static review; verify root page's `live` field on migrated DB |
+| 2 | READ COMMITTED snapshot divergence | CONFIRMED | Document scan semantics; consider consistent-snapshot strategy only if required |
+| 3 | Whitespace-only SEO metadata | PARTIALLY CONFIRMED | Optional — minor inconsistency between command `.strip()` and template truthiness; no defect in audit correctness |
+| 4 | Structural root counted as public | CONFIRMED | Explicitly exclude root and add a regression test |
 
 ---
 
 ## Final recommendation
 
-**Finding 1:** Accept as NOT CONFIRMED — no action needed.
-**Finding 2:** Accept as CONFIRMED in principle — document the best-effort concurrency contract in the command's docstring. Do not modify PR #72 code directly; this is a documentation-only recommendation.
-**Finding 3:** Accept as PARTIALLY CONFIRMED — non-actionable; optional regression test can be added.
-**Finding 4:** NEEDS MORE EVIDENCE — verify on a migrated test database before deciding on remediation.
+**Revised assessment:**
+- Finding 1 is **NOT CONFIRMED for Wagtail 7.4.3**, but the earlier explanation was inaccurate: this version has no `apply_to_subpages` field, and its `.public()` implementation excludes restriction pages and descendants.
+- Finding 2 is **CONFIRMED in principle** because `.specific()` performs subsequent specific-model fetches that do not reapply `.live().public()`. Concurrent publication/access changes can therefore create a race window.
+- Finding 3 is **PARTIALLY CONFIRMED** — a minor inconsistency between command normalization and template behavior; whether to change templates is a separate decision.
+- Finding 4 is **CONFIRMED as an exclusion gap**: the root is not explicitly filtered out, and the stated claim that `.live()` necessarily excludes it is wrong. Verify against the project's migrated database and add an explicit exclusion plus regression test if the queryset includes it.
 
-**Do not modify PR #72 code.** No changes to `school/management/commands/audit_public_seo.py` or `school/test_seo_audit.py` are made based on this assessment.
+**Do not modify PR #72 code as part of this report-only correction.** The assessment identifies a possible race (Finding 2) and a root-page exclusion gap (Finding 4); whether and how to remediate those concerns should be handled in a separate, explicitly authorized code change after the project owner decides the required consistency contract.
 
 ---
 
