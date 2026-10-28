@@ -4,7 +4,7 @@ from urllib.parse import urlsplit
 
 from django.core.management import call_command
 from django.test import TestCase
-from wagtail.models import PageViewRestriction
+from wagtail.models import Page, PageViewRestriction
 
 from school.models import HomePage, LessonPage
 
@@ -48,6 +48,20 @@ class PublicSeoAuditCommandTests(TestCase):
         output = StringIO()
         call_command("audit_public_seo", output_format="json", stdout=output)
         return json.loads(output.getvalue())
+
+    def test_excludes_structural_root_from_audit(self):
+        root = Page.get_first_root_node()
+        expected_page_count = (
+            Page.objects.live()
+            .public()
+            .filter(depth__gt=1)
+            .count()
+        )
+
+        report = self.run_json_audit()
+        self.assertEqual(root.depth, 1)
+        self.assertNotIn(root.title, [page["title"] for page in report["pages"]])
+        self.assertEqual(report["pages_audited"], expected_page_count)
 
     def test_reports_lessons_that_use_generic_meta_description_fallback(self):
         lesson = self.make_lesson(
