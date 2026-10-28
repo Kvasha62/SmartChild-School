@@ -1,4 +1,4 @@
-""""Read-only, best-effort audit of public Wagtail pages.
+"""Read-only, best-effort audit of public Wagtail pages.
 
 The scan is not a transactionally frozen site-wide snapshot. Concurrent publishing,
 unpublishing, or access-restriction changes may affect results between Wagtail's
