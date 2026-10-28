@@ -151,7 +151,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 - Finding 3 is **PARTIALLY CONFIRMED** — a minor inconsistency between command normalization and template behavior; whether to change templates is a separate decision.
 - Finding 4 is **CONFIRMED as an exclusion gap**: the root is not explicitly filtered out, and the stated claim that `.live()` necessarily excludes it is wrong. Verify against the project's migrated database and add an explicit exclusion plus regression test if the queryset includes it.
 
-**Do not modify PR #72 code.** No changes to `school/management/commands/audit_public_seo.py` or `school/test_seo_audit.py` are required based on this assessment.
+**Do not modify PR #72 code as part of this report-only correction.** The assessment identifies a possible race (Finding 2) and a root-page exclusion gap (Finding 4); whether and how to remediate those concerns should be handled in a separate, explicitly authorized code change after the project owner decides the required consistency contract.
 
 ---
 
