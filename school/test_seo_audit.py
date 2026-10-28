@@ -62,7 +62,7 @@ class PublicSeoAuditCommandTests(TestCase):
         paths = [page["path"] for page in report["pages"]]
 
         self.assertEqual(root.depth, 1)
-        self.assertNotIn(public_path(root), paths)
+        self.assertNotIn(root.title, [page["title"] for page in report["pages"]])
         self.assertEqual(report["pages_audited"], expected_page_count)
 
     def test_reports_lessons_that_use_generic_meta_description_fallback(self):
