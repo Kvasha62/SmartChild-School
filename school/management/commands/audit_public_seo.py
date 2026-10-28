@@ -251,4 +251,3 @@ class Command(BaseCommand):
                 f"[{finding['severity'].upper()}] {finding['path']} "
                 f"{finding['code']}: {finding['detail']}"
             )
-"
