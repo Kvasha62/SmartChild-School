@@ -1,4 +1,9 @@
-"""Read-only audit of public Wagtail pages for common SEO/content issues."""
+""""Read-only, best-effort audit of public Wagtail pages.
+
+The scan is not a transactionally frozen site-wide snapshot. Concurrent publishing,
+unpublishing, or access-restriction changes may affect results between Wagtail's
+initial page query and the subsequent queries used to load specific page models.
+"""
 
 import json
 from collections import defaultdict
@@ -201,8 +206,9 @@ def audit_pages(pages):
 
 class Command(BaseCommand):
     help = (
-        "Read-only audit of live, publicly viewable Wagtail page metadata "
-        "and contextual alt attributes in lesson rich text."
+        "Read-only, best-effort audit of live, publicly viewable Wagtail page "
+        "metadata and contextual alt attributes in lesson rich text. Results "
+        "are not a transactionally frozen site-wide snapshot."
     )
 
     def add_arguments(self, parser):
@@ -215,7 +221,15 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        pages = Page.objects.live().public().specific().order_by("path")
+        # depth__gt=1 explicitly excludes Wagtail's structural root page.
+        # .specific() performs follow-up queries, so this remains a best-effort scan.
+        pages = (
+            Page.objects.live()
+            .public()
+            .filter(depth__gt=1)
+            .specific()
+            .order_by("path")
+        )
         report = audit_pages(pages)
 
         if options["output_format"] == "json":
@@ -237,3 +251,4 @@ class Command(BaseCommand):
                 f"[{finding['severity'].upper()}] {finding['path']} "
                 f"{finding['code']}: {finding['detail']}"
             )
+"
