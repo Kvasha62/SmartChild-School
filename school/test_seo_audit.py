@@ -59,8 +59,6 @@ class PublicSeoAuditCommandTests(TestCase):
         )
 
         report = self.run_json_audit()
-        paths = [page["path"] for page in report["pages"]]
-
         self.assertEqual(root.depth, 1)
         self.assertNotIn(root.title, [page["title"] for page in report["pages"]])
         self.assertEqual(report["pages_audited"], expected_page_count)
