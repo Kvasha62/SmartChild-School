@@ -23,7 +23,7 @@ PR #72 HEAD `1bffaa9098460691670930ce2e5c4fbad57d39d1` was verified as the PR he
 
 **Tests were not executed locally.** The sandbox does not have Django/Wagtail installed and is configured for PostgreSQL (`config/settings.py` lines 96-111), which is not available in this environment. All findings below are based on static code review of PR #72 HEAD `1bffaa9` and source inspection of Wagtail 7.4.3 / Django 5.2.18 behavior. The corrected assessment revises the original verdicts for Findings 2 and 4.
 
-**Corrections since the first version of this report:** The initial version incorrectly stated that `PageQuerySet.specific()` executes as a single SQL query with joins, and that Wagtail's structural root page is created with `live=False`. Both claims were unverified and are corrected in this version. See Findings 2 and 4 below.
+**Corrections since earlier versions of this report:** The initial version incorrectly stated that `PageQuerySet.specific()` executes as a single SQL query with joins, and that Wagtail's structural root page is created with `live=False`. Both claims were unverified and are corrected in this version. Finding 3's verdict is also now marked CONFIRMED because the described normalization mismatch is directly supported by the evidence. See Findings 2–4 below.
 
 ---
 
@@ -94,7 +94,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 **Sourcery claim:** `.strip()` on SEO metadata values diverges from template truthiness/fallback behavior — a whitespace-only value is truthy before stripping, so the command selects it and then normalizes it to an empty string; templates using the raw value may render whitespace.
 
-**Verdict: PARTIALLY CONFIRMED (normalization mismatch; no fallback after stripping)**
+**Verdict: CONFIRMED (normalization mismatch between audit output and template behavior)**
 
 **Evidence:**
 
@@ -149,7 +149,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 |---|---------|---------|-----------------|
 | 1 | Restricted descendants appear public | NOT CONFIRMED | None — Wagtail `.public()` already excludes descendants of ancestor view restrictions |
 | 2 | READ COMMITTED snapshot divergence | CONFIRMED | Document scan semantics; consider consistent-snapshot strategy only if required |
-| 3 | Whitespace-only SEO metadata | PARTIALLY CONFIRMED | Correct the assessment: whitespace-only `seo_title` is stripped to `""`; no fallback to `page.title` occurs after stripping |
+| 3 | Whitespace-only SEO metadata | CONFIRMED | Decide separately whether templates and audit should normalize whitespace-only metadata consistently; no production-code change is included in this report correction |
 | 4 | Structural root counted as public | CONFIRMED | Explicitly exclude root and add a regression test |
 
 ---
@@ -159,7 +159,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 **Revised assessment:**
 - Finding 1 is **NOT CONFIRMED for Wagtail 7.4.3**, but the earlier explanation was inaccurate: this version has no `apply_to_subpages` field, and its `.public()` implementation excludes restriction pages and descendants.
 - Finding 2 is **CONFIRMED in principle** because `.specific()` performs subsequent specific-model fetches that do not reapply `.live().public()`. Concurrent publication/access changes can therefore create a race window.
-- Finding 3 is **PARTIALLY CONFIRMED** — the command strips a whitespace-only `seo_title` to `""` after selecting it, without a subsequent fallback to `page.title`; template normalization remains a separate decision.
+- Finding 3 is **CONFIRMED** — the command strips a whitespace-only `seo_title` to `""`, while templates use the raw value and may render whitespace. The desired normalization/fallback behavior remains a separate implementation decision.
 - Finding 4 is **CONFIRMED as an exclusion gap**: the root is not explicitly filtered out, and the stated claim that `.live()` necessarily excludes it is wrong. Verify against the project's migrated database and add an explicit exclusion plus regression test if the queryset includes it.
 
 **Do not modify PR #72 code as part of this report-only correction.** The assessment identifies a possible race (Finding 2) and a root-page exclusion gap (Finding 4); whether and how to remediate those concerns should be handled in a separate, explicitly authorized code change after the project owner decides the required consistency contract.
