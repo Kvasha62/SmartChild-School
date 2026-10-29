@@ -34,34 +34,34 @@
 
 CI указан для **head-коммита каждой ветки** на момент проверки. «—» = ревью отсутствуют. Перечень соответствует **снимку 2026-10-29 16:26 UTC**, собранному до создания PR #88; PR #88 не входит в число 26 и не пересчитывает исторический снимок.
 
-| № | Заголовок | Draft | Base SHA (branch) | Head SHA (branch) | Файлы | + / − | CI на head | Ревью |
-|---|-----------|-------|-------------------|-------------------|-------|-------|------------|-------|
-| #15 | docs: independent review of MVP-001 documentation layout proposal (PR #14) | Нет | `f0253e54dfdb…` (main) | `1d677ee3e4b5…` (docs/pr14-layout-review) | 1 | 191 / 0 | Sourcery skipped | — |
-| #16 | docs: verification of the MVP-001 layout proposal review report (PR #15) | Нет | `f0253e54dfdb…` (main) | `3b95cb327639…` (docs/pr15-review-verification) | 1 | 255 / 0 | Sourcery skipped | — |
-| #17 | docs: independent re-review of PR #14 at a7b6f4e (REQUEST CHANGES) | Нет | `f0253e54dfdb…` (main) | `bce7c5c51fb4…` (docs/pr14-final-review) | 1 | 238 / 0 | Sourcery skipped | — |
-| #18 | DOCS: independent review of PR #14 revision 3 | Нет | `f0253e54dfdb…` (main) | `053426d25996…` (docs/pr14-third-review) | 1 | 311 / 0 | Sourcery skipped | — |
-| #23 | docs: post-merge documentation plan for PR #14 reports and NR-01 | Нет | `c03cda844b7f…` (main) | `bd28f080ecde…` (docs/pr14-post-merge-docs) | 1 | 210 / 0 | Sourcery skipped | — |
-| #24 | docs: independent review of the NR-01 plan in PR #23 (COMMENT) | Нет | `c03cda844b7f…` (main) | `97cd6e7b69f4…` (docs/pr23-plan-review) | 1 | 268 / 0 | Sourcery skipped | — |
-| #25 | docs: refine the NR-01 plan and propose the L-02 decision record (PR #23, PR #24) | Нет | `c03cda844b7f…` (main) | `44ce23866174…` (docs/pr23-plan-refinement) | 1 | 357 / 0 | Sourcery skipped | — |
-| #26 | docs: NR-01 plan v3 ready for independent review (L-02 route A, PT-1, PT-2) | Нет | `c03cda844b7f…` (main) | `faf405c79f60…` (docs/pr25-nr01-plan-v3) | 1 | 325 / 0 | Sourcery skipped | — |
-| #27 | docs: independent review of the NR-01 plan v3 in PR #26 (COMMENT) | Нет | `c03cda844b7f…` (main) | `4e28c8c6a465…` (docs/pr26-plan-v3-review) | 1 | 323 / 0 | Sourcery skipped | — |
-| #28 | docs: resolve NC-06 and NC-07 in the NR-01 plan (version 4) | Нет | `c03cda844b7f…` (main) | `d52f0bdc4383…` (docs/pr27-plan-v4) | 1 | 383 / 0 | Sourcery skipped | — |
-| #29 | docs: независимое ревью плана NR-01 версии 4 (PR #28) | Нет | `c03cda844b7f…` (main) | `eea37788e347…` (docs/pr28-plan-v4-review) | 1 | 358 / 0 | Sourcery skipped | — |
-| #30 | docs: устранить NC-14 в плане NR-01 (версия 5) | Нет | `c03cda844b7f…` (main) | `ba2065103058…` (docs/pr29-plan-v5) | 1 | 408 / 0 | Sourcery **success** | 1 (sourcery-ai[bot]: APPROVED) |
-| #31 | docs: адресная проверка устранения NC-14 в плане NR-01 версии 5 | Нет | `c03cda844b7f…` (main) | `ff79d79cfe80…` (docs/pr30-nc14-check) | 1 | 254 / 0 | Sourcery skipped | — |
-| #33 | docs: независимое целевое ревью PR #32 (внесение записи L-02) | Нет | `c03cda844b7f…` (main) | `c634518f3daf…` (docs/pr32-l02-review) | 1 | 283 / 0 | Sourcery skipped | — |
-| #35 | docs: independent review of PR #34 (MVP-001 L-02 decision recording) | Нет | `c03cda844b7f…` (main) | `b2783ff1f794…` (docs/pr34-l02-acceptance-review) | 1 | 253 / 0 | Sourcery skipped | — |
-| #36 | docs: state check of PR #32-#35 and next steps for L-02 record | Нет | `c03cda844b7f…` (main) | `5ace88433e46…` (docs/pr35-l02-state-and-next-steps) | 1 | 254 / 0 | Sourcery skipped | — |
-| #57 | docs: добавить урок Python о переменных и вводе/выводе | Да | `71319e86ca0d…` (main) | `fe14d05f4ccd…` (content/python-lesson-02-variables-input-output) | 1 | 351 / 0 | test success | — |
-| #58 | docs: добавить урок Python об условиях и циклах | Да | `71319e86ca0d…` (main) | `5c9aa72d874a…` (content/python-lesson-03-conditions-loops) | 1 | 387 / 0 | test success | — |
-| #72 | tools: add read-only audit for public SEO content | Нет | `5cbc8b3a4935…` (main) | `2ac147fef72e…` (feature/audit-public-seo-content) | 4 | 443 / 0 | Sourcery success, test success | 2 (Kvasha62 COMMENTED на `cfe4ca0f…`; sourcery-ai[bot]) |
-| #76 | docs: record independent review of PR #72 | Да | `4b5b6a269cdf…` (main) | `cc3c461ff5d9…` (docs/pr72-independent-review) | 1 | 39 / 0 | test success | — |
-| #77 | docs: record independent review of PR #74 | Да | `85a490df774f…` (main) | `a0dc17ebe62d…` (docs/pr74-independent-review) | 1 | 50 / 0 | test success | — |
-| #78 | docs: отчёт независимого аудита SEO и frontend по Issue #62 (только отчёт, без изменений кода) | Да | `85a490df774f…` (main) | `f1f5dd1be676…` (arena/311bc9b1-smartchild-school) | 1 | 160 / 0 | test success | — |
-| #81 | docs: independent review of PR #72 at 1bffaa9 | Нет | `5cbc8b3a4935…` (main) | `e5193bed0e8e…` (docs/pr72-review-1bffaa9) | 1 | 76 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: APPROVED) |
-| #82 | docs: task Arena to independently assess PR #72 findings | Нет | `5cbc8b3a4935…` (main) | `c509725932b7…` (docs/arena-review-pr72-sourcery-findings) | 1 | 66 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: APPROVED) |
-| #83 | docs: independent assessment of PR #72 Sourcery findings (1bffaa9) | Нет | `5cbc8b3a4935…` (main) | `25e497d872b1…` (arena/pr72-sourcery-assessment) | 1 | 178 / 0 | Sourcery success, test success | 2 (DISMISSED, COMMENTED — оба sourcery-ai[bot]) |
-| #84 | docs: assign Arena to remediate confirmed PR #72 audit findings | Нет | `5cbc8b3a4935…` (main) | `abcc08a02719…` (docs/arena-fix-pr72-sourcery-findings) | 1 | 57 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: COMMENTED) |
+| № | Заголовок | Draft | Base SHA (branch) | Head SHA (branch) | Файлы | Изменённые файлы | + / − | CI на head | Ревью |
+|---|-----------|-------|-------------------|-------------------|-------|------------------|-------|------------|-------|
+| #15 | docs: independent review of MVP-001 documentation layout proposal (PR #14) | Нет | `f0253e54dfdb…` (main) | `1d677ee3e4b5…` (docs/pr14-layout-review) | 1 | `docs/mvp-001-documentation-layout-proposal-review.md` | 191 / 0 | Sourcery skipped | — |
+| #16 | docs: verification of the MVP-001 layout proposal review report (PR #15) | Нет | `f0253e54dfdb…` (main) | `3b95cb327639…` (docs/pr15-review-verification) | 1 | `docs/mvp-001-documentation-layout-proposal-review-verification.md` | 255 / 0 | Sourcery skipped | — |
+| #17 | docs: independent re-review of PR #14 at a7b6f4e (REQUEST CHANGES) | Нет | `f0253e54dfdb…` (main) | `bce7c5c51fb4…` (docs/pr14-final-review) | 1 | `docs/mvp-001-documentation-layout-proposal-final-review.md` | 238 / 0 | Sourcery skipped | — |
+| #18 | DOCS: independent review of PR #14 revision 3 | Нет | `f0253e54dfdb…` (main) | `053426d25996…` (docs/pr14-third-review) | 1 | `docs/mvp-001-documentation-layout-proposal-third-review.md` | 311 / 0 | Sourcery skipped | — |
+| #23 | docs: post-merge documentation plan for PR #14 reports and NR-01 | Нет | `c03cda844b7f…` (main) | `bd28f080ecde…` (docs/pr14-post-merge-docs) | 1 | `docs/mvp-001-documentation-layout-proposal-post-merge-docs-plan.md` | 210 / 0 | Sourcery skipped | — |
+| #24 | docs: independent review of the NR-01 plan in PR #23 (COMMENT) | Нет | `c03cda844b7f…` (main) | `97cd6e7b69f4…` (docs/pr23-plan-review) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-review.md` | 268 / 0 | Sourcery skipped | — |
+| #25 | docs: refine the NR-01 plan and propose the L-02 decision record (PR #23, PR #24) | Нет | `c03cda844b7f…` (main) | `44ce23866174…` (docs/pr23-plan-refinement) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-refinement.md` | 357 / 0 | Sourcery skipped | — |
+| #26 | docs: NR-01 plan v3 ready for independent review (L-02 route A, PT-1, PT-2) | Нет | `c03cda844b7f…` (main) | `faf405c79f60…` (docs/pr25-nr01-plan-v3) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v3.md` | 325 / 0 | Sourcery skipped | — |
+| #27 | docs: independent review of the NR-01 plan v3 in PR #26 (COMMENT) | Нет | `c03cda844b7f…` (main) | `4e28c8c6a465…` (docs/pr26-plan-v3-review) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v3-review.md` | 323 / 0 | Sourcery skipped | — |
+| #28 | docs: resolve NC-06 and NC-07 in the NR-01 plan (version 4) | Нет | `c03cda844b7f…` (main) | `d52f0bdc4383…` (docs/pr27-plan-v4) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v4.md` | 383 / 0 | Sourcery skipped | — |
+| #29 | docs: независимое ревью плана NR-01 версии 4 (PR #28) | Нет | `c03cda844b7f…` (main) | `eea37788e347…` (docs/pr28-plan-v4-review) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v4-review.md` | 358 / 0 | Sourcery skipped | — |
+| #30 | docs: устранить NC-14 в плане NR-01 (версия 5) | Нет | `c03cda844b7f…` (main) | `ba2065103058…` (docs/pr29-plan-v5) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v5.md` | 408 / 0 | Sourcery **success** | 1 (sourcery-ai[bot]: APPROVED) |
+| #31 | docs: адресная проверка устранения NC-14 в плане NR-01 версии 5 | Нет | `c03cda844b7f…` (main) | `ff79d79cfe80…` (docs/pr30-nc14-check) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-plan-v5-nc14-check.md` | 254 / 0 | Sourcery skipped | — |
+| #33 | docs: независимое целевое ревью PR #32 (внесение записи L-02) | Нет | `c03cda844b7f…` (main) | `c634518f3daf…` (docs/pr32-l02-review) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-l02-record-review.md` | 283 / 0 | Sourcery skipped | — |
+| #35 | docs: independent review of PR #34 (MVP-001 L-02 decision recording) | Нет | `c03cda844b7f…` (main) | `b2783ff1f794…` (docs/pr34-l02-acceptance-review) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-l02-acceptance-review.md` | 253 / 0 | Sourcery skipped | — |
+| #36 | docs: state check of PR #32-#35 and next steps for L-02 record | Нет | `c03cda844b7f…` (main) | `5ace88433e46…` (docs/pr35-l02-state-and-next-steps) | 1 | `docs/mvp-001-documentation-layout-proposal-nr01-l02-state-and-next-steps.md` | 254 / 0 | Sourcery skipped | — |
+| #57 | docs: добавить урок Python о переменных и вводе/выводе | Да | `71319e86ca0d…` (main) | `fe14d05f4ccd…` (content/python-lesson-02-variables-input-output) | 1 | `docs/content/python/lesson-02-variables-input-output.md` | 351 / 0 | test success | — |
+| #58 | docs: добавить урок Python об условиях и циклах | Да | `71319e86ca0d…` (main) | `5c9aa72d874a…` (content/python-lesson-03-conditions-loops) | 1 | `docs/content/python/lesson-03-conditions-loops.md` | 387 / 0 | test success | — |
+| #72 | tools: add read-only audit for public SEO content | Нет | `5cbc8b3a4935…` (main) | `2ac147fef72e…` (feature/audit-public-seo-content) | 4 | `school/management/__init__.py`<br>`school/management/commands/__init__.py`<br>`school/management/commands/audit_public_seo.py`<br>`school/test_seo_audit.py` | 443 / 0 | Sourcery success, test success | 2 (Kvasha62 COMMENTED на `cfe4ca0f…`; sourcery-ai[bot]) |
+| #76 | docs: record independent review of PR #72 | Да | `4b5b6a269cdf…` (main) | `cc3c461ff5d9…` (docs/pr72-independent-review) | 1 | `docs/reviews/PR-72-independent-review-e007fac.md` | 39 / 0 | test success | — |
+| #77 | docs: record independent review of PR #74 | Да | `85a490df774f…` (main) | `a0dc17ebe62d…` (docs/pr74-independent-review) | 1 | `docs/reviews/PR-74-independent-review-f989619.md` | 50 / 0 | test success | — |
+| #78 | docs: отчёт независимого аудита SEO и frontend по Issue #62 (только отчёт, без изменений кода) | Да | `85a490df774f…` (main) | `f1f5dd1be676…` (arena/311bc9b1-smartchild-school) | 1 | `docs/reviews/issue-62-seo-frontend-audit-85a490d.md` | 160 / 0 | test success | — |
+| #81 | docs: independent review of PR #72 at 1bffaa9 | Нет | `5cbc8b3a4935…` (main) | `e5193bed0e8e…` (docs/pr72-review-1bffaa9) | 1 | `docs/reviews/pr72-independent-review-1bffaa9.md` | 76 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: APPROVED) |
+| #82 | docs: task Arena to independently assess PR #72 findings | Нет | `5cbc8b3a4935…` (main) | `c509725932b7…` (docs/arena-review-pr72-sourcery-findings) | 1 | `docs/reviews/arena-task-pr72-sourcery-findings-1bffaa9.md` | 66 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: APPROVED) |
+| #83 | docs: independent assessment of PR #72 Sourcery findings (1bffaa9) | Нет | `5cbc8b3a4935…` (main) | `25e497d872b1…` (arena/pr72-sourcery-assessment) | 1 | `docs/reviews/pr72-sourcery-findings-independent-assessment-1bffaa9.md` | 178 / 0 | Sourcery success, test success | 2 (DISMISSED, COMMENTED — оба sourcery-ai[bot]) |
+| #84 | docs: assign Arena to remediate confirmed PR #72 audit findings | Нет | `5cbc8b3a4935…` (main) | `abcc08a02719…` (docs/arena-fix-pr72-sourcery-findings) | 1 | `docs/reviews/arena-task-pr72-audit-remediation-1bffaa9.md` | 57 / 0 | Sourcery success, test success | 1 (sourcery-ai[bot]: COMMENTED) |
 
 ### Наблюдения по перечню PR
 
@@ -234,6 +234,15 @@ CI указан для **head-коммита каждой ветки** на мо
 
 **Явные точки, где требуется решение владельца:** Шаги 2—7.
 
+### Рекомендуемый следующий шаг и альтернативы (пункт 8 Issue #79)
+
+- **Рекомендуемый следующий шаг:** владелец рассматривает этот отчёт и даёт явные решения по ключевым объектам (§9, шаги 2—7); после этого формируются задачи NEXT ACTION (§9, шаг 8). *(Требуется решение владельца; не является одобрением и не закрывает PR #88.)*
+- **Альтернативы:**
+  - *Только по заблокированным и устаревшим объектам* (PR #83 и цепочка #15—#36): быстрее, но оставляет классификацию §6 неподтверждённой владельцем и не выполняет критерии выхода §9.
+  - *Вынести каждую точку решения в отдельный Issue:* более гранулярно и проверяемо, но создаёт новые задачи без отдельного согласования (Issue #79 разрешает создавать задачи только при необходимости и согласовании).
+  - *Оставить без действий:* этап остаётся незавершённым; критерии выхода §9 не выполнены.
+- **Обоснование выбора и альтернатив:** рекомендуемый шаг — единственный, который одновременно закрывает явные точки решений владельца (§9, шаги 2—7) и даёт основание для формирования следующих задач; он не требует изменений кода, статусов или пересчёта снимка.
+
 ## 10. Ограничения проверки
 
 - Недоступен реальный production-домен; HTTP-проверки сайта (`/sitemap.xml`, `/robots.txt`, отрисованные meta, статус-коды) не выполнены.
@@ -256,7 +265,7 @@ CI указан для **head-коммита каждой ветки** на мо
 - `git diff --name-status origin/main...HEAD` — ровно один новый файл: `docs/reviews/project-stage-inventory-f684a1f.md` (состояние `A`).
 - `git rev-parse HEAD` — итоговый SHA ветки PR на момент снимка: `c8d98f177b0f3bd6a0550bf10feef0029aa5e2ec`.
 - `git status --short` — чистое рабочее дерево после коммита.
-- Проверка Markdown / относительных ссылок: `docs/reviews/project-stage-inventory-f684a1f.md` содержит только внутренние ссылки на Issues/PR GitHub и файлы репозитория; проверка целей относительных ссылок выполнена статически (все ссылки на `docs/…` существуют в `main`).
+- Проверка Markdown / ссылок: в отчёте **нет относительных Markdown-ссылок** (все ссылки — абсолютные URL GitHub Issues/PR), поэтому проверка целей относительных ссылок не выполнялась — проверять было нечего. Проверены существование и корректность ссылок на файлы репозитория: все имена файлов, указанные в отчёте (`.github/…`, `CONTRIBUTING.md`, `docs/…`), существуют в `main` (contents API, `ref = <main SHA>`).
 - CI: workflow `Django and Wagtail CI` (`.github/workflows/ci.yml`, job `test`) выполнен на HEAD `c8d98f177b0f3bd6a0550bf10feef0029aa5e2ec`: check-run id `123586781215`, conclusion `success`; начато 2026-10-29T16:36:55Z, завершено 2026-10-29T16:42:40Z (workflow run `40913310727`, №208). URL: https://github.com/Kvasha62/SmartChild-School/actions/runs/40913310727/job/123586781215. Проверка привязана к снимку отчёта `c8d98f1…`; отчёт зафиксирован на снимке и не содержит самоссылки на свой собственный HEAD (как и предыдущий инвентарь, PR #80).
 - **Не запускалось:** `python manage.py check`, `makemigrations --check`, `manage.py test`, `migrate` — причина: в среде Arena нет сервера PostgreSQL (`127.0.0.1:5432`); этот сброс относится к документационному PR и не утверждает приёмку продукта.
 
@@ -264,6 +273,7 @@ CI указан для **head-коммита каждой ветки** на мо
 
 - **Проверенная базовая версия:** `main` `f684a1f0215c7f94b5c73589a315aff0dfe05db3` (2026-10-29 16:26 UTC).
 - **Проверенная версия отчёта (снимок, на котором выполнены все проверки и CI):** `c8d98f177b0f3bd6a0550bf10feef0029aa5e2ec` (check-run `test` = success, 2026-10-29T16:42:40Z).
+- **CI на итоговом проверяемом HEAD:** `eb4947e6cb78cf212f40d72d45b176fbb87c6ed3` — workflow run `40927350654` (run №211), check-run `123636293178` (`test` = success, завершён 2026-10-29T18:09:30Z), `head_sha` совпадает с полным SHA HEAD. URL: https://github.com/Kvasha62/SmartChild-School/actions/runs/40927350654
 - **Окончательная версия отчёта** (текущий текст, содержащий эту строку) содержится в HEAD ветки PR; её полный SHA зафиксирован в описании PR в разделе «Версия для ревью» и в комментарии проверок PR. Отчёт зафиксирован на снимке и не содержит самоссылки на свой собственный HEAD.
 - **Связанный PR:** отдельный Draft PR, содержащий только этот файл; слияние не выполнялось.
 
@@ -275,7 +285,7 @@ CI указан для **head-коммита каждой ветки** на мо
 | Рекомендации имеют объяснение и не маскируют решение владельца | Да | все решения владельца помечены как требуемые |
 | Документ не меняет исходные требования и статусы | Да | только один новый отчёт |
 | Создан отдельный PR, содержащий только отчёт; PR в Draft | Да | слияние не выполнялось |
-| Доступные CI/проверки выполнены на точном итоговом HEAD | Да | §11; CI `test` = success на снимке `c8d98f1…`; локальные проверки чистые |
+| Доступные CI/проверки выполнены на точном итоговом HEAD | Да | CI `test` = success на `eb4947e6cb78cf212f40d72d45b176fbb87c6ed3` (check-run `123636293178`, workflow run `40927350654`); локальные проверки чистые |
 | В PR приведён полный HEAD SHA и краткая сводка | Да | см. PR |
 | Ни одного слияния не выполнено | Да | `main` не изменён |
 
