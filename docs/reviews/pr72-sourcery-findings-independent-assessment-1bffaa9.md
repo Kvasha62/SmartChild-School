@@ -4,8 +4,9 @@
 **Assessed HEAD snapshot:** `1bffaa9098460691670930ce2e5c4fbad57d39d1`
 **PR #72 base:** `5cbc8b3a493535040ec9c7ab207e3dee61463a54` (main)
 **Sourcery review:** #5673474114
-**Assessment branch:** `arena/pr72-sourcery-assessment` (separate from PR #72 and PR #81)
-**Target branch for PR:** `main`
+**Original assessment branch:** `arena/pr72-sourcery-assessment` (PR #83)
+**Correction branch:** `docs/pr83-finding3-correction`
+**Target branch for correction PR:** `main`
 **Report path:** `docs/reviews/pr72-sourcery-findings-independent-assessment-1bffaa9.md`
 **Framework versions:** Django 5.2.18, Wagtail 7.4.3, PostgreSQL backend
 **Assessed files (PR #72 HEAD `1bffaa9`):**
@@ -167,7 +168,7 @@ inside `audit_pages()`, called from `Command.handle()`. The command iterates pag
 
 ## Assessment-only statement
 
-This report is an independent, read-only assessment of four Sourcery findings against PR #72 HEAD `1bffaa9098460691670930ce2e5c4fbad57d39d1`. No production code was changed, no test code was changed, no PR #72 or PR #81 content was edited, no Sourcery review threads were resolved, and no merge was performed. PR #72, PR #81, and `main` remain unchanged. This report is submitted as a separate PR targeting `main` from branch `arena/pr72-sourcery-assessment`.
+This report is an independent, read-only assessment of four Sourcery findings against PR #72 HEAD `1bffaa9098460691670930ce2e5c4fbad57d39d1`. No production code was changed, no test code was changed, no PR #72 or PR #81 content was edited, no Sourcery review threads were resolved, and no merge was performed. PR #72, PR #81, and `main` remain unchanged. This corrected report is submitted as a separate PR targeting `main` from branch `docs/pr83-finding3-correction`.
 
 **Sources consulted:**
 - Wagtail 7.4.3 source: `wagtail/query.py` (`PageQuerySet.live`, `PageQuerySet.public`, `PageQuerySet.private_q`, `SpecificQuerySetMixin.specific`, `SpecificIterable.__iter__`)
