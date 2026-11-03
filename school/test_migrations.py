@@ -7,6 +7,7 @@ from django.utils import timezone
 
 
 class LessonBodyMigrationTests(TransactionTestCase):
+    serialized_rollback = True
     migrate_from = ("school", "0002_lessonpage_video_embed_url")
     migrate_to = ("school", "0003_alter_lessonpage_body")
 

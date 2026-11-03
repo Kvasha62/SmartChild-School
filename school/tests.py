@@ -1025,7 +1025,38 @@ class PublicLearningFlowTests(TestCase):
                     "accordion",
                     {
                         "title": "Дополнительный раздел",
-                        "content": "<p>Содержимое аккордеона</p>",
+                        "content": [
+                            ("rich_text", "<p>Содержимое аккордеона</p>"),
+                            (
+                                "code",
+                                {
+                                    "language": "python",
+                                    "code": "total = 2 + 3",
+                                },
+                            ),
+                            (
+                                "tabs",
+                                {
+                                    "tabs": [
+                                        {
+                                            "title": "Вложенная вкладка 1",
+                                            "content": [("rich_text", "<p>Первое вложенное содержимое</p>")],
+                                        },
+                                        {
+                                            "title": "Вложенная вкладка 2",
+                                            "content": [("rich_text", "<p>Второе вложенное содержимое</p>")],
+                                        },
+                                    ],
+                                },
+                            ),
+                            (
+                                "callout",
+                                {
+                                    "kind": "warning",
+                                    "content": [("rich_text", "<p>Предупреждение внутри аккордеона</p>")],
+                                },
+                            ),
+                        ],
                     },
                 ),
                 (
@@ -1034,11 +1065,11 @@ class PublicLearningFlowTests(TestCase):
                         "tabs": [
                             {
                                 "title": "Первая вкладка",
-                                "content": "<p>Содержимое первой вкладки</p>",
+                                "content": [("rich_text", "<p>Содержимое первой вкладки</p>")],
                             },
                             {
                                 "title": "Вторая вкладка",
-                                "content": "<p>Содержимое второй вкладки</p>",
+                                "content": [("rich_text", "<p>Содержимое второй вкладки</p>")],
                             },
                         ],
                     },
@@ -1047,7 +1078,7 @@ class PublicLearningFlowTests(TestCase):
                     "callout",
                     {
                         "kind": "important",
-                        "content": "<p>Важное сообщение</p>",
+                        "content": [("rich_text", "<p>Важное сообщение</p>")],
                     },
                 ),
                 (
@@ -1056,11 +1087,11 @@ class PublicLearningFlowTests(TestCase):
                         "tabs": [
                             {
                                 "title": "Третья вкладка",
-                                "content": "<p>Содержимое третьей вкладки</p>",
+                                "content": [("rich_text", "<p>Содержимое третьей вкладки</p>")],
                             },
                             {
                                 "title": "Четвёртая вкладка",
-                                "content": "<p>Содержимое четвёртой вкладки</p>",
+                                "content": [("rich_text", "<p>Содержимое четвёртой вкладки</p>")],
                             },
                         ],
                     },
@@ -1079,6 +1110,12 @@ class PublicLearningFlowTests(TestCase):
             "hello",
             "Дополнительный раздел",
             "Содержимое аккордеона",
+            "total",
+            "Вложенная вкладка 1",
+            "Вложенная вкладка 2",
+            "Первое вложенное содержимое",
+            "Второе вложенное содержимое",
+            "Предупреждение внутри аккордеона",
             "Первая вкладка",
             "Вторая вкладка",
             "Содержимое первой вкладки",
@@ -1095,37 +1132,44 @@ class PublicLearningFlowTests(TestCase):
         self.assertContains(response, "lesson-accordion")
         self.assertContains(response, "lesson-tabs")
         self.assertContains(response, "lesson-callout--important")
+        self.assertContains(response, "lesson-callout--warning")
+        self.assertEqual(response.content.decode().count('role="tablist"'), 3)
+        tab_ids = re.findall(
+            r'<button\b[^>]*\bid="([^"]+)"[^>]*\brole="tab"',
+            response.content.decode(),
+        )
+        self.assertEqual(len(tab_ids), 6)
+        self.assertEqual(len(tab_ids), len(set(tab_ids)))
         self.assertContains(response, 'role="tablist"')
         self.assertContains(response, 'role="tabpanel"')
-        self.assertContains(
-            response,
-            f'id="lesson-tab-{lesson.pk}-4-0"',
+
+        document = response.content.decode()
+        button_ids = re.findall(
+            r'<button\b[^>]*\bid="([^"]+)"',
+            document,
         )
-        self.assertContains(
-            response,
-            f'aria-controls="lesson-tab-panel-{lesson.pk}-4-0"',
+        panel_ids = re.findall(
+            r'<div\b[^>]*\bid="(lesson-tab-panel-[^"]+)"',
+            document,
         )
-        self.assertContains(
-            response,
-            f'id="lesson-tab-panel-{lesson.pk}-4-0"',
-        )
-        self.assertContains(
-            response,
-            f'aria-labelledby="lesson-tab-{lesson.pk}-4-0"',
-        )
-        self.assertContains(
-            response,
-            f'id="lesson-tab-{lesson.pk}-6-0"',
-        )
-        self.assertContains(
-            response,
-            f'aria-controls="lesson-tab-panel-{lesson.pk}-6-0"',
-        )
-        self.assertContains(
-            response,
-            f'id="lesson-tab-panel-{lesson.pk}-6-0"',
-        )
-        self.assertContains(
-            response,
-            f'aria-labelledby="lesson-tab-{lesson.pk}-6-0"',
-        )
+        controls = re.findall(r'aria-controls="([^"]+)"', document)
+        labelled_by = re.findall(r'aria-labelledby="([^"]+)"', document)
+
+        self.assertEqual(len(button_ids), 6)
+        self.assertEqual(len(button_ids), len(set(button_ids)))
+        self.assertEqual(len(panel_ids), 6)
+        self.assertEqual(len(panel_ids), len(set(panel_ids)))
+        self.assertEqual(set(controls), set(panel_ids))
+        self.assertEqual(set(labelled_by), set(button_ids))
+
+        for button_id in button_ids:
+            self.assertEqual(
+                document.count(f'aria-labelledby="{button_id}"'),
+                1,
+            )
+
+        for panel_id in panel_ids:
+            self.assertEqual(
+                document.count(f'aria-controls="{panel_id}"'),
+                1,
+            )
