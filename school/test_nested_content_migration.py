@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
@@ -69,13 +70,12 @@ class NestedContentMigrationTests(TransactionTestCase):
             },
             {
                 "type": "accordion",
-                "id": "outer-accordion",
                 "value": {
                     "title": "Раздел",
                     "content": [
                         {
                             "type": "rich_text",
-                            "id": "existing-rich-text",
+                            "id": "b9aeb9d7-9e13-4f8a-8e8b-6fcd9f1c6d0a",
                             "value": "<p>Обычный текст</p>",
                         },
                         {
@@ -332,26 +332,41 @@ class NestedContentMigrationTests(TransactionTestCase):
             "print(1)",
         )
 
-        # All newly created rich-text blocks must have stable UUIDs.
-        def assert_rich_text_ids(blocks):
+        # Every rich-text block must have a valid, unique UUID.
+        def collect_rich_text_ids(blocks):
+            result = []
             for block in blocks:
                 if block["type"] == "rich_text":
-                    self.assertTrue(block.get("id"))
+                    value = block.get("id")
+                    self.assertIsNotNone(value)
+                    self.assertEqual(str(uuid.UUID(str(value))), str(value))
+                    result.append(str(value))
                 elif block["type"] == "tabs":
                     for item in block["value"]["tabs"]:
-                        assert_rich_text_ids(item["content"])
+                        result.extend(collect_rich_text_ids(item["content"]))
                 elif block["type"] in ("callout", "accordion"):
-                    assert_rich_text_ids(block["value"]["content"])
+                    result.extend(
+                        collect_rich_text_ids(block["value"]["content"])
+                    )
+            return result
 
-        assert_rich_text_ids(page_body)
+        page_rich_text_ids = collect_rich_text_ids(page_body)
+        self.assertEqual(
+            len(page_rich_text_ids),
+            len(set(page_rich_text_ids)),
+            "Rich-text UUIDs must be unique within the page.",
+        )
 
         revision = self.get_revision(self.migrate_to)
         self.assertEqual(revision.content["body"], page_body)
 
-        # The migration must preserve matching page/revision UUIDs.
+        revision_rich_text_ids = collect_rich_text_ids(
+            revision.content["body"]
+        )
         self.assertEqual(
-            revision.content["body"][0]["value"]["tabs"][0]["content"][0]["id"],
-            page_body[0]["value"]["tabs"][0]["content"][0]["id"],
+            revision_rich_text_ids,
+            page_rich_text_ids,
+            "Page and revision must preserve all corresponding rich-text UUIDs.",
         )
 
     def test_reverse_migration_restores_original_content(self):

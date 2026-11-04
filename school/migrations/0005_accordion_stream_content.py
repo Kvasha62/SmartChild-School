@@ -5,6 +5,34 @@ import json
 import uuid
 
 
+def lock_content_tables(apps, schema_editor):
+    """Prevent page and revision writes while their snapshots are converted."""
+    connection = schema_editor.connection
+    Page = apps.get_model("wagtailcore", "Page")
+    LessonPage = apps.get_model("school", "LessonPage")
+    Revision = apps.get_model("wagtailcore", "Revision")
+    tables = sorted({
+        Page._meta.db_table,
+        LessonPage._meta.db_table,
+        Revision._meta.db_table,
+    })
+
+    with connection.cursor() as cursor:
+        for table in tables:
+            cursor.execute(
+                f"LOCK TABLE {connection.ops.quote_name(table)} "
+                "IN SHARE ROW EXCLUSIVE MODE"
+            )
+
+
+def accordion_mapping_key(block, index):
+    """Match page and revision accordions even when the legacy block has no ID."""
+    outer_id = block.get("id")
+    if outer_id not in (None, ""):
+        return ("id", str(outer_id))
+    return ("index", index)
+
+
 def decode_body(value, label):
     if isinstance(value, str):
         try:
@@ -33,8 +61,8 @@ def forward_blocks(blocks, label, nested_ids=None):
         if not isinstance(value, dict) or not isinstance(value.get("content"), str):
             raise ValueError(f"{label}: accordion {index} has unexpected content")
 
-        outer_id = block.get("id")
-        mapped = nested_ids.get(outer_id)
+        mapping_key = accordion_mapping_key(block, index)
+        mapped = nested_ids.get(mapping_key)
         if mapped is not None and mapped[0] == value["content"]:
             nested_id = mapped[1]
         else:
@@ -149,19 +177,18 @@ def collect_page_changes(
 
         if nested_ids_by_page is not None:
             page_nested_ids = {}
-            for original, updated in zip(blocks, converted):
+            for index, (original, updated) in enumerate(zip(blocks, converted)):
                 if original["type"] != "accordion":
                     continue
                 if updated["type"] != "accordion":
                     raise ValueError(
                         f"LessonPage {page_id}: accordion structure changed"
                     )
-                outer_id = original.get("id")
-                if outer_id is not None:
-                    page_nested_ids[outer_id] = (
-                        original["value"]["content"],
-                        updated["value"]["content"][0]["id"],
-                    )
+                mapping_key = accordion_mapping_key(original, index)
+                page_nested_ids[mapping_key] = (
+                    original["value"]["content"],
+                    updated["value"]["content"][0]["id"],
+                )
             nested_ids_by_page[str(page_id)] = page_nested_ids
 
         if changed:
@@ -231,6 +258,7 @@ def write_revision_changes(apps, database, changes):
 
 
 def forwards_convert_accordion_content(apps, schema_editor):
+    lock_content_tables(apps, schema_editor)
     database = schema_editor.connection.alias
 
     # Validate and prepare every page and revision before the first write.
@@ -255,6 +283,7 @@ def forwards_convert_accordion_content(apps, schema_editor):
 
 
 def backwards_convert_accordion_content(apps, schema_editor):
+    lock_content_tables(apps, schema_editor)
     database = schema_editor.connection.alias
 
     # Validate all records first. Unsupported nested blocks abort the
@@ -277,6 +306,7 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
+    atomic = True
 
     dependencies = [
         ('school', '0004_lesson_topic_tags_search_keywords'),

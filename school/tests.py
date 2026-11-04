@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import connection
 from django.test import TestCase
+from django.template.loader import render_to_string
 from django.urls import reverse
 from wagtail.contrib.redirects.models import Redirect
 from wagtail.models import PageViewRestriction, Site
@@ -1173,3 +1174,29 @@ class PublicLearningFlowTests(TestCase):
                 document.count(f'aria-controls="{panel_id}"'),
                 1,
             )
+
+
+class TabsTemplateDomIdTests(TestCase):
+    def test_tabs_without_block_id_render_unique_accessible_ids(self):
+        tabs = [
+            SimpleNamespace(title="Первая", content="Первое содержимое"),
+            SimpleNamespace(title="Вторая", content="Второе содержимое"),
+        ]
+        html = render_to_string(
+            "school/blocks/tabs.html",
+            {"self": SimpleNamespace(tabs=tabs), "page": SimpleNamespace(pk=42)},
+        )
+
+        button_ids = re.findall(r'<button\b[^>]*\bid="([^"]+)"', html)
+        panel_ids = re.findall(
+            r'<div\b[^>]*\bid="(lesson-tab-panel-[^"]+)"', html
+        )
+        controls = re.findall(r'aria-controls="([^"]+)"', html)
+        labelled_by = re.findall(r'aria-labelledby="([^"]+)"', html)
+
+        self.assertEqual(len(button_ids), 2)
+        self.assertEqual(len(button_ids), len(set(button_ids)))
+        self.assertEqual(len(panel_ids), 2)
+        self.assertEqual(len(panel_ids), len(set(panel_ids)))
+        self.assertEqual(set(controls), set(panel_ids))
+        self.assertEqual(set(labelled_by), set(button_ids))

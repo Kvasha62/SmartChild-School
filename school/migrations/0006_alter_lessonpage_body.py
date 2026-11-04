@@ -7,6 +7,26 @@ import wagtail.fields
 from django.db import migrations
 
 
+def lock_content_tables(apps, schema_editor):
+    """Prevent page and revision writes while their snapshots are converted."""
+    connection = schema_editor.connection
+    Page = apps.get_model("wagtailcore", "Page")
+    LessonPage = apps.get_model("school", "LessonPage")
+    Revision = apps.get_model("wagtailcore", "Revision")
+    tables = sorted({
+        Page._meta.db_table,
+        LessonPage._meta.db_table,
+        Revision._meta.db_table,
+    })
+
+    with connection.cursor() as cursor:
+        for table in tables:
+            cursor.execute(
+                f"LOCK TABLE {connection.ops.quote_name(table)} "
+                "IN SHARE ROW EXCLUSIVE MODE"
+            )
+
+
 MAX_CONTAINER_DEPTH = 5
 
 
@@ -397,6 +417,7 @@ def write_revision_changes(apps, database, changes):
 
 
 def forwards_convert_nested_content(apps, schema_editor):
+    lock_content_tables(apps, schema_editor)
     database = schema_editor.connection.alias
 
     # Validate and prepare every page and revision before the first write.
@@ -414,6 +435,7 @@ def forwards_convert_nested_content(apps, schema_editor):
 
 
 def backwards_convert_nested_content(apps, schema_editor):
+    lock_content_tables(apps, schema_editor)
     database = schema_editor.connection.alias
 
     # Validate every record before writing anything.
@@ -432,6 +454,7 @@ def backwards_convert_nested_content(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    atomic = True
 
     dependencies = [
         ('school', '0005_accordion_stream_content'),

@@ -1,4 +1,8 @@
 import importlib
+import json
+import uuid
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from django.test import TestCase
 
@@ -50,6 +54,66 @@ class AccordionContentMigrationTests(TestCase):
 
         self.assertTrue(changed_back)
         self.assertEqual(restored, original)
+
+    def test_missing_accordion_id_preserves_page_revision_nested_id(self):
+        legacy_body = [{
+            "type": "accordion",
+            "value": {
+                "title": "Раздел",
+                "content": "<p>Одинаковое содержимое</p>",
+            },
+        }]
+        nested_ids_by_page = {}
+
+        with patch.object(
+            self.migration,
+            "raw_page_rows",
+            return_value=(
+                [(17, json.dumps(legacy_body, ensure_ascii=False))],
+                '"school_lessonpage"',
+                '"page_ptr_id"',
+                '"body"',
+            ),
+        ):
+            page_changes, _, _, _ = self.migration.collect_page_changes(
+                apps=None,
+                schema_editor=None,
+                converter=self.migration.forward_blocks,
+                nested_ids_by_page=nested_ids_by_page,
+            )
+
+        self.assertEqual(len(page_changes), 1)
+        page_body = json.loads(page_changes[0][1])
+        page_nested_id = page_body[0]["value"]["content"][0]["id"]
+
+        revision = SimpleNamespace(
+            pk=29,
+            object_id="17",
+            content={"body": legacy_body},
+        )
+        class RevisionRows:
+            def iterator(self):
+                return iter([revision])
+
+        with patch.object(
+            self.migration,
+            "revision_queryset",
+            return_value=RevisionRows(),
+        ):
+            revision_changes = self.migration.collect_revision_changes(
+                apps=None,
+                database="default",
+                converter=self.migration.forward_blocks,
+                nested_ids_by_page=nested_ids_by_page,
+            )
+
+        self.assertEqual(len(revision_changes), 1)
+        revision_body = revision_changes[0][1]["body"]
+        revision_nested_id = revision_body[0]["value"]["content"][0]["id"]
+
+        self.assertEqual(revision_nested_id, page_nested_id)
+        self.assertEqual(str(uuid.UUID(page_nested_id)), page_nested_id)
+
 
     def test_forward_conversion_leaves_non_accordion_blocks_unchanged(self):
         original = [{
