@@ -51,6 +51,7 @@ def forward_blocks(blocks, label, nested_ids=None):
     result = []
     changed = False
     nested_ids = nested_ids or {}
+    seen_mapping_keys = set()
 
     for index, block in enumerate(blocks):
         if block["type"] != "accordion":
@@ -62,6 +63,13 @@ def forward_blocks(blocks, label, nested_ids=None):
             raise ValueError(f"{label}: accordion {index} has unexpected content")
 
         mapping_key = accordion_mapping_key(block, index)
+        if mapping_key in seen_mapping_keys:
+            raise ValueError(
+                f"{label}: duplicate accordion mapping key "
+                f"{mapping_key[1]!r} at block {index}"
+            )
+        seen_mapping_keys.add(mapping_key)
+
         mapped = nested_ids.get(mapping_key)
         if mapped is not None and mapped[0] == value["content"]:
             nested_id = mapped[1]

@@ -681,3 +681,132 @@ class NestedContentMigrationTests(TransactionTestCase):
                         blocks,
                         f"{block_type} reverse fixture",
                     )
+
+    def test_0005_forward_conversion_rejects_duplicate_accordion_ids(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0005_accordion_stream_content"
+        )
+        blocks = [
+            {
+                "type": "accordion",
+                "id": "duplicate-accordion",
+                "value": {
+                    "title": "Первый раздел",
+                    "content": "<p>Одинаковый текст</p>",
+                },
+            },
+            {
+                "type": "accordion",
+                "id": "duplicate-accordion",
+                "value": {
+                    "title": "Второй раздел",
+                    "content": "<p>Одинаковый текст</p>",
+                },
+            },
+        ]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "duplicate accordion mapping key",
+        ):
+            migration.forward_blocks(blocks, "duplicate accordion fixture")
+
+    def test_0006_forward_conversion_rejects_duplicate_sibling_identities(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        cases = [
+            (
+                "callout",
+                {"kind": "info", "content": "<p>Текст</p>"},
+            ),
+            (
+                "tabs",
+                {"tabs": []},
+            ),
+            (
+                "accordion",
+                {"title": "Раздел", "content": []},
+            ),
+        ]
+
+        for block_type, value in cases:
+            with self.subTest(block_type=block_type):
+                blocks = [
+                    {
+                        "type": block_type,
+                        "id": "duplicate-container",
+                        "value": value,
+                    },
+                    {
+                        "type": block_type,
+                        "id": "duplicate-container",
+                        "value": value,
+                    },
+                ]
+
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"duplicate {block_type} identity",
+                ):
+                    migration.forward_blocks(
+                        blocks,
+                        f"duplicate {block_type} fixture",
+                    )
+
+    def test_0006_forward_conversion_allows_same_nested_id_in_distinct_parents(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        blocks = [
+            {
+                "type": "callout",
+                "id": "parent-one",
+                "value": {
+                    "kind": "info",
+                    "content": [{
+                        "type": "callout",
+                        "id": "shared-child",
+                        "value": {
+                            "kind": "info",
+                            "content": "<p>Первый текст</p>",
+                        },
+                    }],
+                },
+            },
+            {
+                "type": "callout",
+                "id": "parent-two",
+                "value": {
+                    "kind": "info",
+                    "content": [{
+                        "type": "callout",
+                        "id": "shared-child",
+                        "value": {
+                            "kind": "info",
+                            "content": "<p>Второй текст</p>",
+                        },
+                    }],
+                },
+            },
+        ]
+
+        converted, changed = migration.forward_blocks(
+            blocks,
+            "nested duplicate IDs in separate parents",
+        )
+
+        self.assertTrue(changed)
+        first_id = (
+            converted[0]["value"]["content"][0]["value"]["content"][0]["id"]
+        )
+        second_id = (
+            converted[1]["value"]["content"][0]["value"]["content"][0]["id"]
+        )
+        self.assertNotEqual(first_id, second_id)

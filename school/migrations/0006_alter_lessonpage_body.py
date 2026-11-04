@@ -66,6 +66,7 @@ def make_rich_text_stream(value, identity):
 def forward_blocks(blocks, label, depth=0, identity="root"):
     blocks = decode_body(blocks, label)
     result = []
+    seen_block_identities = set()
 
     for index, block in enumerate(blocks):
         block_type = block["type"]
@@ -90,6 +91,12 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
         if block_id in (None, ""):
             block_id = index
         block_identity = f"{identity}/{block_type}:{block_id}"
+        if block_identity in seen_block_identities:
+            raise ValueError(
+                f"{label}: duplicate {block_type} identity "
+                f"{block_id!r} at block {index}"
+            )
+        seen_block_identities.add(block_identity)
         new_value = dict(value)
 
         if block_type == "tabs":
