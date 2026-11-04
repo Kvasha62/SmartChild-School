@@ -219,6 +219,42 @@ class NestedContentMigrationTests(TransactionTestCase):
             pk=self.revision_id
         )
 
+    def test_forward_conversion_uses_index_for_empty_container_ids(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        blocks = [
+            {
+                "type": "callout",
+                "id": None,
+                "value": {"kind": "info", "content": "<p>Первый</p>"},
+            },
+            {
+                "type": "callout",
+                "id": "",
+                "value": {"kind": "info", "content": "<p>Второй</p>"},
+            },
+        ]
+
+        converted, changed = migration.forward_blocks(
+            blocks,
+            "empty container IDs fixture",
+        )
+
+        self.assertTrue(changed)
+        first_id = converted[0]["value"]["content"][0]["id"]
+        second_id = converted[1]["value"]["content"][0]["id"]
+
+        self.assertNotEqual(first_id, second_id)
+        self.assertEqual(str(uuid.UUID(first_id)), first_id)
+        self.assertEqual(str(uuid.UUID(second_id)), second_id)
+        self.assertEqual(
+            [block["value"]["content"][0]["value"] for block in converted],
+            ["<p>Первый</p>", "<p>Второй</p>"],
+        )
+
     def test_forward_conversion_enforces_five_container_levels(self):
         import importlib
 

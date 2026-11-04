@@ -1182,21 +1182,35 @@ class TabsTemplateDomIdTests(TestCase):
             SimpleNamespace(title="Первая", content="Первое содержимое"),
             SimpleNamespace(title="Вторая", content="Второе содержимое"),
         ]
-        html = render_to_string(
-            "school/blocks/tabs.html",
-            {"self": SimpleNamespace(tabs=tabs), "page": SimpleNamespace(pk=42)},
+        context = {
+            "self": SimpleNamespace(tabs=tabs),
+            "page": SimpleNamespace(pk=42),
+        }
+        html = "".join(
+            render_to_string("school/blocks/tabs.html", context)
+            for _ in range(2)
         )
 
-        button_ids = re.findall(r'<button\b[^>]*\bid="([^"]+)"', html)
-        panel_ids = re.findall(
-            r'<div\b[^>]*\bid="(lesson-tab-panel-[^"]+)"', html
+        button_pairs = re.findall(
+            r'<button\b[^>]*\bid="([^"]+)"[^>]*'
+            r'aria-controls="([^"]+)"',
+            html,
+            re.DOTALL,
         )
-        controls = re.findall(r'aria-controls="([^"]+)"', html)
-        labelled_by = re.findall(r'aria-labelledby="([^"]+)"', html)
+        panel_pairs = re.findall(
+            r'<div\b[^>]*\bid="(lesson-tab-panel-[^"]+)"[^>]*'
+            r'aria-labelledby="([^"]+)"',
+            html,
+            re.DOTALL,
+        )
 
-        self.assertEqual(len(button_ids), 2)
+        button_ids = [button_id for button_id, _ in button_pairs]
+        panel_ids = [panel_id for panel_id, _ in panel_pairs]
+
+        self.assertEqual(len(button_pairs), 4)
         self.assertEqual(len(button_ids), len(set(button_ids)))
-        self.assertEqual(len(panel_ids), 2)
+        self.assertEqual(len(panel_pairs), 4)
         self.assertEqual(len(panel_ids), len(set(panel_ids)))
-        self.assertEqual(set(controls), set(panel_ids))
-        self.assertEqual(set(labelled_by), set(button_ids))
+
+        for button_id, panel_id in button_pairs:
+            self.assertIn((panel_id, button_id), panel_pairs)

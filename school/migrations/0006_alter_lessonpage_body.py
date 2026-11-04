@@ -86,9 +86,10 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
                 f"{label}: {block_type} {index} has invalid value"
             )
 
-        block_identity = (
-            f"{identity}/{block_type}:{block.get('id', index)}"
-        )
+        block_id = block.get("id")
+        if block_id in (None, ""):
+            block_id = index
+        block_identity = f"{identity}/{block_type}:{block_id}"
         new_value = dict(value)
 
         if block_type == "tabs":
