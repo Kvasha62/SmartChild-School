@@ -25,12 +25,21 @@ def lock_content_tables(apps, schema_editor):
             )
 
 
-def accordion_mapping_key(block, index):
-    """Match page and revision accordions even when the legacy block has no ID."""
+def accordion_mapping_key(block, index=None):
+    """Return a stable identity for matching page and revision accordions."""
     outer_id = block.get("id")
     if outer_id not in (None, ""):
         return ("id", str(outer_id))
-    return ("index", index)
+
+    value = block.get("value")
+    title = value.get("title") if isinstance(value, dict) else None
+    if not isinstance(title, str) or not title.strip():
+        raise ValueError(
+            "Accordion without an ID must have a non-empty title "
+            "for stable page and revision matching"
+        )
+
+    return ("title", title.strip())
 
 
 def decode_body(value, label):
@@ -52,6 +61,7 @@ def forward_blocks(blocks, label, nested_ids=None):
     changed = False
     nested_ids = nested_ids or {}
     seen_mapping_keys = set()
+    used_nested_mapping_keys = set()
 
     for index, block in enumerate(blocks):
         if block["type"] != "accordion":
@@ -70,8 +80,33 @@ def forward_blocks(blocks, label, nested_ids=None):
             )
         seen_mapping_keys.add(mapping_key)
 
+        matched_key = mapping_key
         mapped = nested_ids.get(mapping_key)
+
+        if mapped is None and mapping_key[0] == "title":
+            content_matches = [
+                (candidate_key, candidate)
+                for candidate_key, candidate in nested_ids.items()
+                if candidate_key[0] == "title"
+                and candidate[0] == value["content"]
+            ]
+
+            if len(content_matches) > 1:
+                raise ValueError(
+                    f"{label}: ambiguous accordion content match "
+                    f"for title {mapping_key[1]!r}"
+                )
+
+            if content_matches:
+                matched_key, mapped = content_matches[0]
+
         if mapped is not None:
+            if matched_key in used_nested_mapping_keys:
+                raise ValueError(
+                    f"{label}: accordion mapping key "
+                    f"{matched_key[1]!r} was matched more than once"
+                )
+            used_nested_mapping_keys.add(matched_key)
             nested_id = mapped[1]
         else:
             nested_id = str(uuid.uuid4())

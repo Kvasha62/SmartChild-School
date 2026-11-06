@@ -8,7 +8,6 @@ from django.utils import timezone
 
 
 class NestedContentMigrationTests(TransactionTestCase):
-    serialized_rollback = True
     migrate_from = ("school", "0005_accordion_stream_content")
     migrate_to = ("school", "0006_alter_lessonpage_body")
 
@@ -38,7 +37,6 @@ class NestedContentMigrationTests(TransactionTestCase):
         ).get_or_create(
             app_label="wagtailcore",
             model="page",
-            defaults={"name": "page"},
         )
 
         lesson_content_type, _ = ContentType.objects.using(
@@ -46,7 +44,6 @@ class NestedContentMigrationTests(TransactionTestCase):
         ).get_or_create(
             app_label="school",
             model="lessonpage",
-            defaults={"name": "lesson page"},
         )
 
         self.legacy_body = [
@@ -853,3 +850,309 @@ class NestedContentMigrationTests(TransactionTestCase):
             converted[1]["value"]["content"][0]["value"]["content"][0]["id"]
         )
         self.assertNotEqual(first_id, second_id)
+
+
+class AccordionReorderMigrationTests(TransactionTestCase):
+    def setUp(self):
+        super().setUp()
+
+        executor = MigrationExecutor(connection)
+        self.latest_targets = executor.loader.graph.leaf_nodes()
+        self.addCleanup(self.restore_migrations)
+
+        self.migration_from = (
+            "school",
+            "0004_lesson_topic_tags_search_keywords",
+        )
+        self.migration_to = (
+            "school",
+            "0005_accordion_stream_content",
+        )
+
+        executor.migrate([self.migration_from])
+        apps = executor.loader.project_state(
+            [self.migration_from]
+        ).apps
+
+        Revision = apps.get_model("wagtailcore", "Revision")
+        ContentType = apps.get_model("contenttypes", "ContentType")
+        Locale = apps.get_model("wagtailcore", "Locale")
+
+        database = connection.alias
+
+        locale, _ = Locale.objects.using(database).get_or_create(
+            language_code="ru",
+        )
+
+        page_content_type, _ = ContentType.objects.using(
+            database
+        ).get_or_create(
+            app_label="wagtailcore",
+            model="page",
+        )
+
+        lesson_content_type, _ = ContentType.objects.using(
+            database
+        ).get_or_create(
+            app_label="school",
+            model="lessonpage",
+        )
+
+        self.page_body = [
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Первый раздел",
+                    "content": "<p>Текст A</p>",
+                },
+            },
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Второй раздел",
+                    "content": "<p>Текст B</p>",
+                },
+            },
+        ]
+
+        self.revision_body = [
+            self.page_body[1],
+            self.page_body[0],
+        ]
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO wagtailcore_page (
+                    path, depth, numchild, title, slug, live,
+                    has_unpublished_changes, url_path, seo_title,
+                    show_in_menus, search_description, expired,
+                    content_type_id, locked, draft_title,
+                    translation_key, locale_id
+                )
+                VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                RETURNING id
+                """,
+                [
+                    "91000001",
+                    2,
+                    0,
+                    "Accordion reorder test",
+                    "accordion-reorder-test",
+                    False,
+                    True,
+                    "/accordion-reorder-test/",
+                    "",
+                    False,
+                    "",
+                    False,
+                    page_content_type.pk,
+                    False,
+                    "Accordion reorder test",
+                    "00000000-0000-0000-0000-000000000602",
+                    locale.pk,
+                ],
+            )
+            self.page_id = cursor.fetchone()[0]
+
+            cursor.execute(
+                """
+                INSERT INTO school_lessonpage (
+                    page_ptr_id, direction, intro, video_embed_url,
+                    body, search_keywords
+                )
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                [
+                    self.page_id,
+                    "python",
+                    "",
+                    "",
+                    json.dumps(self.page_body, ensure_ascii=False),
+                    "",
+                ],
+            )
+
+        revision = Revision.objects.using(database).create(
+            created_at=timezone.now(),
+            content={
+                "title": "Accordion reorder test",
+                "body": self.revision_body,
+            },
+            object_id=str(self.page_id),
+            content_type_id=lesson_content_type.pk,
+            base_content_type_id=lesson_content_type.pk,
+            object_str="Accordion reorder test",
+        )
+        self.revision_id = revision.pk
+
+    def restore_migrations(self):
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.latest_targets)
+
+    def test_0005_forward_conversion_matches_reordered_accordions_without_ids(self):
+        executor = MigrationExecutor(connection)
+        executor.migrate([self.migration_to])
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT body
+                FROM school_lessonpage
+                WHERE page_ptr_id = %s
+                """,
+                [self.page_id],
+            )
+            converted_page = cursor.fetchone()[0]
+
+        if isinstance(converted_page, str):
+            converted_page = json.loads(converted_page)
+
+        apps = executor.loader.project_state(
+            [self.migration_to]
+        ).apps
+        Revision = apps.get_model("wagtailcore", "Revision")
+
+        converted_revision = Revision.objects.using(
+            connection.alias
+        ).get(pk=self.revision_id).content["body"]
+
+        def nested_ids_by_text(blocks):
+            return {
+                block["value"]["content"][0]["value"]:
+                    block["value"]["content"][0]["id"]
+                for block in blocks
+            }
+
+        self.assertEqual(
+            nested_ids_by_text(converted_revision),
+            nested_ids_by_text(converted_page),
+            "Reordered ID-less accordions must retain their corresponding "
+            "nested UUIDs.",
+        )
+
+    def test_0005_forward_conversion_preserves_nested_id_when_title_changes(self):
+        executor = MigrationExecutor(connection)
+        apps = executor.loader.project_state(
+            [self.migration_from]
+        ).apps
+        Revision = apps.get_model("wagtailcore", "Revision")
+
+        revision = Revision.objects.using(connection.alias).get(
+            pk=self.revision_id
+        )
+        content = revision.content
+        content["body"][0]["value"]["title"] = "Переименованный раздел"
+        revision.content = content
+        revision.save(update_fields=["content"])
+
+        executor.migrate([self.migration_to])
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT body FROM school_lessonpage WHERE page_ptr_id = %s",
+                [self.page_id],
+            )
+            converted_page = cursor.fetchone()[0]
+
+        if isinstance(converted_page, str):
+            converted_page = json.loads(converted_page)
+
+        apps = executor.loader.project_state(
+            [self.migration_to]
+        ).apps
+        Revision = apps.get_model("wagtailcore", "Revision")
+        converted_revision = Revision.objects.using(
+            connection.alias
+        ).get(pk=self.revision_id).content["body"]
+
+        page_ids_by_text = {
+            block["value"]["content"][0]["value"]:
+                block["value"]["content"][0]["id"]
+            for block in converted_page
+        }
+        revision_ids_by_text = {
+            block["value"]["content"][0]["value"]:
+                block["value"]["content"][0]["id"]
+            for block in converted_revision
+        }
+
+        self.assertEqual(page_ids_by_text, revision_ids_by_text)
+
+    def test_0005_forward_conversion_rejects_ambiguous_content_match(self):
+        executor = MigrationExecutor(connection)
+        apps = executor.loader.project_state(
+            [self.migration_from]
+        ).apps
+        Revision = apps.get_model("wagtailcore", "Revision")
+
+        duplicate_content = "<p>Одинаковое содержимое</p>"
+        ambiguous_page_body = [
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Первый раздел",
+                    "content": duplicate_content,
+                },
+            },
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Второй раздел",
+                    "content": duplicate_content,
+                },
+            },
+        ]
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE school_lessonpage
+                SET body = %s
+                WHERE page_ptr_id = %s
+                """,
+                [
+                    json.dumps(ambiguous_page_body, ensure_ascii=False),
+                    self.page_id,
+                ],
+            )
+
+        revision = Revision.objects.using(connection.alias).get(
+            pk=self.revision_id
+        )
+        content = revision.content
+        content["body"] = [
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Новое название",
+                    "content": duplicate_content,
+                },
+            },
+        ]
+        revision.content = content
+        revision.save(update_fields=["content"])
+
+        with self.assertRaisesRegex(ValueError, "ambiguous accordion content match"):
+            executor.migrate([self.migration_to])
+
+        # Restore valid fixtures so tearDown can migrate the database forward.
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE school_lessonpage
+                SET body = %s
+                WHERE page_ptr_id = %s
+                """,
+                [
+                    json.dumps(self.page_body, ensure_ascii=False),
+                    self.page_id,
+                ],
+            )
+
+        content["body"] = self.revision_body
+        revision.content = content
+        revision.save(update_fields=["content"])
