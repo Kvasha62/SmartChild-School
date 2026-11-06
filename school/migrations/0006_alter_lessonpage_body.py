@@ -89,7 +89,58 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
 
         block_id = block.get("id")
         if block_id in (None, ""):
-            block_id = index
+            if block_type == "accordion":
+                title = value.get("title")
+                if not isinstance(title, str) or not title.strip():
+                    raise ValueError(
+                        f"{label}: ID-less accordion {index} "
+                        "must have a non-empty title for stable identity"
+                    )
+                block_id = f"title:{json.dumps(title.strip(), ensure_ascii=False)}"
+
+            elif block_type == "callout":
+                kind = value.get("kind")
+                if not isinstance(kind, str) or not kind.strip():
+                    raise ValueError(
+                        f"{label}: ID-less callout {index} "
+                        "must have a non-empty kind for stable identity"
+                    )
+                block_id = f"kind:{json.dumps(kind.strip(), ensure_ascii=False)}"
+
+            else:
+                items = value.get("tabs")
+                if not isinstance(items, list):
+                    raise ValueError(
+                        f"{label}: ID-less tabs {index} has invalid tabs list"
+                    )
+
+                titles = []
+                for item_index, item in enumerate(items):
+                    if not isinstance(item, dict):
+                        raise ValueError(
+                            f"{label}: tabs {index}, item {item_index} "
+                            "has invalid structure"
+                        )
+                    title = item.get("title")
+                    if not isinstance(title, str) or not title.strip():
+                        raise ValueError(
+                            f"{label}: tabs {index}, item {item_index} "
+                            "must have a non-empty title for stable identity"
+                        )
+                    titles.append(title.strip())
+
+                if len(titles) != len(set(titles)):
+                    raise ValueError(
+                        f"{label}: ID-less tabs {index} "
+                        "contains duplicate tab titles"
+                    )
+
+                block_id = "titles:" + json.dumps(
+                    sorted(titles),
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+
         block_identity = f"{identity}/{block_type}:{block_id}"
         if block_identity in seen_block_identities:
             raise ValueError(

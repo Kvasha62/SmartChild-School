@@ -216,7 +216,143 @@ class NestedContentMigrationTests(TransactionTestCase):
             pk=self.revision_id
         )
 
-    def test_forward_conversion_uses_index_for_empty_container_ids(self):
+    def test_forward_conversion_uses_stable_identity_for_idless_accordions(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+
+        first_order = [
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Первый раздел",
+                    "content": [{
+                        "type": "callout",
+                        "value": {
+                            "kind": "info",
+                            "content": "<p>Текст A</p>",
+                        },
+                    }],
+                },
+            },
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Второй раздел",
+                    "content": [{
+                        "type": "callout",
+                        "value": {
+                            "kind": "warning",
+                            "content": "<p>Текст B</p>",
+                        },
+                    }],
+                },
+            },
+        ]
+        second_order = list(reversed(first_order))
+
+        converted_first, _ = migration.forward_blocks(
+            first_order, "first accordion order"
+        )
+        converted_second, _ = migration.forward_blocks(
+            second_order, "second accordion order"
+        )
+
+        def ids_by_title(blocks):
+            return {
+                block["value"]["title"]:
+                    block["value"]["content"][0]["value"]["content"][0]["id"]
+                for block in blocks
+            }
+
+        first_ids = ids_by_title(converted_first)
+        second_ids = ids_by_title(converted_second)
+
+        self.assertEqual(first_ids, second_ids)
+        self.assertEqual(set(first_ids), {"Первый раздел", "Второй раздел"})
+        self.assertNotEqual(
+            first_ids["Первый раздел"],
+            first_ids["Второй раздел"],
+        )
+
+    def test_forward_conversion_preserves_ids_for_idless_tabs_after_reordering(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+
+        first_order = [{
+            "type": "tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Первая", "content": "<p>Текст A</p>"},
+                    {"title": "Вторая", "content": "<p>Текст B</p>"},
+                ],
+            },
+        }]
+        second_order = [{
+            "type": "tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Вторая", "content": "<p>Изменённый текст B</p>"},
+                    {"title": "Первая", "content": "<p>Изменённый текст A</p>"},
+                ],
+            },
+        }]
+
+        converted_first, _ = migration.forward_blocks(
+            first_order, "first ID-less tabs order"
+        )
+        converted_second, _ = migration.forward_blocks(
+            second_order, "second ID-less tabs order"
+        )
+
+        def ids_by_title(blocks):
+            return {
+                item["title"]: item["content"][0]["id"]
+                for item in blocks[0]["value"]["tabs"]
+            }
+
+        self.assertEqual(
+            ids_by_title(converted_first),
+            ids_by_title(converted_second),
+        )
+
+    def test_forward_conversion_rejects_duplicate_idless_accordion_titles(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        blocks = [
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Одинаковый раздел",
+                    "content": [],
+                },
+            },
+            {
+                "type": "accordion",
+                "value": {
+                    "title": "Одинаковый раздел",
+                    "content": [],
+                },
+            },
+        ]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "duplicate accordion identity",
+        ):
+            migration.forward_blocks(
+                blocks, "duplicate ID-less accordion titles"
+            )
+
+    def test_forward_conversion_rejects_ambiguous_idless_callouts(self):
         import importlib
 
         migration = importlib.import_module(
@@ -225,32 +361,21 @@ class NestedContentMigrationTests(TransactionTestCase):
         blocks = [
             {
                 "type": "callout",
-                "id": None,
                 "value": {"kind": "info", "content": "<p>Первый</p>"},
             },
             {
                 "type": "callout",
-                "id": "",
                 "value": {"kind": "info", "content": "<p>Второй</p>"},
             },
         ]
 
-        converted, changed = migration.forward_blocks(
-            blocks,
-            "empty container IDs fixture",
-        )
-
-        self.assertTrue(changed)
-        first_id = converted[0]["value"]["content"][0]["id"]
-        second_id = converted[1]["value"]["content"][0]["id"]
-
-        self.assertNotEqual(first_id, second_id)
-        self.assertEqual(str(uuid.UUID(first_id)), first_id)
-        self.assertEqual(str(uuid.UUID(second_id)), second_id)
-        self.assertEqual(
-            [block["value"]["content"][0]["value"] for block in converted],
-            ["<p>Первый</p>", "<p>Второй</p>"],
-        )
+        with self.assertRaisesRegex(
+            ValueError,
+            "duplicate callout identity",
+        ):
+            migration.forward_blocks(
+                blocks, "ambiguous ID-less callouts"
+            )
 
     def test_forward_conversion_preserves_tab_ids_after_reordering(self):
         import importlib
