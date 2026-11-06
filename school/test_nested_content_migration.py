@@ -682,6 +682,49 @@ class NestedContentMigrationTests(TransactionTestCase):
                         f"{block_type} reverse fixture",
                     )
 
+    def test_0005_forward_conversion_preserves_nested_id_when_revision_content_differs(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0005_accordion_stream_content"
+        )
+        existing_nested_id = str(uuid.uuid4())
+        page_text = "<p>Текст страницы</p>"
+        revision_text = "<p>Изменённый текст ревизии</p>"
+
+        blocks = [
+            {
+                "type": "accordion",
+                "id": "same-accordion-id",
+                "value": {
+                    "title": "Раздел",
+                    "content": revision_text,
+                },
+            },
+        ]
+        nested_ids = {
+            ("id", "same-accordion-id"): (
+                page_text,
+                existing_nested_id,
+            ),
+        }
+
+        converted, changed = migration.forward_blocks(
+            blocks,
+            "revision fixture",
+            nested_ids,
+        )
+
+        self.assertTrue(changed)
+        self.assertEqual(
+            converted[0]["value"]["content"][0]["id"],
+            existing_nested_id,
+        )
+        self.assertEqual(
+            converted[0]["value"]["content"][0]["value"],
+            revision_text,
+        )
+
     def test_0005_forward_conversion_rejects_duplicate_accordion_ids(self):
         import importlib
 

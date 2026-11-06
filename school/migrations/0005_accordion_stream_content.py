@@ -71,7 +71,7 @@ def forward_blocks(blocks, label, nested_ids=None):
         seen_mapping_keys.add(mapping_key)
 
         mapped = nested_ids.get(mapping_key)
-        if mapped is not None and mapped[0] == value["content"]:
+        if mapped is not None:
             nested_id = mapped[1]
         else:
             nested_id = str(uuid.uuid4())
