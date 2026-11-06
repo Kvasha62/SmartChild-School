@@ -107,6 +107,7 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
                 )
 
             new_items = []
+            seen_tab_identities = set()
 
             for item_index, item in enumerate(items):
                 if not isinstance(item, dict):
@@ -121,8 +122,25 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
                         "must contain title and content"
                     )
 
+                tab_title = item["title"]
+                if not isinstance(tab_title, str) or not tab_title.strip():
+                    raise ValueError(
+                        f"{label}: tabs {index}, item {item_index} "
+                        "must have a non-empty title for stable identity"
+                    )
+
+                tab_title = tab_title.strip()
+                if tab_title in seen_tab_identities:
+                    raise ValueError(
+                        f"{label}: duplicate tab identity "
+                        f"{tab_title!r} in tabs {index}"
+                    )
+                seen_tab_identities.add(tab_title)
+
                 content = item["content"]
-                item_identity = f"{block_identity}/item:{item_index}"
+                item_identity = (
+                    f"{block_identity}/tab:{json.dumps(tab_title, ensure_ascii=False)}"
+                )
 
                 if isinstance(content, str):
                     converted_content = make_rich_text_stream(

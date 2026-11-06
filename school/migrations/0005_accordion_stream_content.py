@@ -56,7 +56,7 @@ def decode_body(value, label):
     return value
 
 
-def forward_blocks(blocks, label, nested_ids=None):
+def forward_blocks(blocks, label, nested_ids=None, page_identity=None):
     result = []
     changed = False
     nested_ids = nested_ids or {}
@@ -109,7 +109,22 @@ def forward_blocks(blocks, label, nested_ids=None):
             used_nested_mapping_keys.add(matched_key)
             nested_id = mapped[1]
         else:
-            nested_id = str(uuid.uuid4())
+            if page_identity is None:
+                nested_id = str(uuid.uuid4())
+            else:
+                identity = json.dumps(
+                    [
+                        str(page_identity),
+                        mapping_key[0],
+                        mapping_key[1],
+                    ],
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+                nested_id = str(uuid.uuid5(
+                    uuid.NAMESPACE_URL,
+                    f"smartchild:0005:{identity}",
+                ))
 
         new_value = dict(value)
         new_value["content"] = [{
@@ -216,7 +231,11 @@ def collect_page_changes(
 
     for page_id, raw_body in rows:
         blocks = decode_body(raw_body, f"LessonPage {page_id}")
-        converted, changed = converter(blocks, f"LessonPage {page_id}")
+        converted, changed = converter(
+            blocks,
+            f"LessonPage {page_id}",
+            page_identity=str(page_id),
+        )
 
         if nested_ids_by_page is not None:
             page_nested_ids = {}
@@ -265,7 +284,10 @@ def collect_revision_changes(
                 str(revision.object_id), {}
             )
             converted, changed = converter(
-                blocks, f"Revision {revision.pk}", page_nested_ids
+                blocks,
+                f"Revision {revision.pk}",
+                page_nested_ids,
+                page_identity=str(revision.object_id),
             )
 
         if changed:

@@ -252,6 +252,92 @@ class NestedContentMigrationTests(TransactionTestCase):
             ["<p>Первый</p>", "<p>Второй</p>"],
         )
 
+    def test_forward_conversion_preserves_tab_ids_after_reordering(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+
+        first_order = [{
+            "type": "tabs",
+            "id": "stable-tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Первая", "content": "<p>Текст A</p>"},
+                    {"title": "Вторая", "content": "<p>Текст B</p>"},
+                ],
+            },
+        }]
+        second_order = [{
+            "type": "tabs",
+            "id": "stable-tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Вторая", "content": "<p>Изменённый текст B</p>"},
+                    {"title": "Первая", "content": "<p>Изменённый текст A</p>"},
+                ],
+            },
+        }]
+
+        converted_first, _ = migration.forward_blocks(
+            first_order, "first tab order"
+        )
+        converted_second, _ = migration.forward_blocks(
+            second_order, "second tab order"
+        )
+
+        def ids_by_title(blocks):
+            return {
+                item["title"]: item["content"][0]["id"]
+                for item in blocks[0]["value"]["tabs"]
+            }
+
+        first_ids = ids_by_title(converted_first)
+        second_ids = ids_by_title(converted_second)
+
+        self.assertEqual(first_ids, second_ids)
+        self.assertNotEqual(first_ids["Первая"], first_ids["Вторая"])
+
+    def test_forward_conversion_rejects_ambiguous_tab_titles(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        blocks = [{
+            "type": "tabs",
+            "id": "ambiguous-tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Повтор", "content": "<p>Первый</p>"},
+                    {"title": "Повтор", "content": "<p>Второй</p>"},
+                ],
+            },
+        }]
+
+        with self.assertRaisesRegex(ValueError, "duplicate tab identity"):
+            migration.forward_blocks(blocks, "duplicate tab titles")
+
+    def test_forward_conversion_rejects_empty_tab_title(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+        blocks = [{
+            "type": "tabs",
+            "id": "empty-title-tabs",
+            "value": {
+                "tabs": [
+                    {"title": "  ", "content": "<p>Текст</p>"},
+                ],
+            },
+        }]
+
+        with self.assertRaisesRegex(ValueError, "non-empty title"):
+            migration.forward_blocks(blocks, "empty tab title")
+
     def test_forward_conversion_enforces_five_container_levels(self):
         import importlib
 
@@ -721,6 +807,47 @@ class NestedContentMigrationTests(TransactionTestCase):
             converted[0]["value"]["content"][0]["value"],
             revision_text,
         )
+
+    def test_0005_forward_conversion_uses_page_scoped_stable_fallback_id(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0005_accordion_stream_content"
+        )
+        blocks = [{
+            "type": "accordion",
+            "id": "removed-from-current-page",
+            "value": {
+                "title": "Исторический раздел",
+                "content": "<p>Старая версия</p>",
+            },
+        }]
+
+        first, changed_first = migration.forward_blocks(
+            blocks,
+            "first historical revision",
+            page_identity="12345",
+        )
+        second, changed_second = migration.forward_blocks(
+            blocks,
+            "second historical revision",
+            page_identity="12345",
+        )
+        another_page, _ = migration.forward_blocks(
+            blocks,
+            "another page revision",
+            page_identity="67890",
+        )
+
+        first_id = first[0]["value"]["content"][0]["id"]
+        second_id = second[0]["value"]["content"][0]["id"]
+        another_page_id = another_page[0]["value"]["content"][0]["id"]
+
+        self.assertTrue(changed_first)
+        self.assertTrue(changed_second)
+        self.assertEqual(first_id, second_id)
+        self.assertNotEqual(first_id, another_page_id)
+        self.assertEqual(str(uuid.UUID(first_id)), first_id)
 
     def test_0005_forward_conversion_rejects_duplicate_accordion_ids(self):
         import importlib
