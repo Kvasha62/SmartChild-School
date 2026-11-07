@@ -16,7 +16,6 @@ def make_content_stream(depth=0):
             "rich_text",
             blocks.RichTextBlock(
                 label="Текст",
-                features=RICH_TEXT_FEATURES,
             ),
         ),
         ("code", CodeBlock(label="Фрагмент кода")),

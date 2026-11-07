@@ -321,6 +321,58 @@ class NestedContentMigrationTests(TransactionTestCase):
             ids_by_title(converted_second),
         )
 
+    def test_forward_conversion_preserves_ids_for_idless_tabs_after_list_changes(self):
+        import importlib
+
+        migration = importlib.import_module(
+            "school.migrations.0006_alter_lessonpage_body"
+        )
+
+        original = [{
+            "type": "tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Первая", "content": "<p>Текст A</p>"},
+                    {"title": "Вторая", "content": "<p>Текст B</p>"},
+                ],
+            },
+        }]
+
+        changed = [{
+            "type": "tabs",
+            "value": {
+                "tabs": [
+                    {"title": "Первая", "content": "<p>Обновлённый текст A</p>"},
+                    {"title": "Третья", "content": "<p>Новый текст C</p>"},
+                ],
+            },
+        }]
+
+        converted_original, _ = migration.forward_blocks(
+            original, "original ID-less tabs"
+        )
+        converted_changed, _ = migration.forward_blocks(
+            changed, "changed ID-less tabs"
+        )
+
+        def ids_by_title(blocks):
+            return {
+                item["title"]: item["content"][0]["id"]
+                for item in blocks[0]["value"]["tabs"]
+            }
+
+        original_ids = ids_by_title(converted_original)
+        changed_ids = ids_by_title(converted_changed)
+
+        self.assertEqual(
+            original_ids["Первая"],
+            changed_ids["Первая"],
+        )
+        self.assertNotEqual(
+            original_ids["Вторая"],
+            changed_ids["Третья"],
+        )
+
     def test_forward_conversion_rejects_duplicate_idless_accordion_titles(self):
         import importlib
 

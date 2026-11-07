@@ -135,11 +135,7 @@ def forward_blocks(blocks, label, depth=0, identity="root"):
                         "contains duplicate tab titles"
                     )
 
-                block_id = "titles:" + json.dumps(
-                    sorted(titles),
-                    ensure_ascii=False,
-                    separators=(",", ":"),
-                )
+                block_id = "idless"
 
         block_identity = f"{identity}/{block_type}:{block_id}"
         if block_identity in seen_block_identities:
