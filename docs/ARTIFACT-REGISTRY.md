@@ -20,20 +20,20 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 
 | Артефакт | Назначение | Статус |
 |---|---|---|
-| [`AGENTS.md`](../AGENTS.md) | Общие инструкции для всех AI-исполнителей | Предложено; в PR №PR_NUMBER_PLACEHOLDER; не одобрено владельцем |
-| [Инструкции Copilot](../.github/copilot-instructions.md) | Требование следовать общим инструкциям | Предложено; в PR №PR_NUMBER_PLACEHOLDER; не одобрено владельцем |
-| [WORK-LOG](WORK-LOG.md) | История выполненных работ | Предложено; в PR №PR_NUMBER_PLACEHOLDER; не одобрено владельцем |
-| [HANDOVER](HANDOVER.md) | Актуальное состояние и следующая точка продолжения | Предложено; в PR №PR_NUMBER_PLACEHOLDER; не одобрено владельцем |
+| [`AGENTS.md`](../AGENTS.md) | Общие инструкции для всех AI-исполнителей | Предложено; в PR №96; не одобрено владельцем |
+| [Инструкции Copilot](../.github/copilot-instructions.md) | Требование следовать общим инструкциям | Предложено; в PR №96; не одобрено владельцем |
+| [WORK-LOG](WORK-LOG.md) | История выполненных работ | Предложено; в PR №96; не одобрено владельцем |
+| [HANDOVER](HANDOVER.md) | Актуальное состояние и следующая точка продолжения | Предложено; в PR №96; не одобрено владельцем |
 | [README](../README.md) | Навигация к новым процессным документам | Существующий документ обновлён; предложение явно обозначено |
-| Отчёт о внедрении — полный текст в [PR №PR_NUMBER_PLACEHOLDER](PR_URL_PLACEHOLDER) | Результаты документальной проверки предложения | В репозитории постоянным файлом не хранится (L-02) |
+| Отчёт о внедрении — полный текст в [PR №96](https://github.com/Kvasha62/SmartChild-School/pull/96) | Результаты документальной проверки предложения | В репозитории постоянным файлом не хранится (L-02) |
 
 | Путь | Размер, байт | SHA-256 |
 |---|---:|---|
 | `AGENTS.md` | 7459 | `3b3d9c1fe157ff4ac2b963d4b89f7b59d3a76d7b149c0afed4d8844b2c7bd528` |
 | `.github/copilot-instructions.md` | 856 | `a9c74fbef96754f45c5948b7225503db6706b23905d779346d88ebefb25a5808` |
-| `docs/WORK-LOG.md` | 5224 | `c3d43f61493e96c1eba130514fb23f47c4c787013c13bdf9a29fd3f0fa847fc2` |
-| `docs/HANDOVER.md` | 5924 | `4c1af80542d1cfcd4b0fefec556fc6f51bc9f926a71479e2c4d561c49f1ea4f8` |
-| `README.md` | 7843 | `fcf90e5776224e87357436ee63c143e3f1bac82e9143baacdf2e399c71e9046e` |
+| `docs/WORK-LOG.md` | 5240 | `a69f8de490d18b95752b0d0f795d2f005e0c7a21d8cbe161362c55e5cefc5e26` |
+| `docs/HANDOVER.md` | 5937 | `a9a87d02243f43e3b166049a1d539692e9543c3c3929e1166da34e993325d26a` |
+| `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
 
 Сам реестр в своей таблице не хешируется, чтобы избежать самоссылочной

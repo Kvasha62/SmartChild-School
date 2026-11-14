@@ -15,7 +15,7 @@
   подтверждение L-02 и документальный PR; принятие протокола, реализация и
   production не разрешены.
 - **Объём:** документация; ветка `docs/l02-continuity-report`;
-  PR [№PR_NUMBER_PLACEHOLDER](PR_URL_PLACEHOLDER).
+  PR [№96](https://github.com/Kvasha62/SmartChild-School/pull/96).
 - **Выполнено:** добавлены `AGENTS.md`, `.github/copilot-instructions.md`,
   `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md`, `docs/HANDOVER.md` и
   навигационные ссылки в `README.md`; полный текст отчёта размещён в
