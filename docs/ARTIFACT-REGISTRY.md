@@ -17,14 +17,23 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 зафиксировано в `docs/HANDOVER.md`, `docs/WORK-LOG.md`,
 `docs/decisions/README.md` и описании PR.
 
+## Завершение PR #96
+
+PR №96 слит squash-коммитом `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`
+2026-11-14T08:41:33Z после окончательного подтверждения владельцем HEAD
+`391ba7659f86d8beff100a2593c0ee664b75dffc` и состава из семи документальных
+файлов. Pre-merge CI run `43565878743` и post-merge CI run `43577018599` —
+success. Issue #43 остаётся open. Merge публикует документы как предложение и
+не означает принятие протокола, реализацию или production.
+
 ## Протокол непрерывности — предложение от 2026-11-14
 
 | Артефакт | Назначение | Статус |
 |---|---|---|
-| [`AGENTS.md`](../AGENTS.md) | Общие инструкции для всех AI-исполнителей | Предложено; в PR №96; не одобрено владельцем |
-| [Инструкции Copilot](../.github/copilot-instructions.md) | Требование следовать общим инструкциям | Предложено; в PR №96; не одобрено владельцем |
-| [WORK-LOG](WORK-LOG.md) | История выполненных работ | Предложено; в PR №96; не одобрено владельцем |
-| [HANDOVER](HANDOVER.md) | Актуальное состояние и следующая точка продолжения | Предложено; в PR №96; не одобрено владельцем |
+| [`AGENTS.md`](../AGENTS.md) | Общие инструкции для всех AI-исполнителей | Слито в main как предложение; владельцем не принято |
+| [Инструкции Copilot](../.github/copilot-instructions.md) | Требование следовать общим инструкциям | Слито в main как предложение; владельцем не принято |
+| [WORK-LOG](WORK-LOG.md) | История выполненных работ | Слито в main; журнал завершения PR №96 |
+| [HANDOVER](HANDOVER.md) | Актуальное состояние и следующая точка продолжения | Слито в main; актуальная точка продолжения |
 | [README](../README.md) | Навигация к новым процессным документам | Существующий документ обновлён; предложение явно обозначено |
 | Отчёт о внедрении — полный текст в [PR №96](https://github.com/Kvasha62/SmartChild-School/pull/96) | Результаты документальной проверки предложения | В репозитории постоянным файлом не хранится (L-02) |
 
@@ -32,8 +41,8 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 8426 | `32094cb07242a26eabb858f102beb360effc5867ea10f0ecf30fd8239ffa873e` |
-| `docs/HANDOVER.md` | 7635 | `ae0b92ad9cedc52c9d0c7c2a6835e505d13d45405747b2577bf06a8c8699a2a7` |
+| `docs/WORK-LOG.md` | 10224 | `8f9e673c48ef981fd65439d15f2fec6e13398d1d84c6da8c0410ff2f715901c7` |
+| `docs/HANDOVER.md` | 7878 | `a1e2c61cf001545d59e5635bc7dc85b53e5d08de42ec5f9dc12f795c6bffc64a` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 15374 | `dab47ab7c2035b27ca83f31588c3010f149c9a1b2d09ec9c9c17fc5b5d8c82ba` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
