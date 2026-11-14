@@ -11,10 +11,11 @@
 `4aa70b655f348404b62c33882bc5ee7e6f686265` и разрешил подготовить один PR с
 полным текстом отчёта о внедрении. Объём: подтверждение действующей
 редакции L-02 и один документальный PR; принятие протокола, реализация и
-production не разрешены. Запись L-02 в `docs/decisions/README.md` не
-изменялась, чтобы не создавать новую редакцию, требующую отдельного
-подтверждения по SHA. Подтверждение зафиксировано в `docs/HANDOVER.md`,
-`docs/WORK-LOG.md` и описании PR.
+production не разрешены. Запись L-02 в `docs/decisions/README.md` дополнена
+отдельной канонической записью от 2026-11-14 для указанного SHA;
+первоначальная запись для `b8a146da…` не изменена. Подтверждение
+зафиксировано в `docs/HANDOVER.md`, `docs/WORK-LOG.md`,
+`docs/decisions/README.md` и описании PR.
 
 ## Протокол непрерывности — предложение от 2026-11-14
 
@@ -29,12 +30,18 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 
 | Путь | Размер, байт | SHA-256 |
 |---|---:|---|
-| `AGENTS.md` | 7459 | `3b3d9c1fe157ff4ac2b963d4b89f7b59d3a76d7b149c0afed4d8844b2c7bd528` |
-| `.github/copilot-instructions.md` | 856 | `a9c74fbef96754f45c5948b7225503db6706b23905d779346d88ebefb25a5808` |
-| `docs/WORK-LOG.md` | 5240 | `a69f8de490d18b95752b0d0f795d2f005e0c7a21d8cbe161362c55e5cefc5e26` |
-| `docs/HANDOVER.md` | 5937 | `a9a87d02243f43e3b166049a1d539692e9543c3c3929e1166da34e993325d26a` |
+| `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
+| `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
+| `docs/WORK-LOG.md` | 8426 | `32094cb07242a26eabb858f102beb360effc5867ea10f0ecf30fd8239ffa873e` |
+| `docs/HANDOVER.md` | 7635 | `ae0b92ad9cedc52c9d0c7c2a6835e505d13d45405747b2577bf06a8c8699a2a7` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
-| `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
+| `docs/decisions/README.md` | 15374 | `dab47ab7c2035b27ca83f31588c3010f149c9a1b2d09ec9c9c17fc5b5d8c82ba` |
+| `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
+
+Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
+копии: в PR и чистом checkout этого файла нет. Проверяемый по L-02 полный
+текст находится в описании PR №96; его размер и SHA-256 совпадают с
+указанными.
 
 Сам реестр в своей таблице не хешируется, чтобы избежать самоссылочной
 контрольной суммы. Его размер и SHA-256 сообщаются после завершения
