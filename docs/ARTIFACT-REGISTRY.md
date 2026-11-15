@@ -36,13 +36,13 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 25448 | `bdc3cecb489db9550eca4559835cc1a64d32cdd46480a28f992b1e929d3aaece` |
-| `docs/HANDOVER.md` | 24084 | `00ad3bda85292ccbad13e21f3e6f7baecee8293ec90ba74bdfd968334cd4e172` |
+| `docs/WORK-LOG.md` | 25979 | `f95b74c91f272865c8b951fa12c55b8bb068b4fd53b8058eee61549b7bd8baa1` |
+| `docs/HANDOVER.md` | 24625 | `9a473c94246cc9cff23b62a262f57beda72f5d7a195c0d6afc582d86fe4214b2` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
 | `docs/smartchild-issue43-owner-responses-template.txt` | 18115 | `7c54bee097510ac53d7f27040b3dea4ce09dd6fc66b7d7034337f9f141d1bf1f` |
-| `docs/issue43-closure-confirmation-2026-11-15.md` | 15850 | `9b120aa02728ade83f116e8b6e576800192f197b8f8860192f25191779b1cc0d` |
+| `docs/issue43-closure-confirmation-2026-11-15.md` | 16585 | `a2f211b855639bf4590c54c1755c8395db8f665cb7a61160854b1619a451e3c7` |
 
 Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
 копии: в PR и чистом checkout этого файла нет. Проверяемый по L-02 полный
