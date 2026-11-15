@@ -1,0 +1,154 @@
+# SMARTCHILD ISSUE #43 — OWNER RESPONSES TEMPLATE
+# Template Date: 2026-11-15
+# Purpose: Record owner's decisions on all 6 checklist items
+# Status: TEMPLATE — not filled; all fields to be completed by owner
+
+## Template for Recording Owner Decisions — Issue #43
+
+This template is to be completed by the project owner to document their decisions on the 6 questions from the Issue #43 owner decision draft. Each question must be answered explicitly; absence of response does not constitute agreement or approval.
+
+---
+
+## Question 1: Current main SHA verification
+
+**Решение Б:** повторно проверить актуальный SHA main перед дальнейшими действиями.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуются"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 2: PR #36 report currency
+
+**Решение В:** повторно проверить только выводы, способные повлиять на дальнейшие решения по Issue #43. Остальные выводы считать историческим контекстом.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуются"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 3: Owner decisions list compilation
+
+**Решение Б:** разрешены документальные проверки, актуализация WORK-LOG, HANDOVER, ARTIFACT-REGISTRY и подготовка предложений по дальнейшим действиям.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 4: Permissible vs. required actions separation
+
+**Решение А:** сначала повторно проверить актуальный SHA main; затем выборочно проверить значимые выводы PR #36; затем обновить документацию; подготовить итоговый отчёт.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 5: Recommended action order (Steps 1-8 framework)
+
+**Решение А — сохранить без изменений:**
+- L-02 не менять без отдельного решения владельца;
+- NR-01 не начинать без отдельного разрешения;
+- требования MVP-001 не изменять;
+- Issue #43 не закрывать автоматически;
+- функциональную разработку и production deployment не выполнять.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 6: Changes within agreed action only
+
+**Решение А — дополнительных разрешений нет. Допустимы только действия, прямо указанные в решениях 1–4.
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуемые"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## General Instructions for Owner
+
+1. **Read the independent review verdict** (PASS) and the confirmed facts section of the owner package before making decisions.
+
+2. **Answer each question explicitly.** Leaving a field blank or writing "не решено" without further specification does not count as agreement.
+
+3. **Each question requires a separate decision.** Do not combine answers across multiple questions in a single field.
+
+4. **Technical readiness ≠ owner resolution.** Completing this template does not constitute:
+   - Closure of Issue #43
+   - Change of L-02 status
+   - Start of NR-01
+   - Change of MVP-001 product requirements
+
+5. **All constraints remain in effect** until explicitly modified by the owner through this process:
+   - Issue #43 cannot be closed without explicit decision in this template
+   - L-02 status cannot change without new owner decision SHA
+   - NR-01 cannot start without separate owner permission
+   - Product requirements (Issue #4 / MVP-001) cannot change automatically
+
+6. **After completion:** Save this filled template in the project repository. Update WORK-LOG, HANDOVER, and ARTIFACT-REGISTRY with the new records. Issue #43 can then be closed with documented SHA values.
+
+---
+
+## Reference Files (do not modify)
+
+- `/tmp/smartchild-issue43-owner-decision-draft.txt` — original decision draft (21049 bytes, SHA-256 `a55957e683afc78b7df80c981bba5cf25c89f7e67051061091d0bd6997d0e5ef`)
+- `/tmp/smartchild-issue43-draft-independent-review.txt` — independent review (15882 bytes, SHA-256 `0788714fd154cd12145bdfcc9ab2155baf394adc690d52700c49c45e08528b6d`)
+- `/tmp/smartchild-issue43-independent-audit.txt` — independent audit (15215 bytes, SHA-256 `065cf2b0b1ca76128509fd3d27379b573cf5d39ecbe2a2e2a8c579b21305384d`)
+- `docs/smartchild-issue43-owner-package.txt` — final package for owner consideration (7968 bytes, SHA-256 `32d633fe7a1aa9672e4c11988a017d27fc9c620b6eaf9c1bd7ce6f106a989f5a`)
+
+---
+
+## Решение №7 — закрытие Issue #43 (зафиксировано 2026-11-15)
+
+**Происхождение:** явное решение владельца, **уже данное** в проектной переписке 2026-11-15 (вариант 1 — закрыть Issue #43 с пояснением, что документальная цель достигнута). Запись вводится для устранения формального ограничения решения №6 («допустимы только действия, прямо указанные в решениях 1–4») и **не является новым решением, полученным от владельца**.
+
+**Решение:** закрыть Issue #43 с пояснением, что документальная цель достигнута.
+
+**Основание:** `docs/issue43-closure-authority-check-2026-11-15.md` — вывод «разрешение владельца достаточно»; вердикт независимого аудита `B. READY WITH LIMITATIONS` (`docs/issue43-independent-final-audit-2026-11-15.md`).
+
+**Дополнительные условия:** в итоговом комментарии к Issue указать вердикт аудита, сохранение L-02 без изменений, отсутствие запуска NR-01, неизменность MVP-001 и ссылку на итоговый аудит.
+
+**Разрешённые действия:** публикация одного итогового комментария в Issue #43; закрытие Issue #43 с причиной `completed`; запись подтверждения в WORK-LOG, ARTIFACT-REGISTRY, HANDOVER.
+
+**Запрещённые действия:** изменение L-02, запуск NR-01, изменение требований MVP-001, изменение других Issues и PR, функциональная разработка, deployment, commit/push/merge.
+
+**Дата и подтверждение владельца:** 2026-11-15 — решение сообщено владельцем в проектной переписке; отдельная подпись или идентификатор в переписке не приводились.
+
+---
+
+# End of Template
+
+*This template is saved as a project document for owner completion. Do not fill inDecision fields. After owner completes this template, update project records per protocol.*
