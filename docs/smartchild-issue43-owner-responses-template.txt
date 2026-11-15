@@ -1,18 +1,25 @@
 # SMARTCHILD ISSUE #43 — OWNER RESPONSES TEMPLATE
 # Template Date: 2026-11-15
 # Purpose: Record owner's decisions on all 6 checklist items
-# Status: TEMPLATE — questions 1–6 not filled; decisions #7 and #8 recorded separately in this file
+# Status: TEMPLATE — вопросов 1–6 без решения владельца; блоки «Предлагаемый вариант» — только предложения; decisions #7 and #8 recorded separately in this file
 # Canonical record: docs/decisions/README.md («Записи решений вне ADR»)
 
 ## Template for Recording Owner Decisions — Issue #43
 
 This template is to be completed by the project owner to document their decisions on the 6 questions from the Issue #43 owner decision draft. Each question must be answered explicitly; absence of response does not constitute agreement or approval.
 
+**Как читать этот шаблон.** Блоки «Предлагаемый вариант (не решение владельца)»
+воспроизводят варианты из черновика решения и являются предложением исполнителя.
+Они не являются решением владельца и не вступают в силу, пока владелец не
+подтвердит вариант или не укажет иной в поле «Решение владельца».
+
 ---
 
 ## Question 1: Current main SHA verification
 
-**Решение Б:** повторно проверить актуальный SHA main перед дальнейшими действиями.
+**Предлагаемый вариант (не решение владельца) — Б:** повторно проверить актуальный SHA main перед дальнейшими действиями.
+
+**Решение владельца:** [не заполнено — подтвердить вариант Б или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
 
@@ -26,7 +33,9 @@ This template is to be completed by the project owner to document their decision
 
 ## Question 2: PR #36 report currency
 
-**Решение В:** повторно проверить только выводы, способные повлиять на дальнейшие решения по Issue #43. Остальные выводы считать историческим контекстом.
+**Предлагаемый вариант (не решение владельца) — В:** повторно проверить только выводы, способные повлиять на дальнейшие решения по Issue #43. Остальные выводы считать историческим контекстом.
+
+**Решение владельца:** [не заполнено — подтвердить вариант В или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
 
@@ -40,7 +49,9 @@ This template is to be completed by the project owner to document their decision
 
 ## Question 3: Owner decisions list compilation
 
-**Решение Б:** разрешены документальные проверки, актуализация WORK-LOG, HANDOVER, ARTIFACT-REGISTRY и подготовка предложений по дальнейшим действиям.
+**Предлагаемый вариант (не решение владельца) — Б:** разрешены документальные проверки, актуализация WORK-LOG, HANDOVER, ARTIFACT-REGISTRY и подготовка предложений по дальнейшим действиям.
+
+**Решение владельца:** [не заполнено — подтвердить вариант Б или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
 
@@ -54,7 +65,9 @@ This template is to be completed by the project owner to document their decision
 
 ## Question 4: Permissible vs. required actions separation
 
-**Решение А:** сначала повторно проверить актуальный SHA main; затем выборочно проверить значимые выводы PR #36; затем обновить документацию; подготовить итоговый отчёт.
+**Предлагаемый вариант (не решение владельца) — А:** сначала повторно проверить актуальный SHA main; затем выборочно проверить значимые выводы PR #36; затем обновить документацию; подготовить итоговый отчёт.
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
 
@@ -68,12 +81,14 @@ This template is to be completed by the project owner to document their decision
 
 ## Question 5: Recommended action order (Steps 1-8 framework)
 
-**Решение А — сохранить без изменений:**
+**Предлагаемый вариант (не решение владельца) — А — сохранить без изменений:**
 - L-02 не менять без отдельного решения владельца;
 - NR-01 не начинать без отдельного разрешения;
 - требования MVP-001 не изменять;
 - Issue #43 не закрывать автоматически;
 - функциональную разработку и production deployment не выполнять.
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
 
@@ -87,7 +102,9 @@ This template is to be completed by the project owner to document their decision
 
 ## Question 6: Changes within agreed action only
 
-**Решение А — дополнительных разрешений нет. Допустимы только действия, прямо указанные в решениях 1–4.
+**Предлагаемый вариант (не решение владельца) — А — дополнительных разрешений нет. Допустимы только действия, прямо указанные в решениях 1–4.**
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
 
 **Дополнительные условия:** [owner to specify any conditions, or write "не требуемые"]
 
