@@ -28,17 +28,21 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 | [README](../README.md) | Навигация к новым процессным документам | Существующий документ обновлён; предложение явно обозначено |
 | Отчёт о внедрении — полный текст в [PR №96](https://github.com/Kvasha62/SmartChild-School/pull/96) | Результаты документальной проверки предложения | В репозитории постоянным файлом не хранится (L-02) |
 
+Строки статуса в таблице относятся к предложению протокола непрерывности
+(PR №96) и не описывают текущую задачу. Актуальное состояние работы и список
+открытых PR — в [HANDOVER](HANDOVER.md).
+
 | Путь | Размер, байт | SHA-256 |
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 8426 | `32094cb07242a26eabb858f102beb360effc5867ea10f0ecf30fd8239ffa873e` |
-| `docs/HANDOVER.md` | 7635 | `ae0b92ad9cedc52c9d0c7c2a6835e505d13d45405747b2577bf06a8c8699a2a7` |
+| `docs/WORK-LOG.md` | 16195 | `c889695c182a06f1eed36070799acad044d55d1cc50fcf186482e2cfa0953ff4` |
+| `docs/HANDOVER.md` | 14659 | `afd36958b80114e4ef10a6edc4c657349a1bf335f65d63c4ab017580152acfa1` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
-| `docs/decisions/README.md` | 15374 | `dab47ab7c2035b27ca83f31588c3010f149c9a1b2d09ec9c9c17fc5b5d8c82ba` |
+| `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
-| `docs/smartchild-issue43-owner-responses-template.txt` | 9683 | `8a163cc45b9823183923513e28eaeaba0d0261eed09fa3109168573156ad4063` |
-| `docs/issue43-closure-confirmation-2026-11-15.md` | 9244 | `bfd4f98a816a8c1a93bd83922031043edd59c847144caf852e32203aa56f016a` |
+| `docs/smartchild-issue43-owner-responses-template.txt` | 13425 | `881026728eb95ce619abc9cdcfe57bbc1ccfb131d385e931b51dcc7226b7e815` |
+| `docs/issue43-closure-confirmation-2026-11-15.md` | 15198 | `e20f930ff57e9233e4f1461041cc48ec7f1f19d84651cc8ab277f3e09c733e78` |
 
 Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
 копии: в PR и чистом checkout этого файла нет. Проверяемый по L-02 полный

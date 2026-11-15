@@ -1,7 +1,8 @@
 # SMARTCHILD ISSUE #43 — OWNER RESPONSES TEMPLATE
 # Template Date: 2026-11-15
 # Purpose: Record owner's decisions on all 6 checklist items
-# Status: TEMPLATE — not filled; all fields to be completed by owner
+# Status: TEMPLATE — questions 1–6 not filled; decisions #7 and #8 recorded separately in this file
+# Canonical record: docs/decisions/README.md («Записи решений вне ADR»)
 
 ## Template for Recording Owner Decisions — Issue #43
 
@@ -100,7 +101,7 @@ This template is to be completed by the project owner to document their decision
 
 ## General Instructions for Owner
 
-1. **Read the independent review verdict** (PASS) and the confirmed facts section of the owner package before making decisions.
+1. **Base decisions on available evidence.** If the full texts of the independent review, audit or owner package are not present in this checkout, request the link to the corresponding documentation PR (they are kept per L-02 and are not included here). Do not treat missing files as approval of anything.
 
 2. **Answer each question explicitly.** Leaving a field blank or writing "не решено" without further specification does not count as agreement.
 
@@ -113,21 +114,29 @@ This template is to be completed by the project owner to document their decision
    - Change of MVP-001 product requirements
 
 5. **All constraints remain in effect** until explicitly modified by the owner through this process:
-   - Issue #43 cannot be closed without explicit decision in this template
+   - Issue #43 was closed on 2026-11-15 by the owner's decision (decision #7); the canonical record is docs/decisions/README.md. This does not change any other constraint
    - L-02 status cannot change without new owner decision SHA
    - NR-01 cannot start without separate owner permission
    - Product requirements (Issue #4 / MVP-001) cannot change automatically
 
-6. **After completion:** Save this filled template in the project repository. Update WORK-LOG, HANDOVER, and ARTIFACT-REGISTRY with the new records. Issue #43 can then be closed with documented SHA values.
+6. **After completion:** Save this filled template in the project repository. Update WORK-LOG, HANDOVER, ARTIFACT-REGISTRY and the canonical record in docs/decisions/README.md. Issue #43 is already closed (2026-11-15); do not reopen it without a separate owner decision.
 
 ---
 
-## Reference Files (do not modify)
+## Подготовительные материалы (не включаются в этот PR)
 
-- `/tmp/smartchild-issue43-owner-decision-draft.txt` — original decision draft (21049 bytes, SHA-256 `a55957e683afc78b7df80c981bba5cf25c89f7e67051061091d0bd6997d0e5ef`)
-- `/tmp/smartchild-issue43-draft-independent-review.txt` — independent review (15882 bytes, SHA-256 `0788714fd154cd12145bdfcc9ab2155baf394adc690d52700c49c45e08528b6d`)
-- `/tmp/smartchild-issue43-independent-audit.txt` — independent audit (15215 bytes, SHA-256 `065cf2b0b1ca76128509fd3d27379b573cf5d39ecbe2a2e2a8c579b21305384d`)
-- `docs/smartchild-issue43-owner-package.txt` — final package for owner consideration (7968 bytes, SHA-256 `32d633fe7a1aa9672e4c11988a017d27fc9c620b6eaf9c1bd7ce6f106a989f5a`)
+Полные тексты подготовки (черновик решения, независимое ревью, независимый аудит,
+пакет для решения владельца) ведутся согласно L-02 в отдельных документационных PR
+и в этот файл не включаются. **В чистом checkout репозитория их нет** — не считайте
+отсутствие файла ни одобрением, ни отказом.
+
+- Черновик решения владельца — полный текст в отдельном документационном PR
+  (в репозитории отсутствует; временные пути не используются).
+- Независимое ревью и независимый аудит — полные тексты в отдельных документационных PR.
+- Пакет для решения владельца `docs/smartchild-issue43-owner-package.txt` — в этом PR
+  отсутствует; публикуется отдельно, до публикации ссылка недоступна.
+
+Если для ответа нужен полный текст, запросите ссылку на соответствующий PR у исполнителя.
 
 ---
 
@@ -146,6 +155,35 @@ This template is to be completed by the project owner to document their decision
 **Запрещённые действия:** изменение L-02, запуск NR-01, изменение требований MVP-001, изменение других Issues и PR, функциональная разработка, deployment, commit/push/merge.
 
 **Дата и подтверждение владельца:** 2026-11-15 — решение сообщено владельцем в проектной переписке; отдельная подпись или идентификатор в переписке не приводились.
+
+**Примечание к решению №7 (не переписывает его):** перечень запрещённых действий
+решения №7 относится к операциям закрытия Issue #43. Отдельное, более позднее
+разрешение владельца на `commit` и `push` для документационного PR зафиксировано
+решением №8 ниже; запрет `merge` сохраняется в обоих решениях.
+
+---
+
+## Решение №8 — разрешение на подготовку и публикацию документационного PR (2026-11-15)
+
+**Происхождение:** явное разрешение владельца, **уже данное** в проектной переписке
+2026-11-15: подготовить документационный PR, создать коммит и выполнить push.
+Запись вводится 2026-11-15 при устранении замечания F-4 независимого аудита
+PR #100. Решение №7 не переписывается, не удаляется и не отменяется.
+
+**Решение:** разрешены создание рабочей ветки от актуального `main`, `commit`,
+`push` и открытие/обновление документационного PR #100. `merge` **не разрешён**.
+
+**Соотношение с решением №7:** области действия разграничены. Решение №7
+описывает операции закрытия Issue #43 и запрещает `commit/push/merge` в этом
+контексте; решение №8 — отдельное, более позднее разрешение для документационного
+PR. Оба запрещают `merge`.
+
+**Запрещённые действия:** `merge`; изменение L-02, запуск NR-01, изменение
+требований MVP-001, изменение других Issues и PR, функциональная разработка,
+deployment. Расширение объёма требует отдельного согласования владельца.
+
+**Дата и подтверждение владельца:** 2026-11-15 — разрешение сообщено владельцем в
+проектной переписке; отдельная подпись или идентификатор не приводились.
 
 ---
 
