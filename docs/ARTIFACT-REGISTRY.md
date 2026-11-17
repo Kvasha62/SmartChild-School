@@ -36,8 +36,8 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 25979 | `f95b74c91f272865c8b951fa12c55b8bb068b4fd53b8058eee61549b7bd8baa1` |
-| `docs/HANDOVER.md` | 24625 | `9a473c94246cc9cff23b62a262f57beda72f5d7a195c0d6afc582d86fe4214b2` |
+| `docs/WORK-LOG.md` | 30344 | `f038305fbd964b4beadb155f10d25b0040c7ee289df6fcc120c0a14534578eb6` |
+| `docs/HANDOVER.md` | 31154 | `80ebf019015cc4746300e2279931b41177dc452165888e1e70ed982b793d1645` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
