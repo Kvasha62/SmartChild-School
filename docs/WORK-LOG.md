@@ -6,6 +6,17 @@
 [протоколу координации](coordination.md). Не помещайте сюда секреты,
 персональные данные или реальные данные детей.
 
+## 2026-11-17 — Патчи для threads №16 и №17 применены и опубликованы в PR #100
+
+- **Основание:** разрешение владельца применить подготовленные патчи к PR #100 от базы `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`, создать один commit и выполнить `push`; `merge`, ответы ревьюерам, `resolve` threads, изменение Issue #43 и исправление thread №19 запрещены.
+- **Предварительные проверки:** HEAD ветки `docs/issue43-closure-checkpoint` (remote и PR) совпал с базой `fd01d6c…`; SHA-256 и размеры патчей совпали: №1 — 16836 байт / `2da15449d6f27428e3f9c7dcbc79b5d3c81e1b7c3697dc131937f29f96f54573`, №2 — 1075 байт / `e1b2b76bfadab3e425a474837f88698d0dcb713d6b60926bb786e63f2d14e08f`.
+- **Применение:** №1, затем №2, в отдельном worktree от `fd01d6c`; `git apply --check` — OK, `git diff --check` — без ошибок. Scope — только `docs/HANDOVER.md`, `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md`; итого 3 файла, +58/−23 (№1: +57/−22, №2: +1/−1). После применения: HANDOVER — 33023 байта / `471f750f…`, WORK-LOG — 35215 байт / `c382b0a1…`, REGISTRY — 6342 байта / `f8c27013…`; UTF-8 без U+FFFD, CRLF и BOM.
+- **Публикация:** коммит `43974839bd1d95107571bbf0b6793aed8cb75711` («docs: закрыть review threads №16 и №17 в PR #100»), `push` в `docs/issue43-closure-checkpoint` (`fd01d6c..4397483`); новый head — `43974839bd1d95107571bbf0b6793aed8cb75711`.
+- **CI после push:** «Django and Wagtail CI», run `44077808987`, job `test` — `success` на `4397483`; `Sourcery review` — `skipped`. CI не разрешает threads и не делает PR готовым к `merge`.
+- **Состояние PR после push:** `OPEN`, `mergedAt: null`, `mergeable: MERGEABLE`, `mergeStateStatus: BLOCKED`; изменённых файлов в PR — 6. Review threads — 19 всего, открыто 10 (№1, №4, №10, №11, №14, №15, №16, №17, №18, №19); №16 и №17 после публикации помечены `outdated`, но остаются `isResolved: false`.
+- **Инварианты:** Issue #43 — `CLOSED`, `closedAt 2026-11-15T00:52:47Z`, `updatedAt 2026-11-15T03:13:51Z`, 4 комментария (без изменений); `docs/decisions/README.md` — 18993 байта / `02a5f46b…` и `docs/smartchild-issue43-owner-responses-template.txt` — 18115 байт / `7c54bee0…` не изменялись; thread №19 в правку не включён.
+- **Не выполнялось:** `merge`, ответы на review comments, `resolve`/закрытие threads, изменение Issue #43 и описания PR.
+
 ## 2026-11-17 — Подготовлены патчи для threads №16 и №17 в PR #100 (без commit)
 
 - **Основание:** поручение владельца подготовить (read-only) патчи по review threads №16 и №17 от базы `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`; `commit`/`push`/`merge` запрещены.

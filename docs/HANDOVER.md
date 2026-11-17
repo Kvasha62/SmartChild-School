@@ -6,8 +6,11 @@
 - **Текущая задача:** PR #100 в ветке `docs/issue43-closure-checkpoint`:
   замечания F-1…F-11 устранены, затем по отдельному разрешению владельца
   исправлены новые замечания Codex №12 и №13, а также review threads №3, №10 и
-  №14 (`commit`/`push` в ветку PR). Проверено по GitHub API на 2026-11-17:
-  head `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`, base `main` =
+  №14 (`commit`/`push` в ветку PR). Дополнительно по разрешению владельца
+  применены и опубликованы патчи для threads №16 и №17 — коммит
+  `43974839bd1d95107571bbf0b6793aed8cb75711` от базы
+  `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`. Проверено по GitHub API на
+  2026-11-17: base `main` =
   `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`, `OPEN`, `mergedAt: null`,
   `mergeable: true`, `mergeStateStatus: BLOCKED`; threads — **19 всего,
   открыто 10**: №1, №4, №10, №11, №14, №15, №16, №17, №18, №19
@@ -15,11 +18,13 @@
   PR остаётся `BLOCKED` — threads не разрешены, разрешения на `merge` нет.
   Актуальный head — `gh pr view 100 --json headRefOid`; перечень открытых
   threads — в разделе «Открытые review threads PR #100» ниже.
-- **CI:** последний прогон «Django and Wagtail CI» на head `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`
-  — `success` (run 44070808172, job `test` — pass, 2026-11-17T11:05:28Z).
-  Историческая запись: предыдущий head `5a26af8432c8d0fb07cb9b20ae0f52339f6b70db`
-  проходил тот же workflow 2026-11-15 (run 43672736007, job `test` — pass); это
-  состояние до коммита `fd01d6c`, а не текущее.
+- **CI:** «Django and Wagtail CI» на коммите с применением патчей
+  `43974839bd1d95107571bbf0b6793aed8cb75711` — `success` (run 44077808987,
+  job `test` — pass, 2026-11-17). Предыдущий прогон на head `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`
+  (run 44070808172, job `test` — pass, 2026-11-17T11:05:28Z) — состояние до
+  применения патчей. Историческая запись: head `5a26af8432c8d0fb07cb9b20ae0f52339f6b70db`
+  проходил тот же workflow 2026-11-15 (run 43672736007, job `test` — pass) —
+  состояние до коммита `fd01d6c`.
   **CI PASS не означает разрешения review threads, снятия `BLOCKED` или
   готовности PR к `merge`.**
 - **Статус предложения протокола непрерывности:** опубликовано в PR №96
@@ -73,10 +78,14 @@
 | 11 | `PRRT_kwDOVQdS0863lBLR` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt` (orig 130) | да | Убрать ссылки на временные каталоги; сделать предпосылки шаблона доступными (P2) |
 | 14 | `PRRT_kwDOVQdS0863lg0z` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt:200` | нет | Пометить происхождение решения №8 как неверифицированное (P2) |
 | 15 | `PRRT_kwDOVQdS0863lt4_` | chatgpt-codex-connector | `docs/decisions/README.md` (orig 100) | да | Пока PR не слит, статус записи решения — «предложена», а не «зафиксировано в репозитории» (P2) |
-| 16 | `PRRT_kwDOVQdS0863l2Lt` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md:45` | нет | Пересчитать запись реестра для `docs/issue43-closure-confirmation-2026-11-15.md` (P2) |
+| 16 | `PRRT_kwDOVQdS0863l2Lt` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md` (orig 45) | да | Пересчитать запись реестра для `docs/issue43-closure-confirmation-2026-11-15.md` (P2) |
 | 17 | `PRRT_kwDOVQdS0863l2Lw` | chatgpt-codex-connector | `docs/HANDOVER.md` (orig 192) | да | Обновить HANDOVER: корректирующий комментарий Issue #43 уже опубликован (P2) |
 | 18 | `PRRT_kwDOVQdS0863l2Ly` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt:240` | нет | Уточнить, кто заполняет поля решения (P2) |
-| 19 | `PRRT_kwDOVQdS0864ZlPf` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md:42` | нет | Пересчитать строку `docs/decisions/README.md` в реестре (P2); вне scope подготовленных патчей |
+| 19 | `PRRT_kwDOVQdS0864ZlPf` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md:42` | нет | Пересчитать строку `docs/decisions/README.md` в реестре (P2); вне scope применённых патчей |
+
+**Обновление после публикации 2026-11-17.** После коммита `4397483…` GitHub
+помечает `outdated` и thread №16 (`docs/ARTIFACT-REGISTRY.md`, orig 45), и
+thread №17; оба остаются `isResolved: false`.
 
 **Статусы №15 и №18 (явно).** №15 — `isResolved: false`, `isOutdated: true`,
 `docs/decisions/README.md`, original line 100: до слияния PR запись решения
@@ -107,15 +116,17 @@
 фактически — `18993` / `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f`.
 В подготовленные патчи не включён; требуется отдельное решение владельца.
 
-**Зависимость от подготовленных патчей.** Патчи
-`pr100-thread17-2026-11-17.patch` (thread №17, снимок 19/10, запись WORK-LOG) и
-`pr100-thread16-2026-11-17.patch` (thread №16) собраны от head
-`fd01d6c2cefa33d9dd588477c1bbea5b59b04e20` и к GitHub **не применены и не
-опубликованы**: `commit`/`push` не выполнялись, head PR остаётся `fd01d6c`.
-Патч №1 применяется первым, №2 — только поверх него (он меняет ту же таблицу
-реестра, что и №1). Прежние сборки `pr100-threads16-17.patch` (13331 байт,
-SHA-256 `9415869a…`) и `pr100-threads16-17-registration.patch` (38006 байт,
-SHA-256 `37acf47c…`) устарели и применяться не должны.
+**Патчи №16/№17 применены и опубликованы.** `pr100-thread17-2026-11-17.patch`
+(16836 байт, SHA-256
+`2da15449d6f27428e3f9c7dcbc79b5d3c81e1b7c3697dc131937f29f96f54573`) применён
+первым, затем `pr100-thread16-2026-11-17.patch` (1075 байт, SHA-256
+`e1b2b76bfadab3e425a474837f88698d0dcb713d6b60926bb786e63f2d14e08f`) — оба к
+базе `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`; опубликовано коммитом
+`43974839bd1d95107571bbf0b6793aed8cb75711` (3 файла, +58/−23). Порядок
+обязателен: №2 меняет ту же таблицу реестра, что и №1. Прежние сборки
+`pr100-threads16-17.patch` (13331 байт, SHA-256 `9415869a…`) и
+`pr100-threads16-17-registration.patch` (38006 байт, SHA-256 `37acf47c…`)
+устарели и применяться не должны.
 
 ## Исправление замечаний Codex №12 и №13 — 2026-11-15
 
@@ -351,9 +362,9 @@ HANDOVER, `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md` и описании PR
 
 Для PR #100: 19 threads, открыто 10 (№1, №4, №10, №11, №14, №15, №16, №17,
 №18, №19), разрешено 9; `mergeStateStatus` остаётся `BLOCKED`, `mergedAt: null`.
-CI на head `fd01d6c…` — `success` (run 44070808172), но CI не разрешает threads
-и не делает PR готовым к `merge`. Следующее действие владельца — отдельные
-решения по каждому открытому thread (включая №15 и №18), затем отдельное решение
-о `merge` (`squash`). Подготовленные патчи для №16/№17
-(`pr100-thread17-2026-11-17.patch`, затем `pr100-thread16-2026-11-17.patch`)
-к GitHub не применены и не опубликованы; порядок применения — №1, затем №2.
+CI на коммите `4397483…` — `success` (run 44077808987), но CI не разрешает
+threads и не делает PR готовым к `merge`. Следующее действие владельца —
+отдельные решения по каждому открытому thread (включая №15, №18 и №19), затем
+отдельное решение о `merge` (`squash`). Патчи для №16/№17 применены и
+опубликованы коммитом `4397483…`; threads №16 и №17 по-прежнему не разрешены —
+`resolve` выполняет владелец.
