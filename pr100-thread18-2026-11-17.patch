@@ -1,0 +1,23 @@
+diff --git a/docs/ARTIFACT-REGISTRY.md b/docs/ARTIFACT-REGISTRY.md
+index ab9bc2f..01db7d9 100644
+--- a/docs/ARTIFACT-REGISTRY.md
++++ b/docs/ARTIFACT-REGISTRY.md
+@@ -41,7 +41,7 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
+ | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
+ | `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
+ | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
+-| `docs/smartchild-issue43-owner-responses-template.txt` | 18115 | `7c54bee097510ac53d7f27040b3dea4ce09dd6fc66b7d7034337f9f141d1bf1f` |
++| `docs/smartchild-issue43-owner-responses-template.txt` | 18248 | `b9d8f66ae8e4bbb01b2964c2e22726a510fc7fe73d483489b4641c83588717fc` |
+ | `docs/issue43-closure-confirmation-2026-11-15.md` | 17315 | `6e88b599fed6d7340f15c576fc31f102d2db2c9d748f24a0ed97373774e6a274` |
+ 
+ Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
+diff --git a/docs/smartchild-issue43-owner-responses-template.txt b/docs/smartchild-issue43-owner-responses-template.txt
+index e0509a3..9ac826d 100644
+--- a/docs/smartchild-issue43-owner-responses-template.txt
++++ b/docs/smartchild-issue43-owner-responses-template.txt
+@@ -237,4 +237,4 @@ deployment. Расширение объёма требует отдельног
+ 
+ # End of Template
+ 
+-*This template is saved as a project document for owner completion. Do not fill inDecision fields. After owner completes this template, update project records per protocol.*
++*This template is saved as a project document for owner completion. AI executors and other document preparers must leave the Decision fields empty and must not answer on the owner's behalf; only the project owner fills them in. After the owner completes this template, update project records per protocol.*

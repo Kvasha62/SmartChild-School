@@ -36,13 +36,15 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 38179 | `0bac55a533184876c48b944c344953c5cce644cedfab8c179f964b1f25f295ed` |
-| `docs/HANDOVER.md` | 33700 | `b2d29c2e7cc13fae65fb126c8e80bda8a263a0d656c897a6ba270f33fae89f5a` |
+| `docs/WORK-LOG.md` | 40695 | `09053d7ba29b1cadb6d457b8facf85c3761577da891b68eb2ab126970a31b108` |
+| `docs/HANDOVER.md` | 34810 | `e39bcab68b4e62fb7189326e0b020e9694c9458a36b23df99da52d6f579fd316` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
 | `docs/smartchild-issue43-owner-responses-template.txt` | 18115 | `7c54bee097510ac53d7f27040b3dea4ce09dd6fc66b7d7034337f9f141d1bf1f` |
 | `docs/issue43-closure-confirmation-2026-11-15.md` | 17315 | `6e88b599fed6d7340f15c576fc31f102d2db2c9d748f24a0ed97373774e6a274` |
+| `pr100-thread18-2026-11-17.patch` | 2106 | `3aa4300aee8438660c0243a722875c257f2f54237ef66cbcbe853efd3cc7ecd8` |
+| `pr100-thread19-2026-11-17.patch` | 1286 | `b16555956213e6d3399588cbcf1d87e8fc147765895de0770ebd89db965090da` |
 
 Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
 копии: в PR и чистом checkout этого файла нет. Проверяемый по L-02 полный
@@ -52,6 +54,14 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 Строки для полных независимых и операционных отчётов по Issue #43
 добавляются вместе с их публикацией в отдельных PR согласно L-02; в этом
 документационном PR они не публикуются.
+
+Патчи `pr100-thread18-2026-11-17.patch` и `pr100-thread19-2026-11-17.patch`
+опубликованы 2026-11-17 как артефакты для review threads №18 и №19 и **не
+применены**: строка `docs/smartchild-issue43-owner-responses-template.txt`
+(18115 / `7c54bee0…`) и строка `docs/decisions/README.md` (в таблице указано
+устаревшее значение `18587` / `1ac03d5d…`, фактическое — 18993 /
+`02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f`)
+изменяются только при применении патчей после отдельного разрешения владельца.
 
 Сам реестр в своей таблице не хешируется, чтобы избежать самоссылочной
 контрольной суммы. Его размер и SHA-256 сообщаются после завершения
