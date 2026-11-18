@@ -237,4 +237,4 @@ deployment. Расширение объёма требует отдельног�
 
 # End of Template
 
-*This template is saved as a project document for owner completion. Do not fill inDecision fields. After owner completes this template, update project records per protocol.*
+*This template is saved as a project document for owner completion. Preparers and AI executors must not fill in the Decision fields; the owner fills them in personally after their own consideration. After the owner completes this template, update project records per protocol.*

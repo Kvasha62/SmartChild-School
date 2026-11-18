@@ -36,12 +36,12 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 40695 | `09053d7ba29b1cadb6d457b8facf85c3761577da891b68eb2ab126970a31b108` |
-| `docs/HANDOVER.md` | 34810 | `e39bcab68b4e62fb7189326e0b020e9694c9458a36b23df99da52d6f579fd316` |
+| `docs/WORK-LOG.md` | 43359 | `17f0045b6bb5f87c60e19e07252018ddfa5ee7804933f5d1a79c1ce137ab9e1e` |
+| `docs/HANDOVER.md` | 36169 | `247e43fc397cc15d52996a05f3100e6bf4d28db757790dbc0206b82becb50896` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
-| `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
+| `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
-| `docs/smartchild-issue43-owner-responses-template.txt` | 18115 | `7c54bee097510ac53d7f27040b3dea4ce09dd6fc66b7d7034337f9f141d1bf1f` |
+| `docs/smartchild-issue43-owner-responses-template.txt` | 18219 | `b212bf141aa645c31ac216f80cd5691396e8a6fb2b6fda2472b9922218993219` |
 | `docs/issue43-closure-confirmation-2026-11-15.md` | 17315 | `6e88b599fed6d7340f15c576fc31f102d2db2c9d748f24a0ed97373774e6a274` |
 | `pr100-thread18-2026-11-17.patch` | 2106 | `3aa4300aee8438660c0243a722875c257f2f54237ef66cbcbe853efd3cc7ecd8` |
 | `pr100-thread19-2026-11-17.patch` | 1286 | `b16555956213e6d3399588cbcf1d87e8fc147765895de0770ebd89db965090da` |
@@ -57,10 +57,11 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 
 Патчи `pr100-thread18-2026-11-17.patch` и `pr100-thread19-2026-11-17.patch`
 опубликованы 2026-11-17 как артефакты для review threads №18 и №19 и **не
-применены**: строка `docs/smartchild-issue43-owner-responses-template.txt`
-(18115 / `7c54bee0…`) и строка `docs/decisions/README.md` (в таблице указано
-устаревшее значение `18587` / `1ac03d5d…`, фактическое — 18993 /
-`02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f`)
+применены**. На момент публикации строка
+`docs/smartchild-issue43-owner-responses-template.txt` содержала 18115 /
+`7c54bee0…`, а строка `docs/decisions/README.md` — устаревшее значение `18587` /
+`1ac03d5d…` при фактическом 18993 /
+`02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f`. Обе строки
 изменяются только при применении патчей после отдельного разрешения владельца.
 
 Сам реестр в своей таблице не хешируется, чтобы избежать самоссылочной
@@ -76,3 +77,20 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 - [CONTRIBUTING](../CONTRIBUTING.md) — действующий порядок изменений и
   проверок.
 - [README](../README.md) — ограничения проекта и безопасности.
+
+
+## Публикация патчей F-1/№18/№19 от 2026-11-18
+
+По разрешению владельца в ветке PR применены одним коммитом три проверенных
+патча: `pr100-f1-registry-prose-2026-11-18.patch` (1512 /
+`30beca14…`), `pr100-thread18-2026-11-18.patch` (2188 / `2e9a0f98…`) и
+`pr100-thread19-2026-11-18.patch` (815 / `047da89a…`). Применение выполнено в
+порядке F-1 → №18 → №19 без fuzz и offset.
+
+Результат: сноска шаблона разделяет роли владельца и AI-исполнителей; строка
+`docs/decisions/README.md` пересчитана на `18993` / `02a5f46b…`; абзац о патчах
+2026-11-17 помечен как состояние на момент публикации. Таблица выше сверена с
+фактическими файлами; строки `docs/WORK-LOG.md` и `docs/HANDOVER.md` пересчитаны
+после append-only дополнений. Решения №7/№8 и `docs/decisions/README.md` не
+изменялись. Размер и SHA-256 самого реестра сообщаются во внешней записи
+передачи (самоссылочная контрольная сумма не создаётся).
