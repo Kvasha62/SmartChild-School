@@ -36,8 +36,8 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 43359 | `17f0045b6bb5f87c60e19e07252018ddfa5ee7804933f5d1a79c1ce137ab9e1e` |
-| `docs/HANDOVER.md` | 36169 | `247e43fc397cc15d52996a05f3100e6bf4d28db757790dbc0206b82becb50896` |
+| `docs/WORK-LOG.md` | 46115 | `10830bbf3e2f028b084815eaaea8106e2ab35c72ebfff4af7f8fe02da5582a0c` |
+| `docs/HANDOVER.md` | 40046 | `d3ac7cd40c4cf568390b9a489de8f94eea0963894ebc11312278b08b73175d9e` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
@@ -56,13 +56,14 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 документационном PR они не публикуются.
 
 Патчи `pr100-thread18-2026-11-17.patch` и `pr100-thread19-2026-11-17.patch`
-опубликованы 2026-11-17 как артефакты для review threads №18 и №19 и **не
-применены**. На момент публикации строка
+опубликованы 2026-11-17 как артефакты для review threads №18 и №19 и на тот
+момент не были применены. На момент публикации строка
 `docs/smartchild-issue43-owner-responses-template.txt` содержала 18115 /
 `7c54bee0…`, а строка `docs/decisions/README.md` — устаревшее значение `18587` /
 `1ac03d5d…` при фактическом 18993 /
 `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f`. Обе строки
-изменяются только при применении патчей после отдельного разрешения владельца.
+пересчитаны при применении патчей 2026-11-18 после отдельного разрешения
+владельца.
 
 Сам реестр в своей таблице не хешируется, чтобы избежать самоссылочной
 контрольной суммы. Его размер и SHA-256 сообщаются после завершения
