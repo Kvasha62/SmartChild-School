@@ -6,6 +6,53 @@
 [протоколу координации](coordination.md). Не помещайте сюда секреты,
 персональные данные или реальные данные детей.
 
+## 2026-11-19 — публикация патча маркировки исторического снимка HANDOVER в PR #100
+
+- **Разрешение владельца:** опубликовать прошедший независимый аудит патч
+  `pr100-handover-snapshot-labels-2026-11-19.patch` в ветку PR #100 — ровно один
+  commit и один push, состав строго ограничен тремя файлами: `docs/HANDOVER.md`
+  (применение патча без дополнительных содержательных изменений),
+  `docs/WORK-LOG.md` (эта append-only запись), `docs/ARTIFACT-REGISTRY.md`
+  (только размер и SHA-256 HANDOVER). `merge`, ответы ревьюерам,
+  `resolve`/`unresolve` review threads и любые изменения Issue #43 не
+  разрешались и не выполнялись.
+- **Предусловия (проверены до изменений, 2026-11-19T07:18:59Z):** удалённый
+  `refs/heads/docs/issue43-closure-checkpoint` = `refs/pull/100/head` =
+  `44870f6277f70a9f9224dadc4790bb4f09dd8329` (`git ls-remote` + GitHub REST);
+  base `main` = `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`; PR `OPEN`,
+  `mergedAt: null`, `mergeable: true`, `mergeable_state: blocked`, 16 коммитов,
+  8 файлов, `+1226/−13`; CI на HEAD — `test` `success`, «Sourcery review»
+  `skipped`; threads 22 / открыто 13 / разрешено 9 / `outdated` 14, thread №22
+  `PRRT_kwDOVQdS08641ocn` — `isResolved: false`, `isOutdated: true`; Issue #43
+  `closed`/`completed`, 4 комментария, `updatedAt 2026-11-15T03:13:51Z`.
+- **Аудит патча:** `docs/pr100-handover-snapshot-labels-independent-audit-2026-11-19.md`
+  (14089 байт, SHA-256
+  `38251309b9cba63145b0e7ae5c59ef8129279cd4bbe0e900b2939fc9da799bad`),
+  вердикт `READY FOR PUBLICATION AUTHORIZATION`; замечание N-1 non-blocking и
+  относится к формулировке отчёта подготовки, а не к патчу.
+- **Патч:** 6063 байта, SHA-256
+  `29ba76427120263912e30be09e5609927c606d0d40f0ff37c2e9b61f41de323c`,
+  применён `git apply` в одноразовом detached worktree от `44870f6` без fuzz и
+  offset; изменён только `docs/HANDOVER.md`.
+- **Результат применения:** `docs/HANDOVER.md` — 51661 байт, SHA-256
+  `5a533bde5c786677aa5b03afffb5f7feb0586b173b22e42b9d4c418905c582d4`
+  (совпало с ожидаемым в аудите); снимок 2026-11-18T08:17Z помечен как
+  исторический, добавлена дата повторной проверки 2026-11-19T06:20Z, формулировка
+  «(последняя проверка)» устранена, четыре ссылки на раздел обновлены.
+- **Состав коммита:** ровно три файла — `docs/HANDOVER.md`,
+  `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md`; `git diff --cached --check` —
+  exit 0. Строка `docs/HANDOVER.md` в реестре пересчитана по фактическому файлу;
+  строка `docs/WORK-LOG.md` в реестре в этом коммите не пересчитывалась, так как
+  разрешение покрывало только размер и SHA-256 HANDOVER.
+- **Публикация:** один commit и один push в `docs/issue43-closure-checkpoint`
+  после повторной проверки удалённого HEAD непосредственно перед commit.
+  Полный SHA коммита и результат CI на нём зафиксированы в L-02 отчёте о
+  публикации вне репозитория — самоссылка внутри коммита не создаётся.
+- **Не выполнялось:** `resolve`/`unresolve` (все 13 threads остаются
+  `isResolved: false`), ответы ревьюерам, `merge`, изменения Issue #43,
+  решений №7/№8, `docs/decisions/README.md` и шаблонов, функциональные
+  изменения, deployment.
+
 ## 2026-11-19 — публикация пакета исправления дефектов D-1–D-4 в PR #100
 
 - **Разрешение владельца:** опубликовать прошедший независимый аудит пакет
