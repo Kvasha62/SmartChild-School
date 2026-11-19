@@ -36,7 +36,7 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 52576 | `dc96652aabd9ff11c1f68369b8197b0b2df0c3d561655e3e94187fabc1d492db` |
+| `docs/WORK-LOG.md` | 56806 | `4249a17e217b0a7c8c5820884cea2809120af3f7fd2544b8126e45864ae765c9` |
 | `docs/HANDOVER.md` | 51661 | `5a533bde5c786677aa5b03afffb5f7feb0586b173b22e42b9d4c418905c582d4` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
