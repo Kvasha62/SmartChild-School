@@ -1,0 +1,240 @@
+# SMARTCHILD ISSUE #43 — OWNER RESPONSES TEMPLATE
+# Template Date: 2026-11-15
+# Purpose: Record owner's decisions on all 6 checklist items
+# Status: TEMPLATE — вопросов 1–6 без решения владельца; блоки «Предлагаемый вариант» — только предложения; decisions #7 and #8 recorded separately in this file
+# Canonical record: docs/decisions/README.md («Записи решений вне ADR»)
+
+## Template for Recording Owner Decisions — Issue #43
+
+This template is to be completed by the project owner to document their decisions on the 6 questions from the Issue #43 owner decision draft. Each question must be answered explicitly; absence of response does not constitute agreement or approval.
+
+**Как читать этот шаблон.** Блоки «Предлагаемый вариант (не решение владельца)»
+воспроизводят варианты из черновика решения и являются предложением исполнителя.
+Они не являются решением владельца и не вступают в силу, пока владелец не
+подтвердит вариант или не укажет иной в поле «Решение владельца».
+
+---
+
+## Question 1: Current main SHA verification
+
+**Предлагаемый вариант (не решение владельца) — Б:** повторно проверить актуальный SHA main перед дальнейшими действиями.
+
+**Решение владельца:** [не заполнено — подтвердить вариант Б или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуются"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 2: PR #36 report currency
+
+**Предлагаемый вариант (не решение владельца) — В:** повторно проверить только выводы, способные повлиять на дальнейшие решения по Issue #43. Остальные выводы считать историческим контекстом.
+
+**Решение владельца:** [не заполнено — подтвердить вариант В или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуются"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 3: Owner decisions list compilation
+
+**Предлагаемый вариант (не решение владельца) — Б:** разрешены документальные проверки, актуализация WORK-LOG, HANDOVER, ARTIFACT-REGISTRY и подготовка предложений по дальнейшим действиям.
+
+**Решение владельца:** [не заполнено — подтвердить вариант Б или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуются"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 4: Permissible vs. required actions separation
+
+**Предлагаемый вариант (не решение владельца) — А:** сначала повторно проверить актуальный SHA main; затем выборочно проверить значимые выводы PR #36; затем обновить документацию; подготовить итоговый отчёт.
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 5: Recommended action order (Steps 1-8 framework)
+
+**Предлагаемый вариант (не решение владельца) — А — сохранить без изменений:**
+- L-02 не менять без отдельного решения владельца;
+- NR-01 не начинать без отдельного разрешения;
+- требования MVP-001 не изменять;
+- Issue #43 не закрывать автоматически;
+- функциональную разработку и production deployment не выполнять.
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуются"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## Question 6: Changes within agreed action only
+
+**Предлагаемый вариант (не решение владельца) — А — дополнительных разрешений нет. Допустимы только действия, прямо указанные в решениях 1–4.**
+
+**Решение владельца:** [не заполнено — подтвердить вариант А или указать иной]
+
+**Дополнительные условия:** [owner to specify any conditions, or write "не требуемые"]
+
+**Разрешённые действия:** [owner to list permitted actions, or write "не требуемые"]
+
+**Запрещённые действия:** [owner to list forbidden actions, or write "не требуемые"]
+
+**Дата и подтверждение владельца:** [date] / [owner signature/identifier]
+
+---
+
+## General Instructions for Owner
+
+1. **Base decisions on available evidence.** If the full texts of the independent review, audit or owner package are not present in this checkout, request the link to the corresponding documentation PR (they are kept per L-02 and are not included here). Do not treat missing files as approval of anything.
+
+2. **Answer each question explicitly.** Leaving a field blank or writing "не решено" without further specification does not count as agreement.
+
+3. **Each question requires a separate decision.** Do not combine answers across multiple questions in a single field.
+
+4. **Technical readiness ≠ owner resolution.** Completing this template does not constitute:
+   - Closure of Issue #43
+   - Change of L-02 status
+   - Start of NR-01
+   - Change of MVP-001 product requirements
+
+5. **All constraints remain in effect** until explicitly modified by the owner through this process:
+   - Issue #43 was closed on 2026-11-15 by the owner's decision (decision #7); the canonical record is docs/decisions/README.md. This does not change any other constraint
+   - L-02 status cannot change without new owner decision SHA
+   - NR-01 cannot start without separate owner permission
+   - Product requirements (Issue #4 / MVP-001) cannot change automatically
+
+6. **After completion:** Save this filled template in the project repository. Update WORK-LOG, HANDOVER, ARTIFACT-REGISTRY and the canonical record in docs/decisions/README.md. Issue #43 is already closed (2026-11-15); do not reopen it without a separate owner decision.
+
+---
+
+## Подготовительные материалы (не включаются в этот PR)
+
+Полные тексты подготовки (черновик решения, независимое ревью, независимый аудит,
+пакет для решения владельца) ведутся согласно L-02 в отдельных документационных PR
+и в этот файл не включаются. **В чистом checkout репозитория их нет** — не считайте
+отсутствие файла ни одобрением, ни отказом.
+
+- Черновик решения владельца — полный текст в отдельном документационном PR
+  (в репозитории отсутствует; временные пути не используются).
+- Независимое ревью и независимый аудит — полные тексты в отдельных документационных PR.
+- Пакет для решения владельца `docs/smartchild-issue43-owner-package.txt` — в этом PR
+  отсутствует; публикуется отдельно, до публикации ссылка недоступна.
+
+Если для ответа нужен полный текст, запросите ссылку на соответствующий PR у исполнителя.
+
+---
+
+## Решение №7 — закрытие Issue #43 (зафиксировано 2026-11-15)
+
+**Происхождение:** явное решение владельца, **уже данное** в проектной переписке 2026-11-15 (вариант 1 — закрыть Issue #43 с пояснением, что документальная цель достигнута). Запись вводится для устранения формального ограничения решения №6 («допустимы только действия, прямо указанные в решениях 1–4») и **не является новым решением, полученным от владельца**.
+
+**Решение:** закрыть Issue #43 с пояснением, что документальная цель достигнута.
+
+**Основание:** `docs/issue43-closure-authority-check-2026-11-15.md` — вывод «разрешение владельца достаточно»; вердикт независимого аудита `B. READY WITH LIMITATIONS` (`docs/issue43-independent-final-audit-2026-11-15.md`).
+
+**Дополнительные условия:** в итоговом комментарии к Issue указать вердикт аудита, сохранение L-02 без изменений, отсутствие запуска NR-01, неизменность MVP-001 и ссылку на итоговый аудит.
+
+**Разрешённые действия:** публикация одного итогового комментария в Issue #43; закрытие Issue #43 с причиной `completed`; запись подтверждения в WORK-LOG, ARTIFACT-REGISTRY, HANDOVER.
+
+**Запрещённые действия:** изменение L-02, запуск NR-01, изменение требований MVP-001, изменение других Issues и PR, функциональная разработка, deployment, commit/push/merge.
+
+**Дата и подтверждение владельца:** 2026-11-15 — решение сообщено владельцем в проектной переписке; отдельная подпись или идентификатор в переписке не приводились.
+
+**Примечание к решению №7 (не переписывает его):** перечень запрещённых действий
+решения №7 относится к операциям закрытия Issue #43. Отдельное, более позднее
+разрешение владельца на `commit` и `push` для документационного PR зафиксировано
+решением №8 ниже; запрет `merge` сохраняется в обоих решениях.
+
+---
+
+## Статус происхождения решения №7 — неверифицировано
+
+Запись фиксирует решение №7 и его происхождение, но не подтверждает авторство
+сообщения: подписи, идентификатора и отдельного подтверждения владельца в
+GitHub нет. Это ограничение верифицируемости, а не доказательство отсутствия
+решения; текст самого решения №7 этим примечанием не переписывается и не
+меняется. См. §6 «Ограничения подтверждения» в
+`docs/issue43-closure-confirmation-2026-11-15.md` и «Происхождение и граница
+проверяемости» в `docs/decisions/README.md`. Если владелец опубликует
+подписанное подтверждение, запись обновляется ссылкой на него отдельным
+коммитом.
+
+---
+
+## Решение №8 — разрешение на подготовку и публикацию документационного PR (2026-11-15)
+
+**Происхождение:** явное разрешение владельца, **уже данное** в проектной переписке
+2026-11-15: подготовить документационный PR, создать коммит и выполнить push.
+Запись вводится 2026-11-15 при устранении замечания F-4 независимого аудита
+PR #100. Решение №7 не переписывается, не удаляется и не отменяется.
+
+**Решение:** разрешены создание рабочей ветки от актуального `main`, `commit`,
+`push` и открытие/обновление документационного PR #100. `merge` **не разрешён**.
+
+**Соотношение с решением №7:** области действия разграничены. Решение №7
+описывает операции закрытия Issue #43 и запрещает `commit/push/merge` в этом
+контексте; решение №8 — отдельное, более позднее разрешение для документационного
+PR. Оба запрещают `merge`.
+
+**Запрещённые действия:** `merge`; изменение L-02, запуск NR-01, изменение
+требований MVP-001, изменение других Issues и PR, функциональная разработка,
+deployment. Расширение объёма требует отдельного согласования владельца.
+
+**Дата и подтверждение владельца:** 2026-11-15 — разрешение сообщено владельцем в
+проектной переписке; отдельная подпись или идентификатор не приводились.
+
+---
+
+## Статус происхождения решения №8 — неверифицировано
+
+Решение №8 опирается на то же основание, что и решение №7: разрешение сообщено
+владельцем в проектной переписке 2026-11-15. Проверяемой подписи или
+идентификатора владельца к нему не приложено; отдельного подтверждения
+владельца в GitHub нет. Это ограничение верифицируемости, а не доказательство
+отсутствия разрешения: запись фиксирует разрешение и его происхождение, не
+выдавая переписку за подписанное подтверждение. Текст самого решения №8 этим
+примечанием не переписывается и не меняется; запрет `merge` и перечень
+запрещённых действий сохраняются, а объём разрешённых действий не расширяется.
+См. §6 «Ограничения подтверждения» в
+`docs/issue43-closure-confirmation-2026-11-15.md` и «Происхождение и граница
+проверяемости» в `docs/decisions/README.md`. Если владелец опубликует подписанное
+подтверждение, эта запись обновляется ссылкой на него отдельным коммитом.
+
+---
+
+# End of Template
+
+*This template is saved as a project document for owner completion. Preparers and AI executors must not fill in the Decision fields; the owner fills them in personally after their own consideration. After the owner completes this template, update project records per protocol.*

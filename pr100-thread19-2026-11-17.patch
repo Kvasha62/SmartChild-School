@@ -1,0 +1,13 @@
+diff --git a/docs/ARTIFACT-REGISTRY.md b/docs/ARTIFACT-REGISTRY.md
+index 01db7d9..b9e1699 100644
+--- a/docs/ARTIFACT-REGISTRY.md
++++ b/docs/ARTIFACT-REGISTRY.md
+@@ -39,7 +39,7 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
+ | `docs/WORK-LOG.md` | 38179 | `0bac55a533184876c48b944c344953c5cce644cedfab8c179f964b1f25f295ed` |
+ | `docs/HANDOVER.md` | 33700 | `b2d29c2e7cc13fae65fb126c8e80bda8a263a0d656c897a6ba270f33fae89f5a` |
+ | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
+-| `docs/decisions/README.md` | 18587 | `1ac03d5d9693bdb77f27362065b22d8cbfde2bd250c491e475c8439aaf3b275a` |
++| `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
+ | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
+ | `docs/smartchild-issue43-owner-responses-template.txt` | 18248 | `b9d8f66ae8e4bbb01b2964c2e22726a510fc7fe73d483489b4641c83588717fc` |
+ | `docs/issue43-closure-confirmation-2026-11-15.md` | 17315 | `6e88b599fed6d7340f15c576fc31f102d2db2c9d748f24a0ed97373774e6a274` |
