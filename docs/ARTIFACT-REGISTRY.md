@@ -36,8 +36,8 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 46115 | `10830bbf3e2f028b084815eaaea8106e2ab35c72ebfff4af7f8fe02da5582a0c` |
-| `docs/HANDOVER.md` | 40046 | `d3ac7cd40c4cf568390b9a489de8f94eea0963894ebc11312278b08b73175d9e` |
+| `docs/WORK-LOG.md` | 52576 | `dc96652aabd9ff11c1f68369b8197b0b2df0c3d561655e3e94187fabc1d492db` |
+| `docs/HANDOVER.md` | 51267 | `f572fa3661a2270731d0cb5ede900b647e119a63687e81bef0cc8a50579d449e` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
@@ -95,3 +95,22 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 после append-only дополнений. Решения №7/№8 и `docs/decisions/README.md` не
 изменялись. Размер и SHA-256 самого реестра сообщаются во внешней записи
 передачи (самоссылочная контрольная сумма не создаётся).
+
+## Публикация пакета исправления D-1–D-4 от 2026-11-19
+
+По отдельному разрешению владельца опубликован прошедший независимый аудит
+пакет `pr100-d1-d4-package-2026-11-18.patch` (20289 байт, SHA-256
+`9302df3ac74411cf10d6f9d51f019672ec1e05c085a7c05e474b25ceea6d6675`) — один
+commit и один push в ветку `docs/issue43-closure-checkpoint`. Патч применён
+в одноразовом detached worktree от `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`
+без fuzz и offset.
+
+Результат применения совпал с ожидаемым в независимом аудите:
+`docs/HANDOVER.md` — 46611 / `d943e99a…`, `docs/WORK-LOG.md` — 49343 /
+`841e7110…`, `docs/ARTIFACT-REGISTRY.md` — 8696 / `dae6dbaa…`; изменены ровно
+три файла. После append-only дополнений строки `docs/WORK-LOG.md` и
+`docs/HANDOVER.md` в таблице выше пересчитаны по фактическим файлам.
+Решения №7/№8, `docs/decisions/README.md`, шаблон и Issue #43 не изменялись;
+threads не разрешались; `merge` не выполнялся. Размер и SHA-256 самого реестра
+сообщаются во внешней записи передачи (самоссылочная контрольная сумма не
+создаётся).

@@ -6,6 +6,85 @@
 [протоколу координации](coordination.md). Не помещайте сюда секреты,
 персональные данные или реальные данные детей.
 
+## 2026-11-19 — публикация пакета исправления дефектов D-1–D-4 в PR #100
+
+- **Разрешение владельца:** опубликовать прошедший независимый аудит пакет
+  `pr100-d1-d4-package-2026-11-18.patch` в ветку PR #100 — один commit и один
+  push. `merge`, ответы ревьюерам, `resolve` review threads и любые изменения
+  Issue #43 не разрешались.
+- **Предусловия (проверены до изменений):** удалённый
+  `refs/heads/docs/issue43-closure-checkpoint` = `refs/pull/100/head` =
+  `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9` (`git ls-remote` и GitHub REST,
+  2026-11-19T06:19Z и 06:23:30Z); base `main` = `ce0047af…`; PR `OPEN`,
+  `mergedAt: null`, `mergeable: true`, `mergeable_state: blocked`; CI на HEAD —
+  `test` success (run `44263250298`), «Sourcery review» skipped; threads 22 /
+  открыто 13 / разрешено 9 (thread №22 `PRRT_kwDOVQdS08641ocn` — `isResolved:
+  false`, `isOutdated: false`); ruleset `protect-main` active,
+  `required_review_thread_resolution: true`; Issue #43 `closed`/`completed`,
+  `updatedAt` 2026-11-15T03:13:51Z — без изменений.
+- **Пакет:** 20289 байт, SHA-256
+  `9302df3ac74411cf10d6f9d51f019672ec1e05c085a7c05e474b25ceea6d6675`;
+  применён `git apply` в одноразовом detached worktree от `cea2e59` без fuzz
+  и offset.
+- **Сверка файлов после применения:** `docs/HANDOVER.md` — 46611 /
+  `d943e99a…`, `docs/WORK-LOG.md` — 49343 / `841e7110…`,
+  `docs/ARTIFACT-REGISTRY.md` — 8696 / `dae6dbaa…`; все три совпали с
+  ожидаемыми значениями независимого аудита. `git diff --check` — exit 0;
+  `git diff --name-only` — ровно три файла; diffstat —
+  `3 files changed, 120 insertions(+), 27 deletions(-)`.
+- **Координационные записи:** добавлена эта запись; в `docs/HANDOVER.md` —
+  раздел «Публикация пакета исправления дефектов D-1–D-4 от 2026-11-19»;
+  строки `docs/WORK-LOG.md` и `docs/HANDOVER.md` в `docs/ARTIFACT-REGISTRY.md`
+  пересчитаны по фактическим файлам после всех дополнений.
+- **Публикация:** один commit и один push в `docs/issue43-closure-checkpoint`
+  после повторной проверки удалённого HEAD непосредственно перед commit.
+  SHA нового коммита и результат CI на нём зафиксированы в L-02 отчёте о
+  публикации вне репозитория — самоссылка внутри коммита не создаётся.
+- **Не выполнялось:** `resolve`/`unresolve` (все 13 threads остаются
+  `isResolved: false`), ответы ревьюерам, `merge`, изменения Issue #43,
+  решений №7/№8, `docs/decisions/README.md` и шаблона, функциональные
+  изменения, deployment.
+
+## 2026-11-18 — подготовка пакета исправления дефектов D-1–D-4 в PR #100
+
+- **Цель:** устранить дефекты D-1–D-4 аудита
+  `docs/pr100-post-publication-audit-2026-11-18-run3.md`: устаревшие
+  HEAD/CI/счётчики threads в HANDOVER, поданные как текущие (D-1, D-2),
+  отсутствие перечня актуальных открытых threads (D-3) и неучтённый thread
+  №22 (D-4).
+- **Предусловия (повторно проверены до изменений, 2026-11-18T08:32Z):**
+  `refs/heads/docs/issue43-closure-checkpoint` = `refs/pull/100/head` =
+  `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`; base `ce0047af…`; PR `OPEN`,
+  `mergedAt: null`, `MERGEABLE`, `BLOCKED`; threads 22 / открыто 13 /
+  resolved 9; CI на HEAD — run `44263250298`, job `test` — `success`,
+  «Sourcery review» — `skipped`; Issue #43 `CLOSED`, `updatedAt`
+  2026-11-15T03:13:51Z.
+- **Состав пакета (ровно три файла):** `docs/HANDOVER.md`,
+  `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md`.
+- **HANDOVER:** применён ровно проверенный патч
+  `pr100-handover-threads-snapshot-2026-11-18.patch` — 13560 байт, SHA-256
+  `f2cc0b3fcdc74505f6aa1d4d70b2c9608361dd17b9f5ef9f876a62354c9c478a`,
+  без fuzz и offset, без изменения содержательной части. Источник —
+  независимый аудит
+  `docs/pr100-handover-threads-snapshot-independent-audit-2026-11-18.md`
+  (вердикт `READY FOR PUBLICATION PACKAGE`). Результат патча — 45059 /
+  `c6b4b12b…`; после добавления записи о подготовке пакета — 46611 /
+  `d943e99a…`.
+- **Проверки:** `git diff --check` — exit 0; изменены ровно три файла; таблица
+  13 открытых threads сверена с GraphQL 13/13; решения №7 (2852 /
+  `77cd9255…`), №8 (2022 / `5b59a965…`), `docs/decisions/README.md`
+  (18993 / `02a5f46b…`) и шаблон (18219 / `b212bf14…`) побайтно не изменены;
+  Issue #43 без изменений.
+- **Синхронизация реестра:** строки `docs/WORK-LOG.md` и `docs/HANDOVER.md` в
+  `docs/ARTIFACT-REGISTRY.md` пересчитаны по фактическим файлам после всех
+  содержательных правок; размер и SHA-256 самого реестра сообщаются вне
+  репозитория — самоссылочная контрольная сумма не создаётся.
+- **Не выполнялось:** `commit`, `push`, ответы ревьюерам, `resolve`/`unresolve`
+  (все 13 threads остаются `isResolved: false`), `merge`, изменения Issue #43,
+  решений №7/№8, `docs/decisions/README.md` и шаблона, функциональные
+  изменения, deployment. CI для результата пакета отсутствует — коммита ещё
+  нет; подготовка пакета публикацией не является.
+
 ## 2026-11-18 — публикация исправлений review threads №20/№21 в PR #100
 
 - **Цель:** устранить замечания открытых threads №20 (`PRRT_kwDOVQdS08640Xyx`,

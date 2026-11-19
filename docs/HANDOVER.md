@@ -2,7 +2,9 @@
 
 ## Статус
 
-- **Дата обновления:** 2026-11-18; снимок GitHub API — 2026-11-18.
+- **Дата обновления:** 2026-11-19; состояние GitHub перепроверено 2026-11-19T06:23Z;
+  снимок review threads — 2026-11-18T08:17Z (см. раздел «Актуальный снимок review
+  threads PR #100»). Публикация пакета D-1–D-4 от 2026-11-19 описана ниже.
 - **Текущая задача:** PR #100 в ветке `docs/issue43-closure-checkpoint`:
   замечания F-1…F-11 устранены, затем по отдельному разрешению владельца
   исправлены новые замечания Codex №12 и №13, а также review threads №3, №10 и
@@ -11,16 +13,21 @@
   `43974839bd1d95107571bbf0b6793aed8cb75711` от базы
   `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`. Затем по отдельному разрешению
   владельца применены и опубликованы патчи F-1/№18/№19 — коммит
-  `62e8ddfa7817d168b5885e85b8547427040c35e5` от базы `7093ead…`. Проверено по
-  GitHub API на 2026-11-18: base `main` =
-  `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`, `OPEN`, `mergedAt: null`,
-  `mergeable: true`, `mergeStateStatus: BLOCKED`; HEAD —
-  `62e8ddfa7817d168b5885e85b8547427040c35e5`; threads — **21 всего,
-  открыто 12**: №1, №4, №10, №11, №14, №15, №16, №17, №18, №19, №20, №21
-  (разрешено 9). CI на HEAD — run `44255736024`, job `test` — `success`.
+  `62e8ddfa7817d168b5885e85b8547427040c35e5` от базы `7093ead…`.
+  Затем по отдельному разрешению владельца применены исправления threads
+  №20/№21 — коммит `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`.
+- **Снимок GitHub API на 2026-11-18T08:17Z (последняя проверка):** base `main`
+  = `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`, `OPEN`, `mergedAt: null`,
+  `mergeable: MERGEABLE`, `mergeStateStatus: BLOCKED`; HEAD —
+  `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`; threads — **22 всего, открыто
+  13, разрешено 9**: №1, №4, №10, №11, №14, №15, №16, №17, №18, №19, №20,
+  №21, №22; CI на этом HEAD — run `44263250298`, job `test` — `success`,
+  «Sourcery review» — `skipped`.
   PR остаётся `BLOCKED` — threads не разрешены, разрешения на `merge` нет.
-  Актуальный head — `gh pr view 100 --json headRefOid`; перечень открытых
-  threads — в разделе «Открытые review threads PR #100» ниже.
+  Значения этого пункта относятся только к указанному времени снимка; более
+  поздние коммиты, прогоны CI и review threads в него не входят. Актуальный
+  head — `gh pr view 100 --json headRefOid`; актуальный перечень открытых
+  threads — раздел «Актуальный снимок review threads PR #100» ниже.
 - **Публикационный пакет PR #100 (историческая запись, состояние на
   2026-11-17):** по отдельному разрешению владельца опубликованы 5 файлов
   восстановленного пакета — два патча как артефакты
@@ -34,12 +41,26 @@
 - **Публикация исправлений review threads №20/№21:** по отдельному разрешению
   владельца применён проверенный патч
   `pr100-threads20-21-2026-11-18.patch` (19428 / `95b25dc2…`) к HEAD
-  `62e8ddf…` и опубликован одним коммитом в ветке
+  `62e8ddf…` и опубликован одним коммитом
+  `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9` в ветке
   `docs/issue43-closure-checkpoint`. Исторический статус патчей 2026-11-17
   помечен как исторический (thread №20), запись 2026-11-18 перенесена в начало
   журнала с побайтным сохранением остальных записей (thread №21). Threads
-  №20/№21 не разрешались; SHA коммита и результат CI — в отчёте о публикации
-  (L-02, в PR не включается).
+  №20/№21 не разрешались; CI на этом коммите — run `44263250298`, job `test`
+  — `success`. Полный отчёт о публикации — L-02, в PR не включается.
+- **Пакет исправления дефектов D-1–D-4 (опубликован 2026-11-19):** по
+  итогам аудита `docs/pr100-post-publication-audit-2026-11-18-run3.md`
+  подготовлен минимальный пакет `docs/HANDOVER.md` + `docs/WORK-LOG.md` +
+  `docs/ARTIFACT-REGISTRY.md`, прошедший независимый аудит
+  (`docs/pr100-d1-d4-independent-package-audit-2026-11-18.md`, вердикт
+  `READY FOR PUBLICATION AUTHORIZATION`). Пакет
+  `pr100-d1-d4-package-2026-11-18.patch` — 20289 байт, SHA-256 `9302df3a…` —
+  применён 2026-11-19 к удалённому HEAD `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`
+  и опубликован одним commit и одним push в ветку
+  `docs/issue43-closure-checkpoint` после отдельного разрешения владельца.
+  Состав изменений — только три файла; `resolve` threads, ответы ревьюерам,
+  `merge` и изменения Issue #43 не выполнялись. Подробности — раздел
+  «Публикация пакета исправления дефектов D-1–D-4 от 2026-11-19» ниже.
 - **CI:** «Django and Wagtail CI» на коммите с применением патчей
   `43974839bd1d95107571bbf0b6793aed8cb75711` — `success` (run 44077808987,
   job `test` — pass, 2026-11-17). Предыдущий прогон на head `fd01d6c2cefa33d9dd588477c1bbea5b59b04e20`
@@ -89,10 +110,11 @@
 
 Снимок получен через GitHub GraphQL (`reviewThreads`) для PR #100; локальная
 рабочая копия доказательством текущего состояния не является. **Исторический
-снимок на 2026-11-17:** всего threads — 19, разрешено 9, открыто 10. Актуальные
-показатели на HEAD `62e8ddf` — 21 thread, открыто 12 (см. «Статус» выше).
-Треды не разрешались, ответов ревьюерам нет, тексты review-комментариев не
-изменялись.
+снимок на 2026-11-17:** всего threads — 19, разрешено 9, открыто 10; таблица
+ниже относится именно к этому снимку. **Снимок на 2026-11-18T08:17Z:** 22
+thread, открыто 13, разрешено 9 — перечень в разделе «Актуальный снимок review
+threads PR #100». Треды не разрешались, ответов ревьюерам нет, тексты
+review-комментариев не изменялись.
 
 | № | GraphQL ID | Автор | Путь:строка | outdated | Краткое требование |
 |---|---|---|---|---|---|
@@ -378,20 +400,52 @@ HANDOVER, `docs/WORK-LOG.md`, `docs/ARTIFACT-REGISTRY.md` и описании PR
   `6ccdd…`); его утверждения об отсутствии PR и Git-операций относятся к
   состоянию до публикации и пояснены отдельной пометкой вне блока отчёта.
 
+## Актуальный снимок review threads PR #100 — 2026-11-18T08:17Z
+
+Снимок получен через GitHub GraphQL (`reviewThreads`) для PR #100 на HEAD
+`cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`; локальная рабочая копия
+доказательством текущего состояния не является. Всего **22** thread: **открыто
+13**, разрешено 9, `outdated` 13. Ни один thread не разрешался; ответов
+ревьюерам не добавлялось; тексты review-комментариев не изменялись.
+
+| № | GraphQL ID | Автор | Путь:строка | outdated | Краткое требование |
+|---|---|---|---|---|---|
+| 1 | `PRRT_kwDOVQdS0863k_5e` | sourcery-ai | `docs/issue43-closure-confirmation-2026-11-15.md:80` | нет | Проверяемое подтверждение одобрения владельца |
+| 4 | `PRRT_kwDOVQdS0863k_5j` | sourcery-ai | `docs/issue43-closure-confirmation-2026-11-15.md:55` | нет | Неверный SHA `main` в опубликованном комментарии Issue #43 |
+| 10 | `PRRT_kwDOVQdS0863lBLP` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt:174` | нет | Проверяемое происхождение решения владельца (P2) |
+| 11 | `PRRT_kwDOVQdS0863lBLR` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt` (orig 130) | да | Убрать ссылки на временные каталоги; сделать предпосылки шаблона доступными (P2) |
+| 14 | `PRRT_kwDOVQdS0863lg0z` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt:200` | нет | Пометить происхождение решения №8 как неверифицированное (P2) |
+| 15 | `PRRT_kwDOVQdS0863lt4_` | chatgpt-codex-connector | `docs/decisions/README.md` (orig 100) | да | До слияния PR статус записи решения — «предложена» (P2) |
+| 16 | `PRRT_kwDOVQdS0863l2Lt` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md` (orig 45) | да | Пересчитать запись реестра для `docs/issue43-closure-confirmation-2026-11-15.md` (P2) |
+| 17 | `PRRT_kwDOVQdS0863l2Lw` | chatgpt-codex-connector | `docs/HANDOVER.md` (orig 192) | да | Обновить HANDOVER: корректирующий комментарий Issue #43 уже опубликован (P2) |
+| 18 | `PRRT_kwDOVQdS0863l2Ly` | chatgpt-codex-connector | `docs/smartchild-issue43-owner-responses-template.txt` (orig 240) | да | Уточнить, кто заполняет поля решения (P2) |
+| 19 | `PRRT_kwDOVQdS0864ZlPf` | chatgpt-codex-connector | `docs/ARTIFACT-REGISTRY.md` (orig 42) | да | Пересчитать строку `docs/decisions/README.md` в реестре (P2) |
+| 20 | `PRRT_kwDOVQdS08640Xyx` | chatgpt-codex-connector | `docs/HANDOVER.md` (orig 381) | да | Пометить статус патчей 2026-11-17 как исторический (P2) |
+| 21 | `PRRT_kwDOVQdS08640Xy6` | chatgpt-codex-connector | `docs/WORK-LOG.md` (orig 200) | да | Держать новейшую запись журнала сверху (P2) |
+| 22 | `PRRT_kwDOVQdS08641ocn` | chatgpt-codex-connector | `docs/HANDOVER.md:20` | нет | Обновить снимок HEAD/CI после последнего push либо пометить его как состояние до применения патча (P2) |
+
+Thread №22 (`PRRT_kwDOVQdS08641ocn`, `docs/HANDOVER.md:20`) остаётся
+**открытым**: `isResolved: false`, `isOutdated: false`. Он указывает на этот
+раздел и на пункт статуса: снимок HEAD/CI теперь помечен датой получения.
+
 ## Следующий конкретный шаг
 
 Ревьюер проверяет обновлённый PR по актуальному полному SHA; владелец явно
 фиксирует решение по этому же SHA. До решения не сливать PR, не объявлять
 протокол принятым и не расширять разрешения на реализацию или production.
 
-Для PR #100 на HEAD `62e8ddfa7817d168b5885e85b8547427040c35e5`: 21 thread,
-открыто 12 (№1, №4, №10, №11, №14, №15, №16, №17, №18, №19, №20, №21),
-разрешено 9; `mergeStateStatus` остаётся `BLOCKED`, `mergedAt: null`.
-CI на этом HEAD — `success` (run 44255736024, job `test`, 2026-11-18), но CI не
-разрешает threads и не делает PR готовым к `merge`. Следующее действие
+Для PR #100 по снимку на 2026-11-18T08:17Z: HEAD
+`cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9`; 22 thread, открыто 13 (№1, №4,
+№10, №11, №14, №15, №16, №17, №18, №19, №20, №21, №22), разрешено 9;
+`mergeStateStatus` остаётся `BLOCKED`, `mergedAt: null`.
+CI на этом HEAD — `success` (run 44263250298, job `test`, 2026-11-18), но CI не
+разрешает threads и не делает PR готовым к `merge`. После этого снимка
+2026-11-19 опубликован пакет D-1–D-4 (один commit, один push) — HEAD сдвинулся;
+фактический SHA нового коммита и результат CI на нём зафиксированы в L-02
+отчёте о публикации вне репозитория (самоссылка в коммите не создаётся). Следующее действие
 владельца — отдельные решения по каждому открытому thread (включая №15, №18,
-№19 и новые №20/№21), затем отдельное решение о `merge` (`squash`). Патчи для
-№16/№17 применены и опубликованы коммитом `4397483…`; threads №16 и №17
+№19 и новые №20/№21/№22), затем отдельное решение о `merge` (`squash`). Патчи
+для №16/№17 применены и опубликованы коммитом `4397483…`; threads №16 и №17
 по-прежнему не разрешены — `resolve` выполняет владелец.
 
 Историческая запись (состояние на 2026-11-17): патчи №18/№19 были опубликованы
@@ -415,9 +469,11 @@ CI на этом HEAD — `success` (run 44255736024, job `test`, 2026-11-18), �
 фактическим файлам. Решения №7/№8 не изменены; Issue #43 не менялась; threads
 №18/№19 не разрешались; `merge` не выполнялся.
 
-**Результат CI:** на HEAD `62e8ddf` run `44255736024`, job `test` —
-`success` (2026-11-18); «Sourcery review» — `skipped`. `mergeStateStatus`
-остаётся `BLOCKED` (21 thread, открыто 12, включая №20 и №21).
+**Результат CI (историческая запись для коммита публикации):** на HEAD
+`62e8ddf` run `44255736024`, job `test` — `success` (2026-11-18); «Sourcery
+review» — `skipped`. `mergeStateStatus` на тот момент — `BLOCKED` (21 thread,
+открыто 12, включая №20 и №21); по снимку на 2026-11-18T08:17Z — 22 thread,
+открыто 13 (см. «Актуальный снимок review threads PR #100»).
 **Следующий шаг:** отдельные решения владельца по `resolve` threads №1, №4,
 №10, №11, №14, №15, №16, №17, №18, №19, №20, №21 и по `merge` (squash).
 
@@ -443,3 +499,54 @@ WORK-LOG/HANDOVER в реестре пересчитаны по фактичес
 **Следующий шаг:** владелец проверяет CI нового HEAD и состояние threads
 №20/№21 (после публикации нового diff они должны стать `isOutdated: true`),
 затем принимает отдельные решения о `resolve` и о `merge` (squash).
+
+## Публикация пакета исправления дефектов D-1–D-4 от 2026-11-19
+
+- **Разрешение:** отдельное явное разрешение владельца на публикацию пакета
+  `pr100-d1-d4-package-2026-11-18.patch` в ветку PR #100. `merge`, ответы
+  ревьюерам, `resolve`/`unresolve` review threads и любые изменения Issue #43
+  не разрешались и не выполнялись.
+- **Предусловия (проверены дважды — 2026-11-19T06:19Z и 06:23:30Z):** удалённый
+  `refs/heads/docs/issue43-closure-checkpoint` = `refs/pull/100/head` =
+  `cea2e5956bc7e06c1db45ecbeeb31a8c1ba057c9` (`git ls-remote` + GitHub REST);
+  base `main` = `ce0047aff71bd6c201eb7b87a0828c78dc7ac199`; PR `OPEN`,
+  `mergedAt: null`, `mergeable: true`, `mergeable_state: blocked`, 15 коммитов,
+  8 файлов, `+1021/−13`; CI на HEAD — `test` `success` (run `44263250298`),
+  «Sourcery review» `skipped`; threads 22 / открыто 13 / разрешено 9, thread
+  №22 `PRRT_kwDOVQdS08641ocn` — `isResolved: false`, `isOutdated: false`;
+  ruleset `protect-main` (25456741) `active`,
+  `required_review_thread_resolution: true`; Issue #43 `closed`/`completed`,
+  `updatedAt 2026-11-15T03:13:51Z` — без изменений.
+- **Пакет:** 20289 байт, SHA-256
+  `9302df3ac74411cf10d6f9d51f019672ec1e05c085a7c05e474b25ceea6d6675`;
+  применён `git apply` в одноразовом detached worktree от `cea2e59` без fuzz и
+  offset. Предварительно пакет проходил независимый аудит
+  (`docs/pr100-d1-d4-independent-package-audit-2026-11-18.md`, вердикт
+  `READY FOR PUBLICATION AUTHORIZATION`).
+- **Сверка после применения (совпала с ожидаемыми значениями аудита):**
+  `docs/HANDOVER.md` — 46611 / `d943e99a…`, `docs/WORK-LOG.md` — 49343 /
+  `841e7110…`, `docs/ARTIFACT-REGISTRY.md` — 8696 / `dae6dbaa…`;
+  `git diff --check` — exit 0; `git diff --name-only` — ровно три файла;
+  diffstat `3 files changed, 120 insertions(+), 27 deletions(-)`.
+- **Что закрыто пакетом:** D-1/D-2 — снимок HEAD/CI/счётчиков threads помечен
+  датой и больше не подаётся как текущий; D-3 — добавлен перечень 13 открытых
+  threads; D-4 — thread №22 учтён явно как открытый.
+- **Публикация:** один commit и один push в `docs/issue43-closure-checkpoint`
+  после повторной проверки удалённого HEAD непосредственно перед commit.
+  Изменены только `docs/HANDOVER.md`, `docs/WORK-LOG.md`,
+  `docs/ARTIFACT-REGISTRY.md`.
+- **Координационные записи после публикации:** запись в `docs/WORK-LOG.md` —
+  52576 / `dc96652aabd9ff11c1f68369b8197b0b2df0c3d561655e3e94187fabc1d492db`;
+  таблица `docs/ARTIFACT-REGISTRY.md` пересчитана по фактическим файлам. Размер
+  и SHA-256 самого `docs/HANDOVER.md` в этом файле не указываются
+  (самоссылочная контрольная сумма) — они сообщаются в L-02 отчёте о
+  публикации.
+- **CI нового коммита:** зафиксирован в L-02 отчёте о публикации вне
+  репозитория; внутри коммита результат CI не заявляется.
+- **Статус threads:** ни один thread не разрешался; `resolve` остаётся за
+  владельцем. Снимок threads 2026-11-18T08:17Z в этом документе остаётся
+  датированным; после публикации новые `isOutdated`-состояния проверяются
+  заново через GitHub GraphQL.
+- **Следующий шаг:** владелец проверяет новый HEAD и CI, состояния threads
+  (включая №22) и принимает отдельные решения о `resolve` и о `merge`
+  (`squash`).
