@@ -36,8 +36,8 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 |---|---:|---|
 | `AGENTS.md` | 7876 | `f6b0afff1851c5523f5867a03ad7dbeb584631dd40aa009e539686e1a63e834d` |
 | `.github/copilot-instructions.md` | 1201 | `e153be8324923359594c6fbd637750eff11ffc1624b66d475e8e08e35e3ba244` |
-| `docs/WORK-LOG.md` | 60594 | `cc65046d5fc15d99abe2066ffb17caa0bc62a40aa7068ac7f466f271996fcc80` |
-| `docs/HANDOVER.md` | 58747 | `effe17eb91ccd970c3aa0c15f3209bade2e1300d04b35242ec270f7f74e2c6f7` |
+| `docs/WORK-LOG.md` | 62175 | `23d736d93b56a7eaaeda20b16ac13445f180ed0fefc5d53b324ad9bacf446cdb` |
+| `docs/HANDOVER.md` | 59756 | `b48020fed93d9a69a9d01f1f95c72aa7f5db48be80035eda9311bca6ae4842af` |
 | `README.md` | 7859 | `b02bfef599fdcbfce3a94f62fb5a9696f097ecbcea96a1600930445b1a0b4164` |
 | `docs/decisions/README.md` | 18993 | `02a5f46b2755935a6b8392b4ce2834067c044401b00f79dc0246001854c9643f` |
 | `docs/reviews/protocol-continuity-implementation-report-2026-11-14.md` (исходный файл в рабочей копии; полный текст — в PR) | 5264 | `6ccdd5000edf96af05b237f98b6c6398772b4d797e9315702b42cf1d443a4972` |
@@ -45,6 +45,7 @@ production не разрешены. Запись L-02 в `docs/decisions/README.
 | `docs/issue43-closure-confirmation-2026-11-15.md` | 17315 | `6e88b599fed6d7340f15c576fc31f102d2db2c9d748f24a0ed97373774e6a274` |
 | `pr100-thread18-2026-11-17.patch` | 2106 | `3aa4300aee8438660c0243a722875c257f2f54237ef66cbcbe853efd3cc7ecd8` |
 | `pr100-thread19-2026-11-17.patch` | 1286 | `b16555956213e6d3399588cbcf1d87e8fc147765895de0770ebd89db965090da` |
+| `pr100-i1-i3-handover-threads-2026-11-19.patch` | 18981 | `8ebea5fdfe4c9d2464d4369718b6e2d013f0d21f22ce4a576b8fd4c85269d202` |
 
 Строка с путём `docs/reviews/...` относится к исходному файлу в рабочей
 копии: в PR и чистом checkout этого файла нет. Проверяемый по L-02 полный
