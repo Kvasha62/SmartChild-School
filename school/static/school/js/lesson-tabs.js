@@ -1,10 +1,15 @@
 document.querySelectorAll("[data-lesson-tabs]").forEach((group) => {
-  const buttons = Array.from(
-    group.querySelectorAll("[data-tab-button]")
-  );
-  const panels = Array.from(
-    group.querySelectorAll("[data-tab-panel]")
-  );
+  const owned = (selector) =>
+    Array.from(group.querySelectorAll(selector)).filter(
+      (element) => element.closest("[data-lesson-tabs]") === group
+    );
+
+  const buttons = owned("[data-tab-button]");
+  const panels = owned("[data-tab-panel]");
+
+  if (buttons.length === 0 || buttons.length !== panels.length) {
+    return;
+  }
 
   function activate(index, moveFocus = false) {
     buttons.forEach((button, i) => {
